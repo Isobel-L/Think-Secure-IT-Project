@@ -1,10 +1,8 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { catalog, examples } from '../shared/catalog.js';
-import { normalizeSelectionState, randomSelections, resolveSelectionToggle, selectionLabels } from '../shared/selectionRules.js';
+import { randomSelections, resolveSelectionToggle, selectionLabels } from '../shared/selectionRules.js';
 import { api, apiOrThrow } from './api.js';
 import { normalizePromptModes } from './modelOptions.js';
-import AccountModal from './components/AccountModal.jsx';
-import AuthModal from './components/AuthModal.jsx';
 import { ConfirmDialog, PromptDialog } from './components/Dialog.jsx';
 import DownloadDialog from './components/DownloadDialog.jsx';
 import HistoryItem from './components/HistoryItem.jsx';
@@ -13,15 +11,12 @@ import HeroShowcase from './components/HeroShowcase.jsx';
 import { Icon } from './components/Icons.jsx';
 import ImageEditor from './components/ImageEditor.jsx';
 import ParameterSection from './components/ParameterSection.jsx';
-import PlanDialog from './components/PlanDialog.jsx';
 import PromptPreviewDialog from './components/PromptPreviewDialog.jsx';
 import ResultPanel from './components/ResultPanel.jsx';
 import {
   buildEditFormData,
-  canOpenImageEditor,
   findParentGeneration,
   getEditorSource,
-  isUnlimitedLocalUsage,
   mergeEditedGeneration,
   readJsonResponse,
   resolveHistoryRefresh,
@@ -29,7 +24,6 @@ import {
 } from './editIntegration.js';
 
 const avatarSize = '1024x1024';
-const checkoutDraftKey = 'tmall-avatar-checkout-draft';
 const historyPreviewCount = 6;
 const historyLimit = 60;
 const flux2HealthResponseError = '图像编辑服务状态响应格式无效。';
@@ -47,16 +41,9 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [user, setUser] = useState(null);
-  const [accountOpen, setAccountOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
-  const [billing, setBilling] = useState(null);
-  const [planDialogOpen, setPlanDialogOpen] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentNotice, setPaymentNotice] = useState('');
   const [downloadLoadingId, setDownloadLoadingId] = useState('');
   const [editLoadingId, setEditLoadingId] = useState('');
@@ -96,7 +83,6 @@ function App() {
     [selections],
   );
   const hasBrief = Boolean(brief.trim());
-  const unlimitedUsage = isUnlimitedLocalUsage(billing);
   const parentGeneration = useMemo(() => findParentGeneration(history, result), [history, result]);
 
   const completion = Math.min(100, Math.round(((brief.trim() ? 3 : 0) + selectedCount) / 12 * 100));
@@ -106,12 +92,6 @@ function App() {
     { id: 2, label: '选择风格' },
     { id: 3, label: '生成下载' },
   ];
-
-  const loadMe = async () => {
-    const { data } = await api('/api/auth/me');
-    setUser(data.user);
-    return data.user;
-  };
 
   const loadHistory = async () => {
     const requestId = ++historyRequestRef.current;
@@ -146,13 +126,6 @@ function App() {
     } finally {
       if (requestId === historyRequestRef.current) setHistoryLoading(false);
     }
-  };
-
-  const loadBilling = async () => {
-    const { ok, data } = await api('/api/billing/status');
-    const nextBilling = ok ? data.billing || null : null;
-    setBilling(nextBilling);
-    return nextBilling;
   };
 
   const loadServerInfo = async () => {
@@ -223,12 +196,6 @@ function App() {
   };
 
   const openEditor = (item = result) => {
-    if (!canOpenImageEditor(user)) {
-      setAuthMode('login');
-      setAuthOpen(true);
-      setError('请先登录账号，再使用图片微调。');
-      return;
-    }
     const generation = item?.generation || item;
     if (generation?.locked || generation?.downloadedAt || generation?.lockedAt) {
       setError('这张头像已经确认下载并锁定，不能继续修改。');
@@ -255,7 +222,7 @@ function App() {
   const submitEdit = async (submission) => {
     if (editSubmissionRef.current) return;
     editSubmissionRef.current = true;
-    // 上一次成功后的延迟关闭还在排队时再次提交，须先取消，避免新请求进行中编辑器被关闭。
+    // A queued close from the previous success must be cancelled, or it would shut the editor mid-request.
     window.clearTimeout(editorSuccessCloseTimerRef.current);
     editorSuccessCloseTimerRef.current = null;
     setEditing(true);
@@ -267,13 +234,9 @@ function App() {
         body: buildEditFormData(submission),
       });
       const payload = await readJsonResponse(response, '图片修改响应格式无效，请稍后重试。');
-      if (!response.ok) {
-        if (payload.billing) setBilling(payload.billing);
-        throw new Error(payload.error || '图片修改失败，请稍后重试。');
-      }
+      if (!response.ok) throw new Error(payload.error || '图片修改失败，请稍后重试。');
 
       setResult(payload);
-      setBilling(payload.billing);
       if (payload.generation) {
         pendingEditedGenerationRef.current = payload.generation;
         setHistory((current) => mergeEditedGeneration(current, payload.generation, historyLimit));
@@ -297,70 +260,12 @@ function App() {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const paymentState = params.get('payment');
-    const sessionId = params.get('session_id');
-    const orderId = params.get('order_id');
-    if (paymentState) {
-      try {
-        const draft = JSON.parse(localStorage.getItem(checkoutDraftKey) || 'null');
-        if (draft) {
-          setBrief(typeof draft.brief === 'string' ? draft.brief : '');
-          setAvoid(typeof draft.avoid === 'string' ? draft.avoid : '');
-          setSelections(normalizeSelectionState(draft.selections).selections);
-          setQuality(['low', 'medium', 'high'].includes(draft.quality) ? draft.quality : 'medium');
-        }
-      } catch {
-        localStorage.removeItem(checkoutDraftKey);
-      }
-    }
-
-    loadMe().then((currentUser) => {
-      if (paymentState === 'cancelled') setPaymentNotice('支付已取消，头像设置已为你保留。');
-      if (paymentState === 'success' && currentUser && (sessionId || orderId)) {
-        setPaymentNotice('正在确认支付宝到账状态…');
-        api('/api/billing/confirm', { method: 'POST', body: { sessionId, orderId } })
-          .then(({ ok, data }) => {
-            if (!ok || !data.paid) throw new Error(data.error || '支付仍在确认中。');
-            setBilling(data.billing);
-            setPaymentNotice(data.billing?.plan
-              ? `支付宝支付成功，${data.billing.plan.name} 套餐已开通。`
-              : '支付宝支付成功，已到账 1 次头像下载额度。');
-          })
-          .catch((paymentError) => {
-            setPaymentNotice(paymentError.message || '支付仍在确认中，请稍后刷新。');
-          });
-      }
-    }).catch(() => {});
+    loadHistory().catch(() => {});
     loadServerInfo().catch(() => {});
     loadComfyModels().catch(() => {});
-
-    if (paymentState) {
-      window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash || '#customizer'}`);
-    }
   }, []);
 
   useEffect(() => () => window.clearTimeout(editorSuccessCloseTimerRef.current), []);
-
-  useEffect(() => {
-    if (user) {
-      loadHistory().catch(() => {});
-      loadBilling().catch(() => {});
-    } else {
-      historyRequestRef.current += 1;
-      pendingEditedGenerationRef.current = null;
-      setHistoryLoading(false);
-      setHistory([]);
-      setHistoryModalOpen(false);
-      setBilling(null);
-    }
-  }, [user]);
-
-  const requireLogin = (message) => {
-    setAuthMode('login');
-    setAuthOpen(true);
-    setError(message);
-  };
 
   const toggleOption = (group, option) => {
     if (!hasBrief) {
@@ -376,10 +281,6 @@ function App() {
   };
 
   const applyRandomInspiration = async () => {
-    if (!user) {
-      requireLogin('请先登录账号，登录后可以使用随机灵感。');
-      return;
-    }
     setInspirationLoading(true);
     setError('');
     try {
@@ -416,91 +317,6 @@ function App() {
     setCandidates(null);
     setError('');
     setPaymentNotice('');
-    localStorage.removeItem(checkoutDraftKey);
-  };
-
-  const logout = async () => {
-    await api('/api/auth/logout', { method: 'POST' });
-    historyRequestRef.current += 1;
-    pendingEditedGenerationRef.current = null;
-    setAccountOpen(false);
-    setPlanDialogOpen(false);
-    setUser(null);
-    setHistory([]);
-    setBilling(null);
-  };
-
-  const startCheckout = async (planId = null) => {
-    if (!user) {
-      requireLogin('请先登录账号，登录后每个账号可免费确认下载前 5 次。');
-      return;
-    }
-
-    setPaymentLoading(true);
-    setError('');
-    setPaymentNotice('');
-    localStorage.setItem(checkoutDraftKey, JSON.stringify({ brief, avoid, selections, quality }));
-    try {
-      const { status, ok, data } = await api('/api/billing/checkout', { method: 'POST', body: { planId } });
-      if (status === 409 && data.billing) {
-        setBilling(data.billing);
-        throw new Error('账号仍有可用下载次数，请直接确认下载。');
-      }
-      if (!ok || !data.url) throw new Error(data.error || '暂时无法创建支付宝订单。');
-      window.location.assign(data.url);
-    } catch (paymentError) {
-      setError(paymentError.message || '暂时无法连接支付服务。');
-      setPaymentLoading(false);
-    }
-  };
-
-  const openPlanDialog = () => {
-    if (!user) {
-      requireLogin('请先登录账号后再购买下载额度。');
-      return;
-    }
-    setPlanDialogOpen(true);
-  };
-
-  const simulateLocalPayment = async (planId = null) => {
-    if (!user) {
-      requireLogin('请先登录账号后再测试模拟支付。');
-      return;
-    }
-
-    setPaymentLoading(true);
-    setError('');
-    setPaymentNotice('正在模拟本地支付…');
-    try {
-      const { ok, data } = await api('/api/billing/test-purchase', { method: 'POST', body: { planId } });
-      if (!ok || !data.paid) throw new Error(data.error || '模拟支付失败。');
-      setBilling(data.billing);
-      const actionText = { activate: '开通', renew: '续订', upgrade: '升级到' }[data.planAction] || '开通';
-      setPaymentNotice(planId
-        ? `模拟支付成功，已${actionText} ${data.billing?.plan?.name || '所选'} 套餐。`
-        : '本地模拟支付成功，已增加 1 次付费下载额度。');
-    } catch (paymentError) {
-      setPaymentNotice('');
-      setError(paymentError.message || '模拟支付失败，请稍后重试。');
-    } finally {
-      setPaymentLoading(false);
-    }
-  };
-
-  const cancelPlan = async () => {
-    setPaymentLoading(true);
-    setError('');
-    try {
-      const { ok, data } = await api('/api/billing/plan/cancel', { method: 'POST' });
-      if (!ok) throw new Error(data.error || '取消套餐失败，请稍后重试。');
-      setBilling(data.billing);
-      setPaymentNotice('套餐已取消续期，可继续使用到当前周期结束，到期后自动停止。');
-    } catch (cancelError) {
-      setPaymentNotice('');
-      setError(cancelError.message || '取消套餐失败，请稍后重试。');
-    } finally {
-      setPaymentLoading(false);
-    }
   };
 
   const generate = async () => {
@@ -509,11 +325,6 @@ function App() {
       document.querySelector('.brief-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (!user) {
-      requireLogin('请先登录账号，登录后可以保存生成记录并领取前 5 次免费下载。');
-      return;
-    }
-
     setLoading(true);
     setError('');
     setCandidates(null);
@@ -547,9 +358,7 @@ function App() {
         setResult(data);
         if (data.generation) setHistory((current) => [data.generation, ...current.filter((item) => item.id !== data.generation.id)].slice(0, historyLimit));
       }
-      setBilling(data.billing || billing);
       setPaymentNotice('');
-      localStorage.removeItem(checkoutDraftKey);
     } catch (requestError) {
       setError(requestError.message || '暂时无法连接头像生成服务。');
     } finally {
@@ -557,20 +366,8 @@ function App() {
     }
   };
 
-  const updateStoredGeneration = (generation) => {
-    if (!generation?.id) return;
-    setHistory((current) => current.map((item) => (item.id === generation.id ? { ...item, ...generation } : item)));
-    setResult((current) => {
-      if (!current) return current;
-      if (current.id === generation.id) return { ...current, ...generation };
-      if (current.generation?.id === generation.id) return { ...current, generation: { ...current.generation, ...generation } };
-      return current;
-    });
-  };
-
   const performDownload = async (generationLike, options = {}) => {
     const generation = generationLike?.generation || generationLike;
-    const isLocked = isGenerationLocked(generation);
     const downloadUrl = generation?.downloadUrl || generationLike?.downloadUrl;
     const size = [1024, 640, 256].includes(options.size) ? options.size : 1024;
     const shape = options.shape === 'circle' ? 'circle' : 'square';
@@ -579,13 +376,6 @@ function App() {
     setError('');
     try {
       const response = await fetch(`${downloadUrl}?size=${size}&shape=${shape}`, { credentials: 'include' });
-      if (response.status === 402) {
-        const data = await response.json();
-        setBilling(data.billing || null);
-        setPaymentNotice(data.error || '免费下载额度已用完，请先支付后再下载。');
-        setPlanDialogOpen(true);
-        return;
-      }
       if (!response.ok) {
         let message = '下载失败，请稍后重试。';
         try {
@@ -607,18 +397,7 @@ function App() {
       link.remove();
       URL.revokeObjectURL(objectUrl);
 
-      if (unlimitedUsage) {
-        setPaymentNotice('本机开发无限模式：图片已下载，不扣额度也不锁定。');
-      } else {
-        updateStoredGeneration({
-          ...generation,
-          locked: true,
-          downloadedAt: generation?.downloadedAt || new Date().toISOString(),
-          lockedAt: generation?.lockedAt || new Date().toISOString(),
-        });
-        await loadBilling().catch(() => {});
-        setPaymentNotice(isLocked ? '头像已重新下载。' : '头像已下载并锁定，之后不能再修改这张图。');
-      }
+      setPaymentNotice('头像已下载，可以继续修改这张图。');
     } catch (downloadError) {
       setError(downloadError.message || '下载失败，请稍后重试。');
     } finally {
@@ -632,12 +411,7 @@ function App() {
       setError('请先生成或选择一张头像。');
       return;
     }
-    if (!user) {
-      requireLogin('请先登录账号后再下载头像。');
-      return;
-    }
-
-    // 所有下载都弹导出选项框;是否附加扣费锁定警告由弹窗按状态决定。
+    // Every download opens the export dialog so the user can pick a size and a shape.
     setConfirmDownloadTarget(generationLike);
   };
 
@@ -651,7 +425,6 @@ function App() {
         '修改失败，请稍后重试。',
       );
       setResult(data);
-      setBilling(data.billing || billing);
       if (data.generation) setHistory((current) => [data.generation, ...current.filter((item) => item.id !== data.generation.id)].slice(0, historyLimit));
       setPaymentNotice('已基于原图生成一个可继续修改的新版本。');
     } catch (editError) {
@@ -671,12 +444,7 @@ function App() {
       setError('这张头像已经确认下载并锁定，不能继续修改。');
       return;
     }
-    if (!user) {
-      requireLogin('请先登录账号后再修改历史头像。');
-      return;
-    }
-
-    // 本地 ComfyUI / SD 后端不支持语义修改，改用局部微调编辑器。
+    // The local ComfyUI / SD backends cannot do semantic edits, so fall back to the retouch editor.
     if (shouldUseFlux2Editor(generationLike)) {
       openEditor(generationLike);
       return;
@@ -765,23 +533,7 @@ function App() {
           ))}
         </nav>
         <div className="account-actions">
-          {user ? (
-            <div className="account-pill">
-              <button
-                className="account-profile-button"
-                type="button"
-                onClick={() => setAccountOpen(true)}
-                aria-label="打开账号中心"
-                title="打开账号中心"
-              >
-                {user.avatarUrl ? <img src={user.avatarUrl} alt="" /> : <b>{user.displayName?.[0] || user.email?.[0] || 'U'}</b>}
-                <span>{user.displayName || user.email}</span>
-              </button>
-              <button className="account-logout" type="button" onClick={logout}>退出</button>
-            </div>
-          ) : (
-            <button className="login-button" type="button" onClick={() => setAuthOpen(true)}>登录 / 注册</button>
-          )}
+          <span className="guest-pill" title="当前版本不需要登录，生成记录保存在服务端本地文件夹">访客模式</span>
           <button className="reset-button" type="button" onClick={reset}><Icon name="reset" size={17} />重新定制</button>
         </div>
       </header>
@@ -803,7 +555,7 @@ function App() {
             </a>
           </div>
         </div>
-        <HeroShowcase items={user ? history : []} />
+        <HeroShowcase items={history} />
       </section>
 
       <div className="trust-strip">
@@ -949,40 +701,31 @@ function App() {
 
           <section className="section-card history-card">
             <div className="card-heading">
-              <div className="number-title"><b>4</b><div><h2>我的生成记录</h2><p>{user ? '生成和修改都会保存；确认下载后图片会锁定' : '登录后即可跨会话保存你的头像记录'}</p></div></div>
-              {user && <button className="ghost-mini" type="button" onClick={loadHistory} disabled={historyLoading}>{historyLoading ? '刷新中' : '刷新'}</button>}
+              <div className="number-title"><b>4</b><div><h2>我的生成记录</h2><p>生成和修改都会保存到服务端本地文件夹，可以反复修改和下载</p></div></div>
+              <button className="ghost-mini" type="button" onClick={loadHistory} disabled={historyLoading}>{historyLoading ? '刷新中' : '刷新'}</button>
             </div>
-            {user ? (
-              <>
-                <div className="history-grid">
-                  {history.length ? history.slice(0, historyPreviewCount).map((item) => (
-                    <HistoryItem
-                      key={item.id}
-                      item={item}
-                      onPreview={setResult}
-                      onDownload={downloadGeneration}
-                      onEdit={editGeneration}
-                      onFluxEdit={openEditor}
-                      onDelete={setDeleteTarget}
-                      downloadBusy={downloadLoadingId === item.id}
-                      editBusy={editLoadingId === item.id}
-                    />
-                  )) : (
-                    <div className="history-empty">{historyLoading ? '正在读取历史记录…' : '暂无记录。生成第一张头像后会自动保存。'}</div>
-                  )}
-                </div>
-                {history.length > historyPreviewCount && (
-                  <button className="history-more" type="button" onClick={() => setHistoryModalOpen(true)}>
-                    查看全部 {history.length} 张头像
-                    <Icon name="arrow" size={15} />
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="history-login">
-                <span>登录后，生成过的头像会跟随账号保存。</span>
-                <button type="button" onClick={() => setAuthOpen(true)}>立即登录</button>
-              </div>
+            <div className="history-grid">
+              {history.length ? history.slice(0, historyPreviewCount).map((item) => (
+                <HistoryItem
+                  key={item.id}
+                  item={item}
+                  onPreview={setResult}
+                  onDownload={downloadGeneration}
+                  onEdit={editGeneration}
+                  onFluxEdit={openEditor}
+                  onDelete={setDeleteTarget}
+                  downloadBusy={downloadLoadingId === item.id}
+                  editBusy={editLoadingId === item.id}
+                />
+              )) : (
+                <div className="history-empty">{historyLoading ? '正在读取历史记录…' : '暂无记录。生成第一张头像后会自动保存。'}</div>
+              )}
+            </div>
+            {history.length > historyPreviewCount && (
+              <button className="history-more" type="button" onClick={() => setHistoryModalOpen(true)}>
+                查看全部 {history.length} 张头像
+                <Icon name="arrow" size={15} />
+              </button>
             )}
           </section>
         </section>
@@ -996,12 +739,7 @@ function App() {
           quality={quality}
           onGenerate={generate}
           canGenerate={hasBrief}
-          user={user}
-          billing={billing}
-          paymentLoading={paymentLoading}
           paymentNotice={paymentNotice}
-          onTestPurchase={simulateLocalPayment}
-          onPurchase={openPlanDialog}
           onDownload={downloadGeneration}
           onEdit={editGeneration}
           candidates={candidates}
@@ -1022,38 +760,6 @@ function App() {
         <p>本服务由 AI 生成，请遵守平台规则并妥善使用生成内容。</p>
         <span>Powered by ComfyUI</span>
       </footer>
-
-      {authOpen && (
-        <AuthModal
-          mode={authMode}
-          onSwitchMode={setAuthMode}
-          onClose={() => setAuthOpen(false)}
-          onAuthed={(authedUser) => {
-            setUser(authedUser);
-            setAuthOpen(false);
-            setError('');
-          }}
-        />
-      )}
-
-      {accountOpen && user && (
-        <AccountModal
-          user={user}
-          onClose={() => setAccountOpen(false)}
-          onUpdated={setUser}
-        />
-      )}
-
-      {planDialogOpen && user && (
-        <PlanDialog
-          billing={billing}
-          loading={paymentLoading}
-          onClose={() => setPlanDialogOpen(false)}
-          onCheckout={startCheckout}
-          onTestPurchase={simulateLocalPayment}
-          onCancelPlan={cancelPlan}
-        />
-      )}
 
       <HistoryModal
         open={historyModalOpen}
@@ -1094,11 +800,7 @@ function App() {
 
       <DownloadDialog
         open={Boolean(confirmDownloadTarget)}
-        willCharge={Boolean(
-          confirmDownloadTarget
-          && !unlimitedUsage
-          && !isGenerationLocked(confirmDownloadTarget?.generation || confirmDownloadTarget),
-        )}
+        willCharge={false}
         loading={Boolean(downloadLoadingId)}
         onConfirm={async (options) => {
           const target = confirmDownloadTarget;

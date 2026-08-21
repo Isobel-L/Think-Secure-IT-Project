@@ -7,21 +7,7 @@ import OpenAI, { toFile } from 'openai';
 import { File } from 'node:buffer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createAuthRouter, optionalAuth, requireAuth } from './auth.js';
-import {
-  confirmPayment,
-  constructStripeEvent,
-  createLocalTestPurchase,
-  createPaymentCheckout,
-  fulfillDirectAlipayNotification,
-  fulfillStripeCheckout,
-  getBillingStatus,
-  getConfiguredPaymentProvider,
-  isPaymentConfigured,
-  isTestPaymentEnabled,
-  isUnlimitedUsageEnabled,
-  publicBillingStatus,
-} from './billing.js';
+import { attachGuestUser, createAuthRouter, requireAuth } from './guestAuth.js';
 import {
   getComfyConfig,
   getComfyHealth,
@@ -29,21 +15,17 @@ import {
   resolveComfyCheckpoint,
 } from './comfyModel.js';
 import {
-  cancelUserPlan,
   deleteAvatarGeneration,
   getAvatarGeneration,
   getAvatarGenerationImageBytes,
   getAvatarGenerationThumbBytes,
-  initializeDatabase,
-  isDatabaseConfigured,
+  guestBillingStatus,
+  initializeStore,
   listAvatarGenerations,
-  migrateLegacyImages,
-  reserveDownloadForGeneration,
   saveAvatarGeneration,
-} from './db.js';
+} from './generationStore.js';
 import { createEditRouter, createFlux2HealthHandler } from './editRouter.js';
 import { editWithFlux2, getFlux2EditConfig, getFlux2EditHealth } from './flux2Edit.js';
-import { ensureStorageDir } from './imageStore.js';
 import { generateInspirationBrief, getInspirationModel, sanitizeInspirationLabels } from './inspiration.js';
 import { downloadSizes, extensionForMimeType, imageToStoredDataUrl, transformDownloadImage } from './imageUtils.js';
 import { createRateLimiter, securityHeaders } from './middleware.js';
@@ -74,10 +56,6 @@ const activeBackend = usesComfy ? 'comfyui' : usesLocalModel ? 'local-sd1.5' : '
 
 if (typeof globalThis.File === 'undefined') {
   globalThis.File = File;
-}
-
-if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
-  console.warn('[security] JWT_SECRET is not set in production. Sessions are signed with an insecure development fallback.');
 }
 
 function createOpenAIClient() {
@@ -122,36 +100,11 @@ app.use(compression());
 app.use(cors({ origin: /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/, credentials: true }));
 app.use(cookieParser());
 
-const authLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 20, code: 'AUTH_RATE_LIMITED', message: '登录尝试过于频繁，请 10 分钟后再试。' });
 const generateLimiter = createRateLimiter({ windowMs: 60_000, max: 6, code: 'GENERATION_RATE_LIMITED', message: '生成请求过于频繁，请稍等片刻再试。' });
-const checkoutLimiter = createRateLimiter({ windowMs: 60_000, max: 10, code: 'CHECKOUT_RATE_LIMITED', message: '下单过于频繁，请稍后再试。' });
 const inspirationLimiter = createRateLimiter({ windowMs: 60_000, max: 10, code: 'INSPIRATION_RATE_LIMITED', message: '随机灵感请求过于频繁，请稍后再试。' });
 
-app.post('/api/billing/alipay/notify', express.urlencoded({ extended: false, limit: '64kb' }), async (request, response) => {
-  try {
-    await fulfillDirectAlipayNotification(request.body);
-    return response.type('text/plain').send('success');
-  } catch (error) {
-    console.error('[alipay-webhook]', error?.message || error);
-    return response.status(400).type('text/plain').send('failure');
-  }
-});
-
-app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
-  try {
-    const event = constructStripeEvent(request.body, request.headers['stripe-signature']);
-    if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
-      await fulfillStripeCheckout(event.data.object.id);
-    }
-    return response.json({ received: true });
-  } catch (error) {
-    console.error('[stripe-webhook]', error?.message || error);
-    return response.status(400).send('Invalid Stripe webhook.');
-  }
-});
-
 app.use(express.json({ limit: '1mb' }));
-app.use(optionalAuth);
+app.use(attachGuestUser);
 
 app.get('/api/health', (_request, response) => {
   response.json({
@@ -161,11 +114,12 @@ app.get('/api/health', (_request, response) => {
     configured: usesComfy ? Boolean(getComfyConfig().baseUrl) : usesLocalModel ? Boolean(getLocalModelConfig().baseUrl) : Boolean(process.env.OPENAI_API_KEY),
     openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
     openaiModel: model,
-    databaseConfigured: isDatabaseConfigured(),
-    paymentConfigured: isPaymentConfigured(),
-    paymentProvider: getConfiguredPaymentProvider(),
-    testPaymentEnabled: isTestPaymentEnabled(),
-    unlimitedUsage: isUnlimitedUsageEnabled(),
+    databaseConfigured: false,
+    guestMode: true,
+    paymentConfigured: false,
+    paymentProvider: null,
+    testPaymentEnabled: false,
+    unlimitedUsage: true,
     localModel: usesLocalModel ? { endpoint: getLocalModelConfig().baseUrl } : undefined,
     comfyui: usesComfy ? { endpoint: getComfyConfig().baseUrl, checkpoint: getComfyConfig().checkpointName } : undefined,
   });
@@ -188,74 +142,11 @@ app.get('/api/parameters', (_request, response) => {
   });
 });
 
-app.use(['/api/auth/login', '/api/auth/register'], authLimiter);
 app.use('/api/auth', createAuthRouter());
 
-app.get('/api/billing/status', requireAuth, async (request, response) => {
-  response.json({ billing: await getBillingStatus(request.user.id) });
-});
-
-app.post('/api/billing/test-purchase', requireAuth, async (request, response) => {
-  if (!isTestPaymentEnabled()) {
-    return response.status(404).json({ code: 'TEST_PAYMENT_DISABLED', error: '本地模拟支付未开启。' });
-  }
-
-  try {
-    const planId = request.body?.planId || null;
-    return response.status(201).json(await createLocalTestPurchase(request.user.id, planId));
-  } catch (error) {
-    if (error?.code === 'INVALID_PLAN') return response.status(400).json({ code: error.code, error: '套餐参数无效。' });
-    if (error?.code === 'PLAN_DOWNGRADE_BLOCKED') return response.status(400).json({ code: error.code, error: '已有更高级别的套餐，无法降级购买。' });
-    console.error('[test-payment]', error);
-    return response.status(500).json({ code: 'TEST_PAYMENT_FAILED', error: '模拟支付暂时失败，请检查本地数据库。' });
-  }
-});
-
-app.post('/api/billing/plan/cancel', requireAuth, async (request, response) => {
-  try {
-    const allowance = await cancelUserPlan(request.user.id);
-    if (!allowance) return response.status(404).json({ code: 'ACCOUNT_NOT_FOUND', error: '账号不存在。' });
-    return response.json({ cancelled: true, billing: publicBillingStatus(allowance) });
-  } catch (error) {
-    console.error('[plan-cancel]', error);
-    return response.status(500).json({ code: 'PLAN_CANCEL_FAILED', error: '取消套餐失败，请稍后重试。' });
-  }
-});
-
-app.post('/api/billing/checkout', requireAuth, checkoutLimiter, async (request, response) => {
-  try {
-    const planId = request.body?.planId || null;
-    const checkout = await createPaymentCheckout({ user: request.user, planId });
-    return response.status(201).json(checkout);
-  } catch (error) {
-    if (error?.code === 'INVALID_PLAN') return response.status(400).json({ code: error.code, error: '套餐参数无效。' });
-    if (error?.code === 'PLAN_DOWNGRADE_BLOCKED') return response.status(400).json({ code: error.code, error: '已有更高级别的套餐，无法降级购买。' });
-    if (error?.code === 'GENERATION_ENTITLEMENT_AVAILABLE') {
-      return response.status(409).json({ code: error.code, error: '当前账号仍有可用下载次数，无需支付。', billing: error.billing });
-    }
-    if (error?.code === 'PAYMENT_NOT_CONFIGURED') {
-      return response.status(503).json({ code: error.code, error: '支付宝支付尚未配置，请联系商家。' });
-    }
-    console.error('[payment-checkout]', error);
-    return response.status(502).json({ code: 'PAYMENT_SESSION_FAILED', error: '暂时无法创建支付宝订单，请稍后重试。' });
-  }
-});
-
-app.post('/api/billing/confirm', requireAuth, async (request, response) => {
-  const sessionId = typeof request.body?.sessionId === 'string' ? request.body.sessionId.trim() : '';
-  const orderId = typeof request.body?.orderId === 'string' ? request.body.orderId.trim() : '';
-  if (!orderId && !sessionId.startsWith('cs_')) {
-    return response.status(400).json({ code: 'INVALID_CHECKOUT_REFERENCE', error: '支付订单参数无效。' });
-  }
-
-  try {
-    const result = await confirmPayment({ sessionId, orderId, userId: request.user.id });
-    return response.status(result.paid ? 200 : 202).json(result);
-  } catch (error) {
-    const status = error?.code === 'PAYMENT_ACCOUNT_MISMATCH' ? 403 : 502;
-    console.error('[payment-confirm]', error);
-    return response.status(status).json({ code: error?.code || 'PAYMENT_CONFIRM_FAILED', error: '暂时无法确认支付宝到账状态，请稍后刷新。' });
-  }
+// Guest mode has no quota; this endpoint just hands the UI an "unlimited" status to render.
+app.get('/api/billing/status', (_request, response) => {
+  response.json({ billing: guestBillingStatus() });
 });
 
 app.get('/api/local-model/health', async (_request, response) => {
@@ -276,7 +167,7 @@ app.get('/api/comfyui/health', async (_request, response) => {
   response.status(health.ok ? 200 : 503).json(health);
 });
 
-// 微调编辑器后端跟随 IMAGE_BACKEND：comfy 时走本地 FLUX.2，否则走 OpenAI images.edit。
+// The retouch editor follows IMAGE_BACKEND: local FLUX.2 under comfy, OpenAI images.edit otherwise.
 const editBackend = usesComfy
   ? { health: getFlux2EditHealth, edit: editWithFlux2, config: getFlux2EditConfig() }
   : { health: getOpenAIEditHealth, edit: editWithOpenAI, config: getOpenAIEditConfig() };
@@ -287,7 +178,7 @@ app.use('/api', createEditRouter({
   requireAuth,
   getGenerationImage: getAvatarGenerationImageBytes,
   save: saveAvatarGeneration,
-  billing: getBillingStatus,
+  billing: async () => guestBillingStatus(),
   ...editBackend,
 }));
 
@@ -386,7 +277,7 @@ app.get('/api/generations/:id/download', requireAuth, async (request, response) 
     return response.status(422).json({ code: 'IMAGE_NOT_DOWNLOADABLE', error: '该生成记录没有可下载的图片数据。' });
   }
 
-  // 导出选项:尺寸(1024/640/256)与形状(square/circle 透明)。
+  // Export options: size (1024/640/256) and shape (square, or circle with transparency).
   const requestedSize = Number.parseInt(request.query?.size, 10);
   const size = downloadSizes.includes(requestedSize) ? requestedSize : 1024;
   const shape = request.query?.shape === 'circle' ? 'circle' : 'square';
@@ -394,34 +285,12 @@ app.get('/api/generations/:id/download', requireAuth, async (request, response) 
   const data = transformed ? { buffer: transformed, mimeType: 'image/png' } : stored;
   const variant = `${size}${shape === 'circle' ? '-round' : ''}`;
 
-  if (isUnlimitedUsageEnabled()) {
-    const extension = extensionForMimeType(data.mimeType);
-    response.setHeader('Content-Type', data.mimeType);
-    response.setHeader('Content-Length', String(data.buffer.length));
-    response.setHeader('X-Avatar-Locked', 'false');
-    response.setHeader('X-Billing-Charged', 'false');
-    response.setHeader('X-Development-Unlimited', 'true');
-    response.setHeader('Content-Disposition', `attachment; filename="tmall-ai-avatar-${original.id}-${variant}.${extension}"`);
-    return response.send(data.buffer);
-  }
-
-  const reserved = await reserveDownloadForGeneration({ userId: request.user.id, generationId: request.params.id });
-  if (!reserved.generation) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
-  if (reserved.paymentRequired) {
-    return response.status(402).json({
-      code: 'PAYMENT_REQUIRED',
-      error: '免费头像下载额度已用完，继续下载需使用支付宝支付 ¥5。',
-      billing: publicBillingStatus(reserved.allowance),
-    });
-  }
-
-  const generation = reserved.generation;
   const extension = extensionForMimeType(data.mimeType);
   response.setHeader('Content-Type', data.mimeType);
   response.setHeader('Content-Length', String(data.buffer.length));
-  response.setHeader('X-Avatar-Locked', 'true');
-  response.setHeader('X-Billing-Charged', reserved.charged ? 'true' : 'false');
-  response.setHeader('Content-Disposition', `attachment; filename="tmall-ai-avatar-${generation.id}-${variant}.${extension}"`);
+  response.setHeader('X-Avatar-Locked', 'false');
+  response.setHeader('X-Billing-Charged', 'false');
+  response.setHeader('Content-Disposition', `attachment; filename="tmall-ai-avatar-${original.id}-${variant}.${extension}"`);
   return response.send(data.buffer);
 });
 
@@ -446,9 +315,6 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
 
   const original = await getAvatarGeneration({ userId: request.user.id, generationId: request.params.id });
   if (!original) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
-  if (original.locked || original.downloadedAt || original.lockedAt) {
-    return response.status(409).json({ code: 'GENERATION_LOCKED', error: '这张头像已经确认下载并锁定，不能继续修改。' });
-  }
 
   const inputImage = await getAvatarGenerationImageBytes({ userId: request.user.id, generationId: request.params.id });
   if (!inputImage) {
@@ -509,7 +375,7 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
         },
       },
     });
-    const billing = await getBillingStatus(request.user.id);
+    const billing = guestBillingStatus();
     return response.json({
       ...payload,
       generation,
@@ -533,7 +399,7 @@ app.delete('/api/generations/:id', requireAuth, async (request, response) => {
 });
 
 async function saveGenerationForUser({ request, result, bundle, brief, avoid, selections, quality, size, backend = activeBackend }) {
-  if (!request.user || !isDatabaseConfigured() || !result?.image) throw new Error('Generation history database is unavailable.');
+  if (!result?.image) throw new Error('Generation result did not include an image.');
 
   const storedImage = await imageToStoredDataUrl(result.image);
   return saveAvatarGeneration({
@@ -577,7 +443,7 @@ async function saveGenerationForUser({ request, result, bundle, brief, avoid, se
 app.post('/api/generate', requireAuth, generateLimiter, async (request, response) => {
   const brief = typeof request.body?.brief === 'string' ? request.body.brief.trim() : '';
   const checkpointName = normalizeCheckpointName(request.body?.checkpoint);
-  // 前端可以按请求选择生成后端；未指定时沿用服务器默认（IMAGE_BACKEND）。
+  // The client may pick a backend per request; without one we use the server default (IMAGE_BACKEND).
   const requestedBackend = ['openai', 'comfyui'].includes(request.body?.backend) ? request.body.backend : null;
   const backend = requestedBackend || activeBackend;
 
@@ -638,7 +504,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
         strategy: bundle.strategy,
       };
     } else {
-      // 仅 OpenAI 支持一次生成多张候选(count ∈ {1, 4})。
+      // Only OpenAI can return several candidates at once (count is 1 or 4).
       const count = Number.parseInt(request.body?.count, 10) === 4 ? 4 : 1;
       const result = await createOpenAIClient().images.generate({
         model,
@@ -675,7 +541,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
             backend,
           }));
         }
-        const billing = await getBillingStatus(request.user.id);
+        const billing = guestBillingStatus();
         return response.json({
           candidates,
           count: candidates.length,
@@ -709,7 +575,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
       size,
       backend,
     });
-    const billing = await getBillingStatus(request.user.id);
+    const billing = guestBillingStatus();
     return response.json({
       ...payload,
       generation,
@@ -733,14 +599,8 @@ app.get(/.*/, (request, response, next) => {
   return response.sendFile(path.join(distPath, 'index.html'));
 });
 
-await initializeDatabase().catch((error) => {
-  console.error('[database-init]', error);
-});
-await ensureStorageDir().catch((error) => {
-  console.error('[image-storage-init]', error);
-});
-await migrateLegacyImages().catch((error) => {
-  console.error('[image-migration]', error);
+await initializeStore().catch((error) => {
+  console.error('[generation-store-init]', error);
 });
 
 const server = app.listen(port, host, () => {

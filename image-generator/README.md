@@ -1,4 +1,15 @@
-# 天猫 AI 头像馆
+# 天猫 AI 头像馆（无数据库版）
+
+> **本分支说明**
+>
+> 这是 `image-generating-system(WithoutDataBase)` 分支：**不需要 PostgreSQL，也不需要登录**。
+>
+> - 所有访问共用一个内置的「访客」身份，`/api/auth/register`、`/api/auth/login`、Google 登录一律返回 `501 AUTH_DISABLED`；
+> - 生成记录不再进数据库：图片按 PNG 原图 + 256px WebP 缩略图存进本地文件夹 `AVATAR_STORAGE_DIR`（默认 `./data/avatars`），元数据写在同目录的 `generations.json`；
+> - 计费、支付宝 / Stripe、下载锁定全部移除，生成、修改和下载都不限次；
+> - 只要配好 `OPENAI_API_KEY` 就能跑通「描述 → 生成 → 下载」全流程。
+>
+> 账号版的实现仍保留在仓库里（`server/auth.js`、`server/db.js`、`server/billing.js` 及对应测试），想恢复时把 `server/index.js` 的导入换回 `./auth.js` 和 `./db.js` 即可。
 
 一个面向天猫商城消费者的 React + Express AI 头像定制网站。用户填写创意、选择角色视觉标签，后端会整理头像专用结构化提示词并调用图片模型。
 
@@ -10,25 +21,21 @@ OpenAI 和 ComfyUI 生成请求默认固定为 `1024×1024`、1:1 方形 PNG，�
 
 - **生成**：一句话描述 + 100+ 风格标签（标签带稳定/实验标注，冲突标签自动替换并提示）；「随机灵感」按钮一键随机勾选风格并由 OpenAI 文本模型（`OPENAI_TEXT_MODEL`，默认 `gpt-4.1-mini`，不可用时回退本地灵感池）生成匹配的中文描述；OpenAI 模式支持一次生成 4 张候选并挑选；本地 ComfyUI 模式可选 Qwen3 中文增强（先把中文整理成英文再交给 FLUX.1）；生成前可预览将发送给模型的完整提示词
 - **修改**：快速语义修改（OpenAI `images.edit`）；局部微调编辑器（画蒙版，仅重绘选区），内置颜色/发型/服装/表情/背景/光线/画面风格/替换物体等结构化分类和 12 色色卡，也可自定义提示词；魔法消除（圈选内容一键移除、背景自动填充，圈选按封闭区域理解）。微调/消除的后端跟随 `IMAGE_BACKEND`——`comfyui` 时走本地 FLUX.2，其他情况走 OpenAI
-- **历史**：文件化存储 + 256px WebP 缩略图；主面板显示最近 6 张，其余收进「查看全部」弹窗；支持删除；修改版带版本链标记并可跳回原版；Hero 圆盘会展示账号最新的三张头像
-- **下载**：首次下载扣 1 次免费/付费额度并锁定图片；导出面板可选尺寸（1024/640/256）和形状（方形/圆形透明）
-- **账号**：邮箱注册 + Google 登录；账号中心可改昵称、改密码（校验当前密码）
+- **历史**：文件化存储 + 256px WebP 缩略图，元数据存本地 `generations.json`；主面板显示最近 6 张，其余收进「查看全部」弹窗；支持删除；修改版带版本链标记并可跳回原版；Hero 圆盘展示最新的三张头像
+- **下载**：不限次数，也不会锁定图片；导出面板可选尺寸（1024/640/256）和形状（方形/圆形透明）
 - **体验**：全程虚拟进度条（按后端/精度/张数自适应预期时长）、移动端触屏适配
-- **计费**：前 5 次下载免费，之后可单次购买（¥5/张）或订阅套餐（Go ¥30 每天 3 次 / Plus ¥50 每天 15 次 / Pro ¥100 无限，均 30 天），支付宝直连（Stripe 备用）；生成和修改不扣额度
 
 ## 运行要求
 
 - **Node.js ≥ 20.9**（`sharp` 图像处理的硬性要求；Docker 镜像使用 node:22）
-- Docker（PostgreSQL 账号数据库）
+- 无需数据库；可写的本地目录用于存放生成的图片
 
 ## 本地运行
 
 ```bash
 npm install
 cp .env.example .env
-# 启动账号数据库
-docker compose up -d db
-# 编辑 .env，填写 OPENAI_API_KEY、JWT_SECRET；需要收费时再填写支付宝支付配置
+# 编辑 .env，填写 OPENAI_API_KEY 即可
 npm run dev
 ```
 
@@ -40,18 +47,6 @@ npm run dev
 npm run check   # ESLint
 npm test        # node --test 全量测试
 ```
-
-### 本地模拟支付
-
-需要测试付费下载流程、但尚未取得真实支付宝参数时，在本机 `.env` 开启：
-
-```bash
-ENABLE_TEST_PAYMENTS=true
-```
-
-重启 `npm run dev` 并登录账号后，头像预览区域会显示“本地测试：模拟支付成功并增加 1 次下载”。每点击一次，后端都会创建一条 `provider=test` 的已支付测试订单，并给当前账号增加 1 次付费下载额度。
-
-此功能有多重限制：`NODE_ENV=production` 时强制关闭，并且 `FRONTEND_BASE_URL` 和 `PUBLIC_API_BASE_URL` 必须同时是 `localhost`、`127.0.0.1` 或 `::1`。正式部署的 `.env` 必须保持 `ENABLE_TEST_PAYMENTS=false`。
 
 ## 生产运行
 
@@ -71,28 +66,10 @@ npm start
 | `OPENAI_IMAGE_MODEL` | 否 | `gpt-image-2` | 图片模型名称 |
 | `OPENAI_BASE_URL` | 否 | OpenAI 官方地址 | 兼容 OpenAI 协议的自定义网关地址 |
 | `OPENAI_TEXT_MODEL` | 否 | `gpt-4.1-mini` | 「随机灵感」使用的文本模型；调用失败时回退本地灵感池 |
-| `DATABASE_URL` | 账号/历史必需 | Docker Compose 默认值 | PostgreSQL 连接串 |
-| `AVATAR_STORAGE_DIR` | 否 | `./data/avatars` | 生成图片与缩略图的落盘目录 |
+| `AVATAR_STORAGE_DIR` | 否 | `./data/avatars` | 生成图片、缩略图与 `generations.json` 的落盘目录 |
+| `GUEST_HISTORY_LIMIT` | 否 | `200` | 本地历史保留条数，超出后自动删除最旧记录与文件 |
 | `OPENAI_EDIT_MASK_FEATHER` | 否 | `8` | OpenAI 编辑蒙版羽化半径，范围 0-64 |
 | `OPENAI_EDIT_MAX_UPLOAD_MB` | 否 | `10` | OpenAI 编辑原图上传上限，范围 1-25 MiB |
-| `JWT_SECRET` | 账号/历史必需 | — | 登录 session 签名密钥，请使用长随机字符串 |
-| `FRONTEND_BASE_URL` | Google 登录必需 | `http://127.0.0.1:5173` | Google 登录完成后的前端跳转地址 |
-| `PUBLIC_API_BASE_URL` | Google 登录必需 | `http://127.0.0.1:8787` | Google OAuth callback 所在后端地址 |
-| `COOKIE_SECURE` | 否 | `false` | HTTPS 部署时设为 `true` |
-| `GOOGLE_CLIENT_ID` | Google 登录必需 | — | Google OAuth Client ID |
-| `GOOGLE_CLIENT_SECRET` | Google 登录必需 | — | Google OAuth Client Secret |
-| `PAYMENT_PROVIDER` | 否 | `auto` | `auto` 优先支付宝直连，也可固定为 `alipay` 或 `stripe` |
-| `ENABLE_TEST_PAYMENTS` | 否 | `false` | 仅回环地址、非生产环境可启用的模拟支付按钮 |
-| `DEV_UNLIMITED_USAGE` | 否 | `false` | 仅回环地址、非生产环境可启用；生成、修改和下载不限次数，下载不锁图 |
-| `ALIPAY_APP_ID` | 支付宝直连必需 | — | 支付宝开放平台应用 AppID |
-| `ALIPAY_PRIVATE_KEY` | 支付宝直连必需 | — | 应用私钥，仅后端读取，支持把换行写成 `\n` |
-| `ALIPAY_PUBLIC_KEY` | 支付宝直连必需 | — | 支付宝公钥，不是应用公钥 |
-| `ALIPAY_KEY_TYPE` | 否 | `PKCS8` | 应用私钥格式：`PKCS8` 或 `PKCS1` |
-| `ALIPAY_GATEWAY` | 否 | 正式网关 | 支付宝网关；沙箱测试时可替换为沙箱网关 |
-| `ALIPAY_NOTIFY_URL` | 否 | 由 API 地址推导 | 支付宝异步通知的公网 HTTPS 地址 |
-| `ALIPAY_SELLER_ID` | 否 | — | 商户 PID；填写后额外核对回调商户身份 |
-| `STRIPE_SECRET_KEY` | Stripe 备用方案必需 | — | Stripe 服务端 Secret Key，只能保存在后端 |
-| `STRIPE_WEBHOOK_SECRET` | Stripe 入账必需 | — | Stripe Webhook 签名密钥，通常以 `whsec_` 开头 |
 | `LOCAL_MODEL_BASE_URL` | 本地模式必需 | `http://127.0.0.1:8000` | 本地 SD1.5 服务地址 |
 | `LOCAL_MODEL_WIDTH` | 否 | `512` | 传给本地模型的宽度 |
 | `LOCAL_MODEL_HEIGHT` | 否 | `512` | 传给本地模型的高度 |
@@ -127,129 +104,30 @@ npm start
 
 不要把 `.env` 提交到 Git，也不要把密钥写入任何 `VITE_` 开头的变量。
 
-本机无限调试需要在实际 `.env` 中同时设置 `NODE_ENV=development`、`DEV_UNLIMITED_USAGE=true`，并保持前后端地址为 `localhost` 或 `127.0.0.1`。修改后执行 `docker compose up -d --build --force-recreate app`；不要删除数据库 volume。生产环境会强制关闭该模式。
+## 生成记录与本地存储
 
-## 账号系统与生成记录
-
-项目内置邮箱注册/登录、Google 登录和账号生成记录。数据存储在 Docker Compose 启动的 PostgreSQL 中，默认 volume 是 `tmall_avatar_pgdata`。
-
-启动数据库：
-
-```bash
-docker compose up -d db
-```
-
-默认连接串已经写在 `.env.example`：
-
-```bash
-DATABASE_URL=postgres://tmall_avatar:tmall_avatar_dev@127.0.0.1:5432/tmall_avatar
-```
-
-首次启动后端时会自动创建账号、生成和计费相关数据表：
-
-- `users`：邮箱账号、Google 账号资料、密码哈希；
-- `avatar_generations`：登录用户的生成记录、prompt、策略、模型、生成时间、父级修改来源和下载锁定状态；图片本体存磁盘，行内只记录文件名；
-- `payment_orders`：支付宝直连或 Stripe 订单、金额、币种和幂等入账状态；
-- `generation_reservations`：免费/付费下载额度的消费记录。
+本版本没有账号系统。服务端固定使用一个访客身份（`GET /api/auth/me` 恒定返回 `{ id: 'guest', displayName: '访客' }`），因此同一台机器上的所有访问共享同一份历史记录。
 
 ### 图片存储
 
-生成的图片以 PNG 原图 + 256px WebP 缩略图成对存放在 `AVATAR_STORAGE_DIR`（默认 `./data/avatars`，已在 `.gitignore` 中忽略，Docker 部署时挂载 `./data:/app/data`）。API 通过带鉴权和归属校验的 `GET /api/generations/:id/image` 和 `/thumb` 提供图片，响应带 `immutable` 长缓存头。历史列表只返回 URL，不再返回 base64。
+生成的图片以 PNG 原图 + 256px WebP 缩略图成对存放在 `AVATAR_STORAGE_DIR`（默认 `./data/avatars`，已在 `.gitignore` 中忽略，Docker 部署时挂载 `./data:/app/data`）。同目录下的 `generations.json` 保存提示词、参数、模型和创建时间等元数据，服务重启后历史仍在。
 
-早期版本把 base64 图片直接存在数据库里；服务启动时会自动、幂等地把这类旧记录迁移到磁盘（日志 `[image-migration] Migrated N legacy image(s).`），无需手动处理。
+API 通过 `GET /api/generations/:id/image` 和 `/thumb` 提供图片，响应带 `immutable` 长缓存头；历史列表只返回 URL，不返回 base64。
 
-生成和修改头像需要先登录，但不会消耗免费额度。每次成功生成或修改都会自动把图片数据和提示词保存到 Docker Compose 启动的 PostgreSQL 中，并显示在“我的生成记录”。每个账号前 5 次确认下载免费；之后可以单次购买（每张 ¥5）或订阅下载套餐。头像首次确认下载后会自动锁定，锁定后的图片可以继续下载，但不能再基于该图修改。
+记录条数超过 `GUEST_HISTORY_LIMIT`（默认 200）时，最旧的记录会连同磁盘上的图片一起被删除。想清空历史直接删掉整个 `data/avatars` 目录即可。
 
-下载套餐（点击“购买额度”打开二级菜单选购，有效期均为 30 天）：
-
-| 套餐 | 价格 | 额度 |
-| --- | --- | --- |
-| Go | ¥30 | 每天 3 次下载额度，按东八区自然日次日刷新 |
-| Plus | ¥50 | 每天 15 次下载额度，次日刷新 |
-| Pro | ¥100 | 无限下载，30 天刷新 |
-
-套餐规则：同级再购为**续订**，在现有到期日基础上顺延 30 天；持有低级套餐可**补差价升级**到更高级别（如 Go→Plus 付 ¥20），升级立即生效且有效期不变；高级套餐**不可降级购买**；随时可**取消订阅**——取消后套餐保留到当前到期日，期间额度照常使用，到期后不再续期（续订/升级会自动恢复订阅）。扣费优先级为：套餐当日额度 → 免费 5 次 → 单次付费额度。套餐信息存放在 `users` 表的 `plan_id` / `plan_expires_at` / `plan_daily_used` / `plan_daily_date` 列，订单在 `payment_orders` 中通过 `plan_id` + `plan_action`（activate/renew/upgrade）区分动作，每日额度为懒刷新，无需定时任务。
-
-账号接口：
-
-```text
-POST  /api/auth/register
-POST  /api/auth/login
-POST  /api/auth/logout
-GET   /api/auth/me
-PATCH /api/auth/profile    # 修改昵称
-POST  /api/auth/password   # 修改密码（需当前密码）
-```
+生成、修改和下载都不限次数，也不会锁定图片——任何一张历史头像都可以反复修改和导出。
 
 生成记录接口：
 
 ```text
 GET    /api/generations
-GET    /api/generations/:id/image       # 原图（鉴权 + 归属校验）
+GET    /api/generations/:id/image       # 原图
 GET    /api/generations/:id/thumb       # 256px WebP 缩略图
 GET    /api/generations/:id/download    # ?size=1024|640|256&shape=square|circle
 POST   /api/generations/:id/edit
 DELETE /api/generations/:id
 ```
-
-### Google 登录配置
-
-在 Google Cloud Console 创建 OAuth Client，授权回调地址填写：
-
-```text
-http://127.0.0.1:8787/api/auth/google/callback
-```
-
-然后在 `.env` 中填写：
-
-```bash
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=...
-PUBLIC_API_BASE_URL=http://127.0.0.1:8787
-FRONTEND_BASE_URL=http://127.0.0.1:5173
-```
-
-生产环境请把 callback 改成你的正式 HTTPS 域名，并设置：
-
-```bash
-COOKIE_SECURE=true
-```
-
-## 支付宝直连配置
-
-项目现已支持支付宝开放平台“电脑网站支付”，默认优先走支付宝直连；没有配置支付宝时才回退到原有 Stripe Checkout。商品价格由后端固定为人民币 ¥5（API 金额 `500` 分），每笔成功支付增加 1 次头像下载额度。AppID 和密钥不会发送到前端。
-
-1. 在支付宝开放平台创建网页/移动应用，并申请开通“电脑网站支付”。是否允许个人身份申请、限额和费率以支付宝审核页面显示为准。
-2. 给应用配置 RSA2 密钥，保存应用私钥，并从支付宝开放平台复制“支付宝公钥”。注意不要误填应用公钥。
-3. 在 `.env` 中填写：
-
-```bash
-PAYMENT_PROVIDER=alipay
-ALIPAY_APP_ID=你的应用AppID
-ALIPAY_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
-ALIPAY_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
-ALIPAY_KEY_TYPE=PKCS8
-FRONTEND_BASE_URL=https://你的前端域名
-PUBLIC_API_BASE_URL=https://你的后端域名
-ALIPAY_NOTIFY_URL=https://你的后端域名/api/billing/alipay/notify
-```
-
-4. 支付宝异步通知必须能从公网通过 HTTPS 访问。`127.0.0.1`/`localhost` 不能接收正式通知；本地联调需使用可信 HTTPS 隧道，或部署到测试服务器。
-5. 重启前后端后访问 `/api/health`，确认 `paymentConfigured` 为 `true` 且 `paymentProvider` 为 `alipay`。
-
-支付宝回跳页面会主动查询一次订单状态，异步通知仍是最终到账保障。后端会同时验证 RSA2 签名、AppID、可选商户 PID、订单号、人民币金额和交易状态。数据库事务保证同一订单即使收到重复通知也只增加一次额度。
-
-### Stripe 备用方案
-
-如支付宝直连暂未获批，可把 `PAYMENT_PROVIDER` 改为 `stripe`，配置 `STRIPE_SECRET_KEY` 和 `STRIPE_WEBHOOK_SECRET`。本地可使用：
-
-```bash
-stripe listen --forward-to http://127.0.0.1:8787/api/billing/webhook
-```
-
-正式环境在 Stripe Webhooks 中添加 `https://你的后端域名/api/billing/webhook`，订阅 `checkout.session.completed` 和 `checkout.session.async_payment_succeeded`。
-
-无论采用哪种支付渠道，计费都由后端强制执行：生成和修改不扣额度，首次“确认下载并锁定”才消耗 1 次免费或付费额度；同一图片再次下载不重复扣费。
 
 ## 使用本地 SD1.5 模型
 
@@ -387,9 +265,9 @@ IMAGE_BACKEND=comfyui
 COMFYUI_BASE_URL=http://host.docker.internal:8188
 ```
 
-`GET /api/comfyui/flux2/health` 会检查 ComfyUI、三个模型文件、`flux2` 类型以及编辑 workflow 所需节点；返回 `200` 和 `ok: true` 后再开始编辑。模型安装或切换顺序是：停止 ComfyUI，将三个文件放入上述目录，更新 `.env` 中的精确文件名，重新启动 ComfyUI，再仅重建应用服务 `docker compose up -d --build --force-recreate app`，最后检查 FLUX.2 health。不要删除 PostgreSQL volume。
+`GET /api/comfyui/flux2/health` 会检查 ComfyUI、三个模型文件、`flux2` 类型以及编辑 workflow 所需节点；返回 `200` 和 `ok: true` 后再开始编辑。模型安装或切换顺序是：停止 ComfyUI，将三个文件放入上述目录，更新 `.env` 中的精确文件名，重新启动 ComfyUI，再仅重建应用服务 `docker compose up -d --build --force-recreate app`，最后检查 FLUX.2 health。
 
-`POST /api/edits` 接受 PNG、JPEG 或 WebP 原图，默认最大 10 MiB；可选蒙版必须是 PNG，最大 4 MiB。未提交蒙版时执行语义编辑，整张图都可能改变；提交蒙版时仅合成蒙版覆盖区域，蒙版外保留规范化后的原图像素。附加 `operation=remove`（前端的「魔法消除」）时不需要提示词，但必须提交蒙版：封闭圈选的内部会整块并入选区，服务端用固定的移除指令重绘并以背景填充；OpenAI 模式下蒙版还会转换为原生 inpaint mask。每次成功都会保存一条可继续编辑的历史草稿，但不会消耗下载额度。
+`POST /api/edits` 接受 PNG、JPEG 或 WebP 原图，默认最大 10 MiB；可选蒙版必须是 PNG，最大 4 MiB。未提交蒙版时执行语义编辑，整张图都可能改变；提交蒙版时仅合成蒙版覆盖区域，蒙版外保留规范化后的原图像素。附加 `operation=remove`（前端的「魔法消除」）时不需要提示词，但必须提交蒙版：封闭圈选的内部会整块并入选区，服务端用固定的移除指令重绘并以背景填充；OpenAI 模式下蒙版还会转换为原生 inpaint mask。每次成功都会保存一条可继续编辑的历史记录。
 
 编辑上传的临时源图保存在 `ComfyUI/input/tmall_edits`。当前 ComfyUI 核心上传 API 没有保证可用的删除操作，因此应定期停止 ComfyUI 后清理该目录中的陈旧文件，再重新启动；不要在 ComfyUI 处理请求时删除输入文件。
 
@@ -407,33 +285,23 @@ COMFYUI_BASE_URL=http://host.docker.internal:8188
 ## API
 
 - `GET /api/health`：服务状态与模型配置状态（含 `backend`、`openaiConfigured`、`openaiModel`）
-- `GET /api/auth/me`：当前登录用户
-- `POST /api/auth/register`：邮箱注册
-- `POST /api/auth/login`：邮箱登录
-- `POST /api/auth/logout`：退出登录
-- `PATCH /api/auth/profile`：修改昵称
-- `POST /api/auth/password`：修改密码；必须提供正确的当前密码，纯 Google 账号返回 `PASSWORD_NOT_SET`
-- `GET /api/generations`：当前账号生成记录（图片以 URL 形式返回，`limit` 最大 60）
-- `GET /api/generations/:id/image`：原图；`GET /api/generations/:id/thumb`：缩略图（均需登录且只能访问本人记录）
-- `GET /api/generations/:id/download`：确认下载头像；首次下载消耗 1 次免费/付费额度并锁定图片，之后可重复下载。支持 `?size=1024|640|256&shape=square|circle`（圆形为透明背景 PNG）
-- `POST /api/generations/:id/edit`：基于未锁定的历史头像快速语义修改，生成一个新的可编辑版本
-- `DELETE /api/generations/:id`：删除生成记录并清理磁盘文件（文件仍被其他记录引用时只删记录）
-- `GET /api/billing/status`：当前账号免费次数、付费额度、生效套餐（含当日剩余）和可购套餐目录
-- `POST /api/billing/checkout`：按配置创建支付宝直连订单或 Stripe Checkout Session；body 传 `planId`（`go`/`plus`/`pro`）购买套餐，后端自动判定开通/续订/补差价升级并定价，降级返回 400；不传则购买 ¥5 单次额度
-- `POST /api/billing/confirm`：支付回跳后查询订单并幂等入账（单次加额度，套餐按订单动作开通/续订/升级）
-- `POST /api/billing/test-purchase`：仅本地开发开启；模拟入账 1 次下载额度，或传 `planId` 一键开通/续订/升级套餐
-- `POST /api/billing/plan/cancel`：取消当前套餐的续期；套餐保留至到期日，到期后自动停止
-- `POST /api/billing/alipay/notify`：支付宝 RSA2 签名异步通知，直连支付最终入账入口
-- `POST /api/billing/webhook`：Stripe 签名 Webhook，Stripe 备用方案入账入口
+- `GET /api/auth/me`：固定返回内置访客身份
+- `POST /api/auth/register`、`POST /api/auth/login`、`GET /api/auth/google` 等：一律返回 `501 AUTH_DISABLED`
+- `GET /api/generations`：本地生成记录（图片以 URL 形式返回，`limit` 最大 60）
+- `GET /api/generations/:id/image`：原图；`GET /api/generations/:id/thumb`：缩略图
+- `GET /api/generations/:id/download`：下载头像，不限次数也不锁定图片。支持 `?size=1024|640|256&shape=square|circle`（圆形为透明背景 PNG）
+- `POST /api/generations/:id/edit`：基于历史头像快速语义修改，生成一个新版本
+- `DELETE /api/generations/:id`：删除生成记录并清理磁盘文件
+- `GET /api/billing/status`：只读的“无限制”状态，供前端渲染，不涉及任何计费
 - `GET /api/local-model/health`：检查本地模型服务是否可访问
 - `GET /api/comfyui/health`：检查本地 ComfyUI 与 checkpoint 是否可访问
 - `GET /api/comfyui/models`：列出可用的 ComfyUI checkpoint（供前端模型下拉）
 - `GET /api/comfyui/flux2/health`：检查当前编辑后端是否就绪（ComfyUI 模式检查 FLUX.2 模型与节点，OpenAI 模式检查 API Key）
 - `POST /api/prompt-preview`：仅预览后端整理后的完整提示词
-- `POST /api/generate`：登录后调用图片模型并保存草稿；支持 `backend`（`openai`/`comfyui`）、`checkpoint`、`count`（OpenAI 下 `4` 返回四张候选 `candidates`）；生成本身不消耗下载额度
-- `POST /api/edits`：登录后执行整图语义、蒙版局部编辑或魔法消除（`operation=remove`）并保存新草稿；编辑本身不消耗下载额度
+- `POST /api/generate`：调用图片模型并保存记录；支持 `backend`（`openai`/`comfyui`）、`checkpoint`、`count`（OpenAI 下 `4` 返回四张候选 `candidates`）
+- `POST /api/edits`：执行整图语义、蒙版局部编辑或魔法消除（`operation=remove`）并保存新记录
 
-生成、编辑、登录和下单接口均有基于内存的滑动窗口限流；所有响应带基础安全头。
+生成、编辑和随机灵感接口均有基于内存的滑动窗口限流；所有响应带基础安全头。
 
 ## 常见问题与排查
 

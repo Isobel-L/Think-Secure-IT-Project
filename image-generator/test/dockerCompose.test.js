@@ -6,8 +6,7 @@ test('Docker app forwards every FLUX.2 edit setting', (t) => {
   const expected = {
     NODE_ENV: 'development',
     AVATAR_STORAGE_DIR: './data/test-avatars',
-    DEV_UNLIMITED_USAGE: 'true',
-    ENABLE_TEST_PAYMENTS: 'true',
+    GUEST_HISTORY_LIMIT: '12',
     COMFYUI_BASE_URL: 'http://host.docker.internal:8188',
     COMFY_GENERATION_ENGINE: 'flux1',
     COMFY_PROMPT_MODE: 'flux1-qwen',

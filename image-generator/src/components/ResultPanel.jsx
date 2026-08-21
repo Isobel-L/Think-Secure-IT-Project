@@ -1,18 +1,7 @@
 import { useMemo, useState } from 'react';
-import { isUnlimitedLocalUsage } from '../editIntegration.js';
 import { estimateExpectedMs } from '../progressModel.js';
 import GenerationProgress from './GenerationProgress.jsx';
 import { Icon } from './Icons.jsx';
-
-function formatPlanExpiry(value) {
-  const date = value ? new Date(value) : null;
-  if (!date || !Number.isFinite(date.getTime())) return '';
-  return new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    month: 'numeric',
-    day: 'numeric',
-  }).format(date);
-}
 
 export default function ResultPanel({
   result,
@@ -25,12 +14,7 @@ export default function ResultPanel({
   onFlux2Edit,
   onUploadEdit,
   canGenerate,
-  user,
-  billing,
-  paymentLoading,
   paymentNotice,
-  onTestPurchase,
-  onPurchase,
   onDownload,
   candidates,
   onPickCandidate,
@@ -44,7 +28,6 @@ export default function ResultPanel({
   const [roundPreview, setRoundPreview] = useState(true);
   const generation = useMemo(() => result?.generation || (result?.id ? result : null), [result]);
   const locked = Boolean(generation?.locked || generation?.downloadedAt || generation?.lockedAt);
-  const unlimitedUsage = isUnlimitedLocalUsage(billing);
   const modelLabel = result?.provider === 'openai'
     ? result?.model || 'GPT Image 2'
     : result?.provider === 'comfyui'
@@ -57,35 +40,12 @@ export default function ResultPanel({
   const progressExpectedMs = estimateExpectedMs({ backend: genBackend, quality, operation: progressOperation, count: genCount });
   const activeCandidateId = generation?.id || null;
 
-  const isBusy = loading || paymentLoading;
-  const planExpiry = formatPlanExpiry(billing?.plan?.expiresAt);
-  const planExpirySuffix = billing?.plan?.cancelled ? `${planExpiry}到期后停止` : `${planExpiry}到期`;
-  const billingText = billing?.plan
-    ? billing.plan.unlimited
-      ? `${billing.plan.name} 套餐 · 无限下载 · ${planExpirySuffix}`
-      : `${billing.plan.name} 套餐 · 今日剩余 ${billing.plan.dailyRemaining} 次 · ${planExpirySuffix}`
-    : unlimitedUsage
-    ? '本机开发调试：不限生成、修改和下载次数'
-    : !user
-    ? '登录账号即可领取前 5 次免费下载'
-    : !billing
-      ? '正在读取账号下载额度…'
-      : billing.freeRemaining > 0 && billing.paidCredits > 0
-        ? `还剩 ${billing.freeRemaining} 次免费 + ${billing.paidCredits} 次付费下载`
-        : billing.freeRemaining > 0
-        ? `还剩 ${billing.freeRemaining} 次免费下载`
-        : billing.paidCredits > 0
-          ? `已有 ${billing.paidCredits} 次付费下载额度`
-          : '免费下载额度已用完，后续每张 ¥5';
+  const isBusy = loading;
   const buttonText = !canGenerate
     ? '先填写头像描述'
-    : paymentLoading
-      ? '正在前往支付宝…'
-      : loading
-        ? '头像生成中…'
-        : !user
-          ? '登录后开始生成'
-          : '立即生成 AI 头像';
+    : loading
+      ? '头像生成中…'
+      : '立即生成 AI 头像';
 
   return (
     <aside className="result-panel" aria-label="头像生成预览">
@@ -145,16 +105,10 @@ export default function ResultPanel({
         </button>
       )}
       <p className="preview-hint"><i />圆形区域为社交头像安全预览，下载文件仍是完整方形 PNG。</p>
-      <div className={`billing-status${billing && !billing.canGenerate ? ' payment-required' : ''}`}>
-        <span className={`alipay-mark${unlimitedUsage ? ' dev-mark' : ''}`}>{unlimitedUsage ? 'DEV' : '支'}</span>
-        <div><strong>{billingText}</strong><small>{unlimitedUsage ? '仅本机非生产环境有效；下载不扣额度、不锁定图片' : '生成和修改不扣额度；确认下载后扣 1 次并锁定图片'}</small></div>
-        <button className="billing-purchase-button" type="button" onClick={onPurchase} disabled={isBusy}>购买额度</button>
+      <div className="billing-status">
+        <span className="alipay-mark dev-mark">访客</span>
+        <div><strong>访客模式：不限生成、修改和下载次数</strong><small>无需登录；生成记录保存在服务端本地文件夹，重启服务后仍在</small></div>
       </div>
-      {billing?.testPaymentEnabled && (
-        <button className="test-payment-button" type="button" onClick={() => onTestPurchase?.()} disabled={isBusy}>
-          本地测试：模拟支付成功并增加 1 次下载
-        </button>
-      )}
       {paymentNotice && <div className="payment-notice" role="status">{paymentNotice}</div>}
       {error && <div className="error-message" role="alert">{error}</div>}
 
@@ -170,14 +124,14 @@ export default function ResultPanel({
         {!isBusy && canGenerate && <Icon name="arrow" size={20} />}
       </button>
 
-      {(result || user) && (
+      {(
         <div className="result-actions">
           {locked && <p className="locked-note">这张头像已确认下载并锁定，不能继续修改。</p>}
           {result && (
             <>
               <button type="button" onClick={() => onDownload?.(result)} disabled={downloadLoading}>
                 <Icon name="download" size={17} />
-                {downloadLoading ? '下载中…' : unlimitedUsage ? '免费下载 PNG' : locked ? '重新下载 PNG' : '确认下载并锁定'}
+                {downloadLoading ? '下载中…' : '下载 PNG'}
               </button>
               <button type="button" onClick={() => onEdit?.(result)} disabled={locked || editLoading}>
                 <Icon name={locked ? 'lock' : 'wand'} size={17} />
@@ -189,24 +143,15 @@ export default function ResultPanel({
               </button>
             </>
           )}
-          {user && (
-            <button className="upload-edit-button" type="button" onClick={onUploadEdit}>
-              <Icon name="upload" size={17} />上传图片微调
-            </button>
-          )}
+          <button className="upload-edit-button" type="button" onClick={onUploadEdit}>
+            <Icon name="upload" size={17} />上传图片微调
+          </button>
         </div>
       )}
 
       <div className="service-notes">
-        {unlimitedUsage ? (
-          <span><Icon name="check" size={13} />本机开发无限模式已启用</span>
-        ) : (
-          <>
-            <span><Icon name="check" size={13} />前 5 次下载免费</span>
-            <span><Icon name="shield" size={13} />支付宝安全结算</span>
-            <span><Icon name="lock" size={13} />下载后自动锁定</span>
-          </>
-        )}
+        <span><Icon name="check" size={13} />访客模式：无限生成与下载</span>
+        <span><Icon name="shield" size={13} />图片只存在本机服务端</span>
       </div>
     </aside>
   );
