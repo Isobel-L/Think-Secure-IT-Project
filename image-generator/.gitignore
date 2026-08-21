@@ -1,0 +1,14 @@
+node_modules
+.worktrees/
+dist
+data/
+.env
+.DS_Store
+.superpowers/
+npm-debug.log*
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
