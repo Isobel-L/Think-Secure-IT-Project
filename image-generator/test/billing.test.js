@@ -82,7 +82,7 @@ test('activates, renews, upgrades, and blocks downgrades according to the plan t
     () => determinePlanPurchase({ targetPlan: getPlan('plus'), currentPlanId: 'pro', currentExpiresAt: activeUntil, now }),
     (error) => error?.code === 'PLAN_DOWNGRADE_BLOCKED',
   );
-  // 过期套餐视同无套餐：可全价购买任意级别
+  // An expired plan counts as no plan: any tier can be bought at full price
   assert.deepEqual(
     determinePlanPurchase({ targetPlan: getPlan('go'), currentPlanId: 'pro', currentExpiresAt: '2026-07-01T00:00:00.000Z', now }),
     { action: 'activate', amountMinor: 3000 },

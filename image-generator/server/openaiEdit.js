@@ -11,7 +11,7 @@ export function getOpenAIEditConfig(env = process.env) {
     provider: 'openai',
     model: env.OPENAI_IMAGE_MODEL || 'gpt-image-2',
     apiKeyConfigured: Boolean(env.OPENAI_API_KEY),
-    // editRouter 依赖的通用字段，与 getFlux2EditConfig 对齐。
+    // Shared fields editRouter relies on, kept aligned with getFlux2EditConfig.
     maskFeather: integer(env.OPENAI_EDIT_MASK_FEATHER, 0, 64, 8),
     maxUploadMb: integer(env.OPENAI_EDIT_MAX_UPLOAD_MB, 1, 25, 10),
   };
@@ -38,8 +38,8 @@ export function buildOpenAIEditPrompt(instruction) {
   ].join('\n\n');
 }
 
-// 把编辑器蒙版（白/亮 = 圈选区域）转换成 OpenAI inpaint 蒙版：
-// 圈选处 alpha=0（透明，代表要重绘），其余 alpha=255（保留）。
+// Convert the editor mask (white/bright = selected) into an OpenAI inpaint mask:
+// alpha 0 where the user selected, meaning repaint, and alpha 255 everywhere that stays.
 export async function maskToOpenAIInpaintMask(maskPng, { width, height }) {
   const painted = await sharp(maskPng)
     .resize(width, height, { fit: 'fill', kernel: sharp.kernel.nearest })
@@ -64,8 +64,8 @@ export async function editWithOpenAI({ source, prompt, mask, operation = 'edit',
   const params = {
     model: config.model,
     image: await toFile(source, 'edit-source.png', { type: 'image/png' }),
-    // remove 模式的 prompt 由 editRouter 统一提供（固定的消除指令），
-    // 普通编辑则包一层“只改要求部分”的引导。
+    // In remove mode editRouter supplies the prompt, a fixed erase instruction; a normal edit gets
+    // wrapped in guidance to change only what was asked for.
     prompt: isRemoval ? prompt : buildOpenAIEditPrompt(prompt),
     size: 'auto',
     output_format: 'png',

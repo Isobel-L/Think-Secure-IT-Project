@@ -77,8 +77,8 @@ export default function useSimulatedProgress({
         setActive(false);
       }, FINISH_MS + SUCCESS_HOLD_MS);
     } else if (finishingRef.current) {
-      // 兜底：finishing 序列进行中若因依赖变化（如 expectedMs）导致 effect 重跑，
-      // 上面的分支都不会命中而定时器已被清理，这里直接复位，避免进度条永久卡在中途。
+      // Safety net: when a dependency such as expectedMs changes mid-finish, the branches above
+      // miss while the timers are already cleared, so reset here instead of stranding the bar.
       finishingRef.current = false;
       progressRef.current = 0;
       setProgress(0);

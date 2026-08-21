@@ -2,7 +2,7 @@ import sharp from 'sharp';
 
 export const downloadSizes = [1024, 640, 256];
 
-// 下载导出变换:目标尺寸 + 可选圆形透明裁剪。返回 null 表示按原图直出。
+// Download transform: target size plus an optional transparent circular crop. null means serve the original.
 export async function transformDownloadImage(buffer, { size = 1024, shape = 'square' } = {}) {
   const target = downloadSizes.includes(size) ? size : 1024;
   const circle = shape === 'circle';

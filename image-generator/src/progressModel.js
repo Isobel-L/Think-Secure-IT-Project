@@ -12,7 +12,7 @@ export function computeSimulatedProgress(elapsedMs, { expectedMs = DEFAULT_EXPEC
 export function estimateExpectedMs({ backend, quality, operation = 'generate', count = 1 } = {}) {
   if (operation === 'edit' || operation === 'remove') return 45_000;
 
-  // 多张候选并行生成,总时长约为单张的 1.5 倍。
+  // Candidates generate in parallel, so a batch takes roughly 1.5x a single image.
   const countFactor = Number(count) > 1 ? 1.5 : 1;
   const normalizedBackend = String(backend || '').toLowerCase();
   if (['comfy', 'comfyui', 'flux', 'flux-schnell', 'flux.1-schnell'].includes(normalizedBackend)) return 15_000 * countFactor;

@@ -403,7 +403,7 @@ export async function deleteAvatarGeneration({ userId, generationId }) {
   const row = result.rows[0];
   if (!row) return false;
   if (row.image_file) {
-    // 防御:仅当没有其他记录引用同一文件时才删除磁盘文件。
+    // Defensive: only delete the files on disk when no other row still references them.
     const shared = await query(
       'SELECT 1 FROM avatar_generations WHERE image_file = $1 LIMIT 1',
       [row.image_file],
@@ -809,7 +809,7 @@ export async function applyPlanPurchase(client, { userId, planId, action = 'acti
 }
 
 export async function cancelUserPlan(userId) {
-  // 取消 = 停止续期：套餐保留到当前到期日，期间额度照常，之后自然失效。
+  // Cancelling means "stop renewing": the plan runs to its current expiry with quota intact, then lapses.
   const result = await query(
     `UPDATE users
      SET plan_cancelled_at = CASE

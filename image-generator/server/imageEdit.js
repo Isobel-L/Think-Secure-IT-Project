@@ -38,8 +38,8 @@ export async function normalizeSourceImage(buffer, { maxEdge = 1024, maxPixels =
   return { buffer: normalized, width, height, mimeType: 'image/png' };
 }
 
-// 把被笔迹完全圈住的内部并入选区：从图像边界 flood fill 背景，
-// 边界到达不了的未圈选像素即封闭圈内区域。
+// Absorb whatever a stroke fully encircles: flood fill the background from the image border, and
+// the unselected pixels the fill cannot reach are the interior of a closed loop.
 function fillEnclosedRegions(binary, width, height) {
   const total = width * height;
   const reachable = new Uint8Array(total);

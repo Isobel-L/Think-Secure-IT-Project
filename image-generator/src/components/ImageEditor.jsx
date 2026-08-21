@@ -54,8 +54,9 @@ export default function ImageEditor({
   const [submitError, setSubmitError] = useState('');
   const [submissionState, setSubmissionState] = useState('idle');
 
-  // 用 ref 提供给 finalizeActiveStroke 读取，避免它因 tool/magicErase 变化而换引用——
-  // 它在会话重置 useLayoutEffect 的依赖链上，引用变化会误清空整个画布。
+  // Read through a ref so finalizeActiveStroke keeps its identity when tool/magicErase change: it
+  // sits in the session-reset useLayoutEffect's dependency chain, where a new reference would wipe
+  // the whole canvas.
   const toolRef = useRef('brush');
   const magicEraseRef = useRef(false);
   toolRef.current = tool;
@@ -129,7 +130,7 @@ export default function ImageEditor({
     finalizeActiveStroke({ commit: false });
   }, [finalizeActiveStroke]);
 
-  // 开启魔法消除时，把此前画好的封闭圈也立即补填内部高亮（作为一步可撤销操作）。
+  // Enabling magic erase also fills the interior of already-drawn closed loops, as one undoable step.
   const toggleMagicErase = useCallback(() => {
     setTool('brush');
     const next = !magicErase;

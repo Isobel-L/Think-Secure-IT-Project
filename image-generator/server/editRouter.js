@@ -148,7 +148,7 @@ export function createEditRouter(deps) {
         width: source.width,
         height: source.height,
         featherRadius: config.maskFeather,
-        // 魔法消除按“圈选”理解蒙版：封闭笔迹圈住的内部整块并入选区。
+        // Magic erase reads the mask as a lasso: whatever a closed stroke encircles joins the selection.
         fillEnclosed: operation === 'remove',
       }) : null;
       const masked = Boolean(mask && !mask.empty);

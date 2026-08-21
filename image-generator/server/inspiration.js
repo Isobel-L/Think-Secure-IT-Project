@@ -2,7 +2,7 @@ const MAX_LABELS = 12;
 const MAX_LABEL_LENGTH = 20;
 const MAX_BRIEF_LENGTH = 120;
 
-// OpenAI 不可用时的本地灵感池，保证按钮永远有产出。
+// Local fallback pool for when OpenAI is unavailable, so the button always produces something.
 export const fallbackBriefs = [
   '一位银发少年靠在天台栏杆上，风衣被夜风吹起，城市灯光在身后模糊成光斑。',
   '扎着丸子头的女孩捧着一杯热可可，窗外飘着细雪，眼神温柔又满足。',

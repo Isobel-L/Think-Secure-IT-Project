@@ -29,8 +29,8 @@ export function hasPaintedMask(imageData) {
   return false;
 }
 
-// 魔法消除的“圈选”预览：把被笔迹完全圈住的透明内部填成笔刷色，
-// 与服务端 fillEnclosed 行为一致，让用户所见即所得。
+// Lasso preview for magic erase: fill the transparent interior of a closed stroke with the brush
+// colour, matching the server's fillEnclosed behaviour so the preview matches the result.
 export function fillEnclosedMask(canvas, { r = 254, g = 2, b = 55, alpha = 133 } = {}) {
   const width = canvas?.width || 0;
   const height = canvas?.height || 0;

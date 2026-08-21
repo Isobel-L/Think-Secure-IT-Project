@@ -92,7 +92,7 @@ test('maskToOpenAIInpaintMask makes painted pixels transparent and the rest opaq
   const { default: sharp } = await import('sharp');
   const { maskToOpenAIInpaintMask } = await import('../server/openaiEdit.js');
 
-  // 左半边白（圈选区），右半边黑（保留区）。
+  // Left half white (selected), right half black (kept).
   const raw = Buffer.alloc(4 * 2, 0);
   raw[0] = 255; raw[1] = 255; raw[4] = 255; raw[5] = 255;
   const paintedLeft = await sharp(raw, { raw: { width: 4, height: 2, channels: 1 } })
