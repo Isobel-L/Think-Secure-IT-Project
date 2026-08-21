@@ -4,21 +4,21 @@ const MAX_BRIEF_LENGTH = 120;
 
 // Local fallback pool for when OpenAI is unavailable, so the button always produces something.
 export const fallbackBriefs = [
-  '一位银发少年靠在天台栏杆上，风衣被夜风吹起，城市灯光在身后模糊成光斑。',
-  '扎着丸子头的女孩捧着一杯热可可，窗外飘着细雪，眼神温柔又满足。',
-  '戴圆框眼镜的青年坐在旧书店角落，指尖停在书页上，午后阳光落在肩头。',
-  '一位短发少女骑在自行车上回头微笑，身后是开满向日葵的乡间小路。',
-  '穿着宽大卫衣的男孩戴着耳机闭眼听歌，霓虹灯牌的光映在他的侧脸上。',
-  '长发女生撑着透明雨伞站在便利店门口，雨丝细密，路面倒映着暖黄灯光。',
-  '一位精灵般的少女头戴花环，蝴蝶停在她指尖，森林里洒下点点晨光。',
-  '穿飞行员夹克的青年抱着一只橘猫，站在停机坪上，夕阳把云染成金色。',
-  '梳着双马尾的少女在画室里回眸，颊边沾着一点蓝色颜料，笑得明亮。',
-  '一位白衬衫少年在海边礁石上远眺，海风撩起衣角，浪花在脚下碎成白色。',
+  'A silver-haired boy leaning on a rooftop railing, his coat lifted by the night wind, city lights blurring into bokeh behind him.',
+  'A girl with a bun holding a mug of hot cocoa, fine snow drifting past the window, her expression soft and content.',
+  'A young man in round glasses in the corner of an old bookshop, a finger resting on the page, afternoon sun on his shoulder.',
+  'A short-haired girl glancing back from her bicycle, a country lane full of sunflowers behind her.',
+  'A boy in an oversized hoodie listening to music with his eyes closed, neon signage reflected across his cheek.',
+  'A long-haired student under a clear umbrella outside a convenience store, fine rain falling, warm light pooling on the wet pavement.',
+  'An elf-like girl wearing a flower crown, a butterfly resting on her fingertip, morning light scattered through the forest.',
+  'A young pilot in a flight jacket holding an orange cat on the apron, sunset turning the clouds gold.',
+  'A girl in twin tails looking back in an art studio, a smear of blue paint on her cheek, smiling brightly.',
+  'A boy in a white shirt looking out from the rocks by the sea, wind in his shirt, waves breaking white at his feet.',
 ];
 
 const topicHints = [
-  '一个安静的日常瞬间', '一次旅途中的偶遇', '一个充满活力的动作', '一段温柔的独处时光',
-  '一个略带奇幻色彩的场景', '一个都市夜晚的画面', '一个自然光线下的侧写', '一个季节感强烈的场景',
+  'a quiet everyday moment', 'a chance meeting while travelling', 'an energetic action', 'a gentle moment alone',
+  'a lightly fantastical scene', 'a city night scene', 'a portrait in natural light', 'a scene with a strong sense of season',
 ];
 
 export function sanitizeInspirationLabels(input) {
@@ -36,15 +36,15 @@ export function sanitizeInspirationLabels(input) {
 }
 
 export function buildInspirationMessages(labels, topicHint) {
-  const labelLine = labels.length ? `已选风格标签：${labels.join('、')}。` : '风格不限。';
+  const labelLine = labels.length ? `Selected style tags: ${labels.join(', ')}.` : 'No style constraints.';
   return [
     {
       role: 'system',
-      content: '你是天猫 AI 头像馆的创意文案，为用户随机生成一句用于 AI 头像生成的中文描述。只输出描述本身：一句话、30 到 60 字，包含人物特征、神态或动作、场景氛围。不要引号、不要前后缀、不要解释、不要换行。描述必须适合全年龄用户。',
+      content: 'You are the copywriter for Tmall AI Avatar Studio. Write one English sentence describing an avatar for an image model. Output only the description: a single sentence of 20 to 40 words covering the character, their expression or action, and the mood of the scene. No quotation marks, no prefix or suffix, no explanation, no line breaks. It must be suitable for all ages.',
     },
     {
       role: 'user',
-      content: `${labelLine}灵感方向：${topicHint}。请给出一句与标签气质相符、细节具体的头像描述。`,
+      content: `${labelLine} Direction: ${topicHint}. Give one specific avatar description that matches the mood of those tags.`,
     },
   ];
 }

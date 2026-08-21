@@ -24,7 +24,7 @@ test('compiles a concise FLUX.1 prompt in stable catalog order', () => {
 });
 
 test('migrates unambiguous legacy labels to stable IDs', () => {
-  assert.deepEqual(normalizeSelections({ baseStyle: ['清爽动漫'] }, { strict: true }), {
+  assert.deepEqual(normalizeSelections({ baseStyle: ['Clean anime'] }, { strict: true }), {
     baseStyle: ['anime-clean'],
   });
 });

@@ -11,14 +11,14 @@ test('catalog exposes stable option objects without fake runtime or IP choices',
   assert.ok(options.every((option) => ['stable', 'experimental'].includes(option.reliability)));
   assert.ok(options.every((option) => option.modelSupport.includes('flux1-schnell')));
   const publicText = JSON.stringify(catalog);
-  assert.doesNotMatch(publicText, /20\s*步|CFG\s*=|原神|火影|海贼|鬼灭/i);
+  assert.doesNotMatch(publicText, /20\s*steps|CFG\s*=|Genshin|Naruto|One Piece|Demon Slayer/i);
   assert.ok(examples.every((example) => Object.values(example.selection).flat().every((value) => /^[a-z0-9-]+$/.test(value))));
 });
 
-test('resolves stable IDs and unambiguous legacy Chinese labels', () => {
-  assert.equal(getOption('baseStyle', 'anime-clean')?.label, '清爽动漫');
-  assert.equal(getOption('baseStyle', '清爽动漫')?.id, 'anime-clean');
-  assert.equal(getOption('baseStyle', '不存在'), null);
+test('resolves stable IDs and unambiguous legacy labels', () => {
+  assert.equal(getOption('baseStyle', 'anime-clean')?.label, 'Clean anime');
+  assert.equal(getOption('baseStyle', 'Clean anime')?.id, 'anime-clean');
+  assert.equal(getOption('baseStyle', 'no-such-option'), null);
 });
 
 test('single-choice groups replace the previous selection', () => {
@@ -26,7 +26,7 @@ test('single-choice groups replace the previous selection', () => {
   const second = resolveSelectionToggle(first.selections, 'baseStyle', 'semi-realistic');
   assert.deepEqual(second.selections.baseStyle, ['semi-realistic']);
   assert.deepEqual(second.removed, [{ groupId: 'baseStyle', optionId: 'anime-clean' }]);
-  assert.match(second.notice, /已替换/);
+  assert.match(second.notice, /Replaced/);
 });
 
 test('accessories retain only the two most recently selected options', () => {
@@ -47,8 +47,8 @@ test('declared cross-group conflicts use latest-click-wins behavior', () => {
 
 test('normalizes legacy payloads and reports unsupported values', () => {
   const result = normalizeSelectionState({
-    baseStyle: ['清爽动漫'],
-    accessories: ['headphones', '不存在'],
+    baseStyle: ['Clean anime'],
+    accessories: ['headphones', 'no-such-option'],
     unknownGroup: ['anything'],
   }, 'flux1-schnell');
   assert.deepEqual(result.selections, {

@@ -425,7 +425,7 @@ test('magic erase removes the masked region without requiring a prompt', async (
   assert.ok(Buffer.isBuffer(calls.edited[0].mask));
   assert.match(calls.edited[0].prompt, /移除|背景/);
   assert.equal(calls.saved[0].metadata.operation, 'remove');
-  assert.equal(calls.saved[0].prompt, '魔法消除：清除选中区域');
+  assert.equal(calls.saved[0].prompt, 'Magic erase: cleared the selected area');
 });
 
 test('magic erase ignores structured category fields', async () => {

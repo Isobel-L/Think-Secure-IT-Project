@@ -23,12 +23,12 @@ export default function AccountModal({ user, onClose, onUpdated }) {
         method: 'PATCH',
         body: { displayName },
       });
-      if (!ok) throw new Error(data.error || '昵称保存失败，请稍后重试。');
+      if (!ok) throw new Error(data.error || 'The display name could not be saved. Please try again.');
       setDisplayName(data.user.displayName || '');
       onUpdated(data.user);
-      setProfileSuccess('昵称已保存。');
+      setProfileSuccess('Display name saved.');
     } catch (requestError) {
-      setProfileError(requestError.message || '昵称保存失败，请稍后重试。');
+      setProfileError(requestError.message || 'The display name could not be saved. Please try again.');
     } finally {
       setProfileLoading(false);
     }
@@ -44,34 +44,34 @@ export default function AccountModal({ user, onClose, onUpdated }) {
         method: 'POST',
         body: passwords,
       });
-      if (!ok) throw new Error(data.error || '密码修改失败，请稍后重试。');
+      if (!ok) throw new Error(data.error || 'The password could not be changed. Please try again.');
       setPasswords({ currentPassword: '', newPassword: '' });
-      setPasswordSuccess('密码已更新，下次请使用新密码登录。');
+      setPasswordSuccess('Password updated. Use the new one next time you sign in.');
     } catch (requestError) {
-      setPasswordError(requestError.message || '密码修改失败，请稍后重试。');
+      setPasswordError(requestError.message || 'The password could not be changed. Please try again.');
     } finally {
       setPasswordLoading(false);
     }
   };
 
   return (
-    <div className="auth-overlay" role="dialog" aria-modal="true" aria-label="账号中心">
+    <div className="auth-overlay" role="dialog" aria-modal="true" aria-label="Account">
       <div className="auth-card account-card">
-        <button className="auth-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="auth-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
-        <span className="service-badge">账号中心</span>
-        <h2>管理你的账号</h2>
-        <p>修改展示昵称或更新登录密码。</p>
+        <span className="service-badge">Account</span>
+        <h2>Manage your account</h2>
+        <p>Change your display name or update your password.</p>
 
         <div className="account-summary">
-          <div><span>邮箱</span><strong>{user.email}</strong></div>
-          <div><span>登录方式</span><strong>{isGoogleUser ? 'Google 账号' : '邮箱密码'}</strong></div>
+          <div><span>Email</span><strong>{user.email}</strong></div>
+          <div><span>Sign-in method</span><strong>{isGoogleUser ? 'Google account' : 'Email and password'}</strong></div>
         </div>
 
         <form className="account-section" onSubmit={saveProfile}>
-          <h3>修改昵称</h3>
-          <label>昵称
+          <h3>Display name</h3>
+          <label>Display name
             <input
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
@@ -82,18 +82,18 @@ export default function AccountModal({ user, onClose, onUpdated }) {
           {profileError && <div className="auth-error">{profileError}</div>}
           {profileSuccess && <div className="auth-success">{profileSuccess}</div>}
           <button className="auth-submit" type="submit" disabled={profileLoading}>
-            {profileLoading ? '保存中…' : '保存昵称'}
+            {profileLoading ? 'Saving…' : 'Save name'}
           </button>
         </form>
 
         <div className="account-divider" />
 
         {isGoogleUser ? (
-          <div className="account-google-note">Google 登录账号无需密码。</div>
+          <div className="account-google-note">Google accounts do not use a password.</div>
         ) : (
           <form className="account-section" onSubmit={savePassword}>
-            <h3>修改密码</h3>
-            <label>当前密码
+            <h3>Change password</h3>
+            <label>Current password
               <input
                 type="password"
                 value={passwords.currentPassword}
@@ -102,7 +102,7 @@ export default function AccountModal({ user, onClose, onUpdated }) {
                 required
               />
             </label>
-            <label>新密码
+            <label>New password
               <input
                 type="password"
                 value={passwords.newPassword}
@@ -110,14 +110,14 @@ export default function AccountModal({ user, onClose, onUpdated }) {
                 autoComplete="new-password"
                 minLength="8"
                 maxLength="128"
-                placeholder="至少 8 位"
+                placeholder="At least 8 characters"
                 required
               />
             </label>
             {passwordError && <div className="auth-error">{passwordError}</div>}
             {passwordSuccess && <div className="auth-success">{passwordSuccess}</div>}
             <button className="auth-submit" type="submit" disabled={passwordLoading}>
-              {passwordLoading ? '更新中…' : '更新密码'}
+              {passwordLoading ? 'Updating…' : 'Update password'}
             </button>
           </form>
         )}

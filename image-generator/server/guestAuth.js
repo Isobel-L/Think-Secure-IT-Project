@@ -6,7 +6,7 @@ import { Router } from 'express';
 export const guestUser = Object.freeze({
   id: 'guest',
   email: '',
-  displayName: '访客',
+  displayName: 'Guest',
   avatarUrl: '',
   authProvider: 'guest',
   createdAt: null,
@@ -26,7 +26,7 @@ export function requireAuth(_request, _response, next) {
 function authDisabled(_request, response) {
   return response.status(501).json({
     code: 'AUTH_DISABLED',
-    error: '当前为无数据库访客模式，登录 / 注册功能已停用。',
+    error: 'This build runs in database-free guest mode; sign-up and sign-in are disabled.',
   });
 }
 

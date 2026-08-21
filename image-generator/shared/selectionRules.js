@@ -15,7 +15,7 @@ function conflictsWith(option, key) {
 function removalNotice(removed) {
   if (!removed.length) return '';
   const labels = removed.map(({ groupId, optionId }) => getOption(groupId, optionId)?.label || optionId);
-  return `已替换冲突或超出数量的选项：${labels.join('、')}`;
+  return `Replaced conflicting or excess options: ${labels.join(', ')}`;
 }
 
 export function resolveSelectionToggle(selections, groupId, optionId, modelId = 'flux1-schnell') {

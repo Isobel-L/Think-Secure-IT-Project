@@ -33,20 +33,20 @@ test('estimates OpenAI quality tiers and provides sensible backend defaults', ()
 });
 
 test('returns generation stage labels at every threshold boundary', () => {
-  assert.equal(progressStageLabel(0, 'generate'), '正在理解你的描述…');
-  assert.equal(progressStageLabel(0.149, 'generate'), '正在理解你的描述…');
-  assert.equal(progressStageLabel(0.15, 'generate'), '正在构图…');
-  assert.equal(progressStageLabel(0.4, 'generate'), '正在绘制细节…');
-  assert.equal(progressStageLabel(0.7, 'generate'), '正在优化面部与光影…');
-  assert.equal(progressStageLabel(0.9, 'generate'), '即将完成，正在高清渲染…');
+  assert.equal(progressStageLabel(0, 'generate'), 'Reading your description…');
+  assert.equal(progressStageLabel(0.149, 'generate'), 'Reading your description…');
+  assert.equal(progressStageLabel(0.15, 'generate'), 'Laying out the composition…');
+  assert.equal(progressStageLabel(0.4, 'generate'), 'Painting the details…');
+  assert.equal(progressStageLabel(0.7, 'generate'), 'Refining the face and lighting…');
+  assert.equal(progressStageLabel(0.9, 'generate'), 'Almost done, rendering at full resolution…');
 });
 
 test('uses a distinct set of stage labels for edits and removals', () => {
-  assert.equal(progressStageLabel(0, 'edit'), '正在分析原图…');
-  assert.equal(progressStageLabel(0.2, 'edit'), '正在重绘选区…');
-  assert.equal(progressStageLabel(0.6, 'edit'), '正在融合边缘…');
-  assert.equal(progressStageLabel(0.9, 'edit'), '即将完成…');
-  assert.equal(progressStageLabel(0.5, 'remove'), '正在重绘选区…');
+  assert.equal(progressStageLabel(0, 'edit'), 'Analysing the source image…');
+  assert.equal(progressStageLabel(0.2, 'edit'), 'Repainting the selection…');
+  assert.equal(progressStageLabel(0.6, 'edit'), 'Blending the edges…');
+  assert.equal(progressStageLabel(0.9, 'edit'), 'Almost done…');
+  assert.equal(progressStageLabel(0.5, 'remove'), 'Repainting the selection…');
   assert.notEqual(progressStageLabel(0.5, 'edit'), progressStageLabel(0.5, 'generate'));
 });
 

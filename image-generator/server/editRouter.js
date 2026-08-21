@@ -40,13 +40,13 @@ function publicEditError(error) {
   if (error instanceof EditControlError) return { status: error.status, code: error.code, error: error.message };
   if (error?.code === 'COMFYUI_EXECUTION_FAILED') return { status: 502, code: error.code, error: 'ComfyUI workflow execution failed.' };
   if (error?.code === 'EDIT_MULTIPART_INVALID') return { status: 400, code: error.code, error: 'Invalid multipart edit request.' };
-  if (error?.code === 'EDIT_IMAGE_INVALID') return { status: 400, code: error.code, error: '图片文件无效，请重新选择。' };
-  if (error?.code === 'EDIT_IMAGE_TOO_LARGE' || error?.code === 'LIMIT_FILE_SIZE') return { status: 413, code: 'EDIT_IMAGE_TOO_LARGE', error: '上传图片超过大小限制。' };
-  if (error?.code === 'COMFYUI_EDIT_TIMEOUT') return { status: 503, code: error.code, error: '本地模型处理超时，请稍后重试。' };
-  if (Number(error?.status) === 429) return { status: 429, code: 'SERVICE_BUSY', error: '当前修改请求较多，请稍后再试。' };
-  if (/moderation|safety|content policy/i.test(error?.message || '')) return { status: 400, code: 'CONTENT_NOT_ALLOWED', error: '当前修改要求可能包含不适合生成的内容，请调整后再试。' };
-  if (/ComfyUI|fetch failed|ECONNREFUSED|aborted/i.test(error?.message || '')) return { status: 503, code: 'FLUX2_NOT_READY', error: '本地 FLUX.2 或 ComfyUI 暂不可用。' };
-  return { status: 502, code: 'IMAGE_EDIT_FAILED', error: '图片修改失败，请稍后重试。' };
+  if (error?.code === 'EDIT_IMAGE_INVALID') return { status: 400, code: error.code, error: 'That image file is not valid. Please pick another one.' };
+  if (error?.code === 'EDIT_IMAGE_TOO_LARGE' || error?.code === 'LIMIT_FILE_SIZE') return { status: 413, code: 'EDIT_IMAGE_TOO_LARGE', error: 'The uploaded image is over the size limit.' };
+  if (error?.code === 'COMFYUI_EDIT_TIMEOUT') return { status: 503, code: error.code, error: 'The local model timed out. Please try again.' };
+  if (Number(error?.status) === 429) return { status: 429, code: 'SERVICE_BUSY', error: 'A lot of edits are queued right now. Please try again shortly.' };
+  if (/moderation|safety|content policy/i.test(error?.message || '')) return { status: 400, code: 'CONTENT_NOT_ALLOWED', error: 'This edit request may contain content that cannot be generated. Please adjust it and try again.' };
+  if (/ComfyUI|fetch failed|ECONNREFUSED|aborted/i.test(error?.message || '')) return { status: 503, code: 'FLUX2_NOT_READY', error: 'The local FLUX.2 model or ComfyUI is unavailable.' };
+  return { status: 502, code: 'IMAGE_EDIT_FAILED', error: 'The edit failed. Please try again.' };
 }
 
 function invalidUploadError(error) {
@@ -125,12 +125,12 @@ export function createEditRouter(deps) {
       const sourceGenerationId = typeof request.body.sourceGenerationId === 'string' ? request.body.sourceGenerationId.trim() : '';
       const sourceFile = request.files?.sourceImage?.[0];
       const maskFile = request.files?.mask?.[0];
-      if (operation === 'remove' && !maskFile) return response.status(400).json({ code: 'EDIT_MASK_REQUIRED', error: '请先圈出要消除的区域。' });
-      if (Boolean(sourceGenerationId) === Boolean(sourceFile)) return response.status(400).json({ code: 'EDIT_SOURCE_REQUIRED', error: '请选择一张历史图片或上传一张本地图片。' });
-      if (sourceGenerationId && !sourceIdPattern.test(sourceGenerationId)) return response.status(400).json({ code: 'EDIT_SOURCE_REQUIRED', error: '历史图片参数无效。' });
-      if (sourceFile && !sourceMimeTypes.has(sourceFile.mimetype)) return response.status(400).json({ code: 'EDIT_IMAGE_INVALID', error: '原图仅支持 PNG、JPEG 或 WebP。' });
-      if (maskFile && maskFile.mimetype !== 'image/png') return response.status(400).json({ code: 'EDIT_IMAGE_INVALID', error: '蒙版必须是 PNG。' });
-      if (maskFile && maskFile.size > 4 * MiB) return response.status(413).json({ code: 'EDIT_IMAGE_TOO_LARGE', error: '蒙版不能超过 4 MiB。' });
+      if (operation === 'remove' && !maskFile) return response.status(400).json({ code: 'EDIT_MASK_REQUIRED', error: 'Circle the area you want removed first.' });
+      if (Boolean(sourceGenerationId) === Boolean(sourceFile)) return response.status(400).json({ code: 'EDIT_SOURCE_REQUIRED', error: 'Pick a saved image or upload a local one.' });
+      if (sourceGenerationId && !sourceIdPattern.test(sourceGenerationId)) return response.status(400).json({ code: 'EDIT_SOURCE_REQUIRED', error: 'That saved-image reference is not valid.' });
+      if (sourceFile && !sourceMimeTypes.has(sourceFile.mimetype)) return response.status(400).json({ code: 'EDIT_IMAGE_INVALID', error: 'The source image must be PNG, JPEG or WebP.' });
+      if (maskFile && maskFile.mimetype !== 'image/png') return response.status(400).json({ code: 'EDIT_IMAGE_INVALID', error: 'The mask must be a PNG.' });
+      if (maskFile && maskFile.size > 4 * MiB) return response.status(413).json({ code: 'EDIT_IMAGE_TOO_LARGE', error: 'The mask must be 4 MiB or smaller.' });
 
       if (sourceFile && sourceFile.size > config.maxUploadMb * MiB) {
         return response.status(413).json({ code: 'EDIT_IMAGE_TOO_LARGE', error: 'Source image exceeds the configured upload limit.' });
@@ -153,11 +153,11 @@ export function createEditRouter(deps) {
       }) : null;
       const masked = Boolean(mask && !mask.empty);
       if (operation === 'remove' && !masked) {
-        return response.status(400).json({ code: 'EDIT_MASK_REQUIRED', error: '请先圈出要消除的区域。' });
+        return response.status(400).json({ code: 'EDIT_MASK_REQUIRED', error: 'Circle the area you want removed first.' });
       }
       const health = await deps.health(config);
       if (!health.ok) {
-        return response.status(503).json({ code: health.code || 'FLUX2_NOT_READY', error: health.error || '图像编辑服务暂不可用。' });
+        return response.status(503).json({ code: health.code || 'FLUX2_NOT_READY', error: health.error || 'The image editing service is unavailable.' });
       }
 
       if (typeof deps.reserve === 'function') {
@@ -165,7 +165,7 @@ export function createEditRouter(deps) {
         if (!entitlement.reservation) {
           return response.status(402).json({
             code: 'PAYMENT_REQUIRED',
-            error: '前 5 张免费额度已用完，继续生成需使用支付宝支付 ¥5。',
+            error: 'The first five free generations are used up; further generations need a ¥5 Alipay payment.',
             billing: await runAbortable(abort.signal, () => deps.billing(request.user.id)),
           });
         }
@@ -194,7 +194,7 @@ export function createEditRouter(deps) {
       const billing = await runAbortable(abort.signal, () => deps.billing(request.user.id));
       throwIfAborted(abort.signal);
       const isOpenAI = result.provider === 'openai';
-      const historyPrompt = operation === 'remove' ? '魔法消除：清除选中区域' : (prompt || compiledInstruction.prompt);
+      const historyPrompt = operation === 'remove' ? 'Magic erase: cleared the selected area' : (prompt || compiledInstruction.prompt);
       const generation = await deps.save({
         userId: request.user.id,
         image,

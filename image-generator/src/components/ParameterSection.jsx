@@ -11,7 +11,7 @@ export default function ParameterSection({ section, selections, onToggle, open, 
           <span className="section-title">{section.name}</span>
           <span className="section-eyebrow">{section.eyebrow}</span>
         </span>
-        {sectionCount > 0 && <span className="section-count">已选 {sectionCount}</span>}
+        {sectionCount > 0 && <span className="section-count">{sectionCount} selected</span>}
         <span className="summary-arrow"><Icon name="arrow" size={17} /></span>
       </summary>
 
@@ -20,8 +20,8 @@ export default function ParameterSection({ section, selections, onToggle, open, 
           <fieldset className="option-group" key={group.id}>
             <legend>
               {group.label}
-              {group.mode === 'single' && <span>单选</span>}
-              {group.maxSelections > 1 && <span>最多 {group.maxSelections} 项</span>}
+              {group.mode === 'single' && <span>Pick one</span>}
+              {group.maxSelections > 1 && <span>Up to {group.maxSelections}</span>}
             </legend>
             <div className="option-list">
               {group.options.map((option) => {
@@ -37,7 +37,7 @@ export default function ParameterSection({ section, selections, onToggle, open, 
                   >
                     {active && <Icon name="check" size={13} />}
                     {option.label}
-                    {option.reliability === 'experimental' && <small className="option-status">实验</small>}
+                    {option.reliability === 'experimental' && <small className="option-status">Beta</small>}
                   </button>
                 );
               })}

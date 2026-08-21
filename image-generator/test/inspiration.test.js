@@ -20,11 +20,11 @@ test('sanitizes inspiration labels to short unique strings', () => {
 });
 
 test('builds chat messages that carry the selected labels', () => {
-  const messages = buildInspirationMessages(['清爽动漫', '高马尾'], '一个都市夜晚的画面');
+  const messages = buildInspirationMessages(['Clean anime', 'High ponytail'], 'a city night scene');
   assert.equal(messages.length, 2);
-  assert.match(messages[1].content, /清爽动漫、高马尾/);
-  assert.match(messages[1].content, /都市夜晚/);
-  assert.match(buildInspirationMessages([], 'x')[1].content, /风格不限/);
+  assert.match(messages[1].content, /Clean anime, High ponytail/);
+  assert.match(messages[1].content, /city night scene/);
+  assert.match(buildInspirationMessages([], 'x')[1].content, /No style constraints/);
 });
 
 test('normalizes model output into a clean single-line brief', () => {

@@ -3,13 +3,13 @@ import { DialogShell } from './Dialog.jsx';
 import { Icon } from './Icons.jsx';
 
 const sizeOptions = [
-  { value: 1024, label: '原图', hint: '1024×1024' },
-  { value: 640, label: '社交头像', hint: '640×640' },
-  { value: 256, label: '小尺寸', hint: '256×256' },
+  { value: 1024, label: 'Original', hint: '1024x1024' },
+  { value: 640, label: 'Social avatar', hint: '640x640' },
+  { value: 256, label: 'Small', hint: '256x256' },
 ];
 const shapeOptions = [
-  { value: 'square', label: '方形' },
-  { value: 'circle', label: '圆形（透明背景）' },
+  { value: 'square', label: 'Square' },
+  { value: 'circle', label: 'Circle (transparent)' },
 ];
 
 export default function DownloadDialog({ open, willCharge, loading, onConfirm, onCancel }) {
@@ -26,11 +26,11 @@ export default function DownloadDialog({ open, willCharge, loading, onConfirm, o
   if (!open) return null;
 
   return (
-    <DialogShell title="下载头像" eyebrow="导出选项" onClose={onCancel}>
-      <p className="dialog-message">选择导出规格，下载文件均为 PNG。</p>
+    <DialogShell title="Download avatar" eyebrow="Export options" onClose={onCancel}>
+      <p className="dialog-message">Choose an export format. Every download is a PNG.</p>
       <div className="download-options">
         <fieldset>
-          <legend>尺寸</legend>
+          <legend>Size</legend>
           <div className="download-choice-row">
             {sizeOptions.map((option) => (
               <button
@@ -47,7 +47,7 @@ export default function DownloadDialog({ open, willCharge, loading, onConfirm, o
           </div>
         </fieldset>
         <fieldset>
-          <legend>形状</legend>
+          <legend>Shape</legend>
           <div className="download-choice-row">
             {shapeOptions.map((option) => (
               <button
@@ -66,13 +66,13 @@ export default function DownloadDialog({ open, willCharge, loading, onConfirm, o
       {willCharge && (
         <p className="dialog-hint">
           <Icon name="lock" size={13} />
-          下载会消耗 1 次免费/付费下载额度，成功后这张头像将被锁定，不能继续修改。
+          Downloading uses one free or paid credit, and locks this avatar against further edits.
         </p>
       )}
       <div className="dialog-actions">
-        <button className="dialog-secondary" type="button" onClick={onCancel} disabled={loading}>取消</button>
+        <button className="dialog-secondary" type="button" onClick={onCancel} disabled={loading}>Cancel</button>
         <button className="dialog-primary" type="button" onClick={() => onConfirm({ size, shape })} disabled={loading}>
-          {loading ? '下载中…' : willCharge ? '确认下载并锁定' : '下载'}
+          {loading ? 'Saving…' : willCharge ? 'Confirm and lock' : 'Download'}
         </button>
       </div>
     </DialogShell>

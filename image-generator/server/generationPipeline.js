@@ -16,12 +16,12 @@ export function getPromptModeCatalog({ translatorReady = true } = {}) {
   return [
     {
       id: 'flux1-qwen',
-      label: 'FLUX.1 中文增强（推荐）',
+      label: 'FLUX.1 with prompt translation (recommended)',
       available: translatorReady,
     },
     {
       id: 'flux1-raw',
-      label: 'FLUX.1 原始提示词',
+      label: 'FLUX.1 raw prompt',
       available: true,
     },
   ];

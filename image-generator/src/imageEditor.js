@@ -92,7 +92,7 @@ export function canvasToPngBlob(canvas) {
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        reject(new Error('导出蒙版失败。'));
+        reject(new Error('Could not export the mask.'));
         return;
       }
       resolve(blob);

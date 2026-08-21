@@ -222,7 +222,7 @@ export default function ImageEditor({
 
   const handleImageError = useCallback((event, eventSessionKey) => {
     if (eventSessionKey !== sessionKeyRef.current || event.currentTarget !== imageRef.current) return;
-    setImageError('无法加载这张图片。');
+    setImageError('This image could not be loaded.');
   }, []);
 
   const pointFromEvent = useCallback((event) => {
@@ -320,7 +320,7 @@ export default function ImageEditor({
     event.target.value = '';
     if (!file || sourceReplacementDisabled) return;
     if (!isSupportedImageMimeType(file.type)) {
-      setUploadError('仅支持 PNG、JPEG 或 WebP 图片。');
+      setUploadError('Only PNG, JPEG and WebP images are supported.');
       return;
     }
     setUploadError('');
@@ -337,10 +337,10 @@ export default function ImageEditor({
     setSubmitError('');
     try {
       const canvas = maskCanvasRef.current;
-      if (!canvas) throw new Error('蒙版画布尚未准备好。');
+      if (!canvas) throw new Error('The mask canvas is not ready yet.');
       const context = canvas.getContext('2d');
       const painted = hasPaintedMask(context.getImageData(0, 0, canvas.width, canvas.height));
-      if (magicErase && !painted) throw new Error('请先圈出要消除的区域。');
+      if (magicErase && !painted) throw new Error('Circle the area you want removed first.');
       setSubmissionState(painted ? 'exporting' : 'submitting');
       const maskBlob = painted ? await canvasToPngBlob(canvas) : null;
       const maskFile = painted ? new File([maskBlob], 'mask.png', { type: 'image/png' }) : null;
@@ -359,7 +359,7 @@ export default function ImageEditor({
         }),
       });
     } catch (submissionError) {
-      setSubmitError(getErrorMessage(submissionError, '提交编辑请求失败。'));
+      setSubmitError(getErrorMessage(submissionError, 'The edit request could not be submitted.'));
     } finally {
       submissionRef.current = false;
       setSubmissionState('idle');
@@ -369,32 +369,32 @@ export default function ImageEditor({
   if (!open) return null;
 
   return (
-    <div className="image-editor-overlay" role="dialog" aria-modal="true" aria-label="图像编辑器" style={{ position: 'fixed', inset: 0, zIndex: 90, display: 'grid', placeItems: 'center', padding: 20, background: 'rgba(0, 0, 0, 0.52)' }}>
+    <div className="image-editor-overlay" role="dialog" aria-modal="true" aria-label="Image editor" style={{ position: 'fixed', inset: 0, zIndex: 90, display: 'grid', placeItems: 'center', padding: 20, background: 'rgba(0, 0, 0, 0.52)' }}>
       <form className="image-editor" onSubmit={handleSubmit} style={{ width: 'min(960px, 100%)', maxHeight: 'calc(100vh - 40px)', overflow: 'auto', padding: 20, background: '#fff', borderRadius: 8 }}>
         <header className="editor-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div>
-            <h2 style={{ margin: 0 }}>{magicErase ? '魔法消除' : '图像局部微调'}</h2>
+            <h2 style={{ margin: 0 }}>{magicErase ? 'Magic erase' : 'Retouch part of the image'}</h2>
             <p style={{ margin: '6px 0 0', color: '#666', fontSize: 13 }}>
-              {magicErase ? '圈出要消除的内容，AI 会用周围背景自然填充' : maskPainted ? '蒙版局部修改' : '整图语义修改'}
+              {magicErase ? 'Circle what should go and the AI fills it in from the surrounding background' : maskPainted ? 'Masked local edit' : 'Whole-image semantic edit'}
             </p>
           </div>
-          <button className="editor-close" type="button" onClick={onClose} disabled={interactionDisabled} aria-label="关闭图像编辑器" title="关闭图像编辑器">
+          <button className="editor-close" type="button" onClick={onClose} disabled={interactionDisabled} aria-label="Close the image editor" title="Close the image editor">
             <Icon name="close" />
           </button>
         </header>
 
-        {modelChecking && <p className="editor-message" role="status">正在检查图像编辑服务</p>}
-        {!modelChecking && !modelReady && <p className="editor-message editor-error" role="alert">图像编辑服务未就绪</p>}
-        {submissionState === 'exporting' && <p className="editor-message" role="status">正在导出蒙版…</p>}
+        {modelChecking && <p className="editor-message" role="status">Checking the image editing service</p>}
+        {!modelChecking && !modelReady && <p className="editor-message editor-error" role="alert">The image editing service is not ready</p>}
+        {submissionState === 'exporting' && <p className="editor-message" role="status">Exporting the mask…</p>}
         {(error || uploadError || submitError || imageError) && <p className="editor-message editor-error" role="alert">{error || uploadError || submitError || imageError}</p>}
 
         {!source ? (
           <div className="editor-empty" style={{ minHeight: 280, display: 'grid', placeItems: 'center', border: '1px dashed #bbb', marginTop: 18 }}>
             <div className="editor-empty-content" style={{ textAlign: 'center' }}>
               <Icon name="upload" size={30} />
-              <p>上传 PNG、JPEG 或 WebP 图片</p>
-              <button className="editor-upload-button" type="button" onClick={() => uploadInputRef.current?.click()} disabled={sourceReplacementDisabled} aria-label="上传本地图片" title="上传本地图片">
-                <Icon name="upload" /> 上传图片
+              <p>Upload a PNG, JPEG or WebP image</p>
+              <button className="editor-upload-button" type="button" onClick={() => uploadInputRef.current?.click()} disabled={sourceReplacementDisabled} aria-label="Upload a local image" title="Upload a local image">
+                <Icon name="upload" /> Upload image
               </button>
             </div>
           </div>
@@ -407,43 +407,43 @@ export default function ImageEditor({
                 onClick={toggleMagicErase}
                 disabled={interactionDisabled || !imageReady}
                 aria-pressed={magicErase}
-                aria-label="魔法消除"
-                title="圈选后自动消除，无需填写提示词"
+                aria-label="Magic erase"
+                title="Circle an area and it is removed automatically, no prompt needed"
               >
-                <Icon name="spark" /> 魔法消除
+                <Icon name="spark" /> Magic erase
               </button>
-              <button type="button" onClick={() => setTool('brush')} disabled={interactionDisabled || !imageReady} aria-pressed={tool === 'brush'} aria-label="画笔" title="画笔">
-                <Icon name="brush" /> 画笔
+              <button type="button" onClick={() => setTool('brush')} disabled={interactionDisabled || !imageReady} aria-pressed={tool === 'brush'} aria-label="Brush" title="Brush">
+                <Icon name="brush" /> Brush
               </button>
-              <button type="button" onClick={() => setTool('erase')} disabled={interactionDisabled || !imageReady} aria-pressed={tool === 'erase'} aria-label="橡皮擦" title="橡皮擦">
-                <Icon name="eraser" /> 橡皮擦
+              <button type="button" onClick={() => setTool('erase')} disabled={interactionDisabled || !imageReady} aria-pressed={tool === 'erase'} aria-label="Eraser" title="Eraser">
+                <Icon name="eraser" /> Eraser
               </button>
-              <button type="button" onClick={undo} disabled={interactionDisabled || undoCount === 0} aria-label="撤销" title="撤销">
-                <Icon name="undo" /> 撤销
+              <button type="button" onClick={undo} disabled={interactionDisabled || undoCount === 0} aria-label="Undo" title="Undo">
+                <Icon name="undo" /> Undo
               </button>
-              <button type="button" onClick={clearMask} disabled={interactionDisabled || !maskPainted} aria-label="清除蒙版" title="清除蒙版">
-                <Icon name="trash" /> 清除
+              <button type="button" onClick={clearMask} disabled={interactionDisabled || !maskPainted} aria-label="Clear the mask" title="Clear the mask">
+                <Icon name="trash" /> Clear
               </button>
-              <button type="button" onClick={() => setZoom(100)} disabled={interactionDisabled || !imageReady || zoom === 100} aria-label="重置视图" title="重置视图">
-                <Icon name="reset" /> 重置视图
+              <button type="button" onClick={() => setZoom(100)} disabled={interactionDisabled || !imageReady || zoom === 100} aria-label="Reset the view" title="Reset the view">
+                <Icon name="reset" /> Reset view
               </button>
-              <button type="button" onClick={() => uploadInputRef.current?.click()} disabled={sourceReplacementDisabled} aria-label="替换图片" title="替换图片">
-                <Icon name="upload" /> 替换图片
+              <button type="button" onClick={() => uploadInputRef.current?.click()} disabled={sourceReplacementDisabled} aria-label="Replace the image" title="Replace the image">
+                <Icon name="upload" /> Replace image
               </button>
               <label className="editor-zoom" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                缩放 {zoom}%
-                <input type="range" min="50" max="200" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} disabled={interactionDisabled || !imageReady} aria-label="画布缩放" />
+                Zoom {zoom}%
+                <input type="range" min="50" max="200" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} disabled={interactionDisabled || !imageReady} aria-label="Canvas zoom" />
               </label>
             </div>
 
             <div className="editor-canvas-viewport" style={{ marginTop: 16, maxHeight: '55vh', overflow: 'auto', border: '1px solid #ddd', background: '#f5f5f5' }}>
               <div className="editor-canvas-wrap" style={{ position: 'relative', width: `${zoom}%`, minWidth: '200px' }}>
-                {/* 画布尺寸由 drawEditorImage 直接设置；交给 React 绑定会在重渲染时重设尺寸并清空已绘制的底图。 */}
-                <canvas className="editor-base-canvas" ref={baseCanvasRef} aria-label="原始图像" style={{ display: 'block', width: '100%', height: 'auto' }} />
+                {/* drawEditorImage sets the canvas size directly; binding it through React would reset the size on every rerender and wipe the drawn image. */}
+                <canvas className="editor-base-canvas" ref={baseCanvasRef} aria-label="Source image" style={{ display: 'block', width: '100%', height: 'auto' }} />
                 <canvas
                   ref={maskCanvasRef}
                   className="editor-mask-canvas"
-                  aria-label="蒙版绘制画布"
+                  aria-label="Mask drawing canvas"
                   onPointerDown={handlePointerDown}
                   onPointerMove={handlePointerMove}
                   onPointerUp={finishStroke}
@@ -460,8 +460,8 @@ export default function ImageEditor({
         <input ref={uploadInputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={handleUpload} disabled={sourceReplacementDisabled} style={{ display: 'none' }} />
 
         {!magicErase && (
-          <section className="editor-controls" aria-label="FLUX.2 编辑分类">
-            <div className="editor-category-list" role="group" aria-label="修改分类">
+          <section className="editor-controls" aria-label="FLUX.2 edit categories">
+            <div className="editor-category-list" role="group" aria-label="Edit category">
               {editCategories.map((category) => (
                 <button
                   type="button"
@@ -478,7 +478,7 @@ export default function ImageEditor({
 
             {activeCategory.targets.length > 0 && (
               <label className="editor-control-field">
-                修改对象
+                Edit target
                 <select value={editTarget} onChange={(event) => setEditTarget(event.target.value)} disabled={interactionDisabled}>
                   {activeCategory.targets.map((entry) => <option value={entry.id} key={entry.id}>{entry.label}</option>)}
                 </select>
@@ -487,13 +487,13 @@ export default function ImageEditor({
 
             {editCategory === 'replace' && (
               <label className="editor-control-field">
-                要替换的物体
-                <input value={editTarget} onChange={(event) => setEditTarget(event.target.value.slice(0, 80))} disabled={interactionDisabled} placeholder="例如：胸针、帽子、桌面上的杯子" />
+                Object to replace
+                <input value={editTarget} onChange={(event) => setEditTarget(event.target.value.slice(0, 80))} disabled={interactionDisabled} placeholder="For example: the brooch, the hat, the cup on the desk" />
               </label>
             )}
 
             {activeCategory.options.length > 0 && (
-              <div className="editor-option-list" role="group" aria-label={`${activeCategory.label}选项`}>
+              <div className="editor-option-list" role="group" aria-label={`${activeCategory.label} options`}>
                 {activeCategory.options.map((entry) => (
                   <button
                     type="button"
@@ -511,7 +511,7 @@ export default function ImageEditor({
 
             {editCategory === 'color' && (
               <div className="editor-color-panel">
-                <div className="editor-swatches" role="group" aria-label="颜色色卡">
+                <div className="editor-swatches" role="group" aria-label="Color swatches">
                   {colorSwatches.map((swatch) => (
                     <button
                       type="button"
@@ -529,7 +529,7 @@ export default function ImageEditor({
                   ))}
                 </div>
                 <label className="editor-color-input">
-                  自定义颜色
+                  Custom color
                   <input
                     type="color"
                     value={/^#[0-9A-Fa-f]{6}$/.test(colorHex) ? colorHex : '#000000'}
@@ -546,7 +546,7 @@ export default function ImageEditor({
                       setColorHex(event.target.value.toUpperCase().slice(0, 7));
                     }}
                     disabled={interactionDisabled}
-                    aria-label="HEX 颜色"
+                    aria-label="HEX color"
                     placeholder="#FF6B6B"
                   />
                 </label>
@@ -554,12 +554,12 @@ export default function ImageEditor({
             )}
 
             <label className="editor-prompt">
-              {editCategory === 'custom' ? '编辑提示词' : editCategory === 'replace' ? '替换要求' : '补充要求（可选）'}
+              {editCategory === 'custom' ? 'Edit prompt' : editCategory === 'replace' ? 'What to replace it with' : 'Extra instructions (optional)'}
               <textarea value={prompt} onChange={(event) => setPrompt(event.target.value.slice(0, 1200))} disabled={interactionDisabled} rows="3" />
             </label>
             {compiledInstruction.error
               ? <p className="editor-control-error" role="status">{compiledInstruction.error}</p>
-              : <p className="editor-prompt-preview"><strong>模型将执行：</strong>{compiledInstruction.prompt}</p>}
+              : <p className="editor-prompt-preview"><strong>The model will:</strong> {compiledInstruction.prompt}</p>}
           </section>
         )}
         <GenerationProgress
@@ -570,12 +570,12 @@ export default function ImageEditor({
         />
         <button className="editor-submit" type="submit" disabled={submitDisabled} style={{ marginTop: 14 }}>
           {submissionState === 'exporting'
-            ? '正在导出蒙版…'
+            ? 'Exporting the mask…'
             : submissionState === 'submitting' || busy
-              ? '正在提交…'
+              ? 'Submitting…'
               : magicErase
-                ? maskPainted ? '消除选中区域' : '先圈出要消除的区域'
-                : '提交编辑'}
+                ? maskPainted ? 'Erase the selection' : 'Circle the area to erase first'
+                : 'Apply edit'}
         </button>
       </form>
     </div>

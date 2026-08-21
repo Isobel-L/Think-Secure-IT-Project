@@ -45,24 +45,24 @@ export default function PlanDialog({ billing, onClose, onCheckout, onTestPurchas
   );
 
   const buyLabel = (plan, mode) => {
-    if (loading) return '处理中…';
-    if (mode === 'renew') return `续订 ${plan.name}（${yuan(payAmount(plan, mode))}）`;
-    if (mode === 'upgrade') return `补差价升级（${yuan(payAmount(plan, mode))}）`;
-    if (mode === 'blocked') return '高级套餐不可降级';
-    return `购买 ${plan.name}`;
+    if (loading) return 'Working…';
+    if (mode === 'renew') return `Renew ${plan.name} (${yuan(payAmount(plan, mode))})`;
+    if (mode === 'upgrade') return `Upgrade for the difference (${yuan(payAmount(plan, mode))})`;
+    if (mode === 'blocked') return 'A higher plan cannot be downgraded';
+    return `Buy ${plan.name}`;
   };
 
-  const testLabel = { buy: '模拟开通', renew: '模拟续订', upgrade: '模拟升级' };
+  const testLabel = { buy: 'Simulate purchase', renew: 'Simulate renewal', upgrade: 'Simulate upgrade' };
 
   return (
-    <div className="dialog-overlay" role="dialog" aria-modal="true" aria-label="购买下载额度">
+    <div className="dialog-overlay" role="dialog" aria-modal="true" aria-label="Buy download credits">
       <div className="dialog-card plan-dialog">
-        <button className="dialog-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="dialog-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
-        <span className="dialog-eyebrow">下载套餐</span>
-        <h3>选择适合你的额度</h3>
-        <p className="dialog-message">套餐额度优先使用；生成和修改图片仍然免费。</p>
+        <span className="dialog-eyebrow">Download plans</span>
+        <h3>Pick the plan that fits</h3>
+        <p className="dialog-message">Plan credits are used first. Generating and editing stay free.</p>
 
         {plans.length ? (
           <div className="plan-grid">
@@ -73,7 +73,7 @@ export default function PlanDialog({ billing, onClose, onCheckout, onTestPurchas
                 <article className={`plan-card${current ? ' is-current' : ''}`} key={plan.id}>
                   <div className="plan-card-heading">
                     <strong>{plan.name}</strong>
-                    {current && <span>当前套餐 · {formatExpiry(activePlan.expiresAt)}到期</span>}
+                    {current && <span>Current plan &middot; expires {formatExpiry(activePlan.expiresAt)}</span>}
                   </div>
                   <div className="plan-price">{plan.priceLabel}<small>{plan.quotaLabel} · {plan.refreshLabel}</small></div>
                   <p>{plan.description}</p>
@@ -96,19 +96,19 @@ export default function PlanDialog({ billing, onClose, onCheckout, onTestPurchas
                     </button>
                   )}
                   {current && activePlan.cancelled && (
-                    <p className="plan-cancelled-note">已取消续期，{formatExpiry(activePlan.expiresAt)}到期后停止；续订可恢复。</p>
+                    <p className="plan-cancelled-note">Renewal cancelled. It stops after {formatExpiry(activePlan.expiresAt)}; renewing restores it.</p>
                   )}
                   {current && !activePlan.cancelled && !confirmCancel && (
                     <button className="plan-cancel-button" type="button" onClick={() => setConfirmCancel(true)} disabled={loading}>
-                      取消订阅
+                      Cancel subscription
                     </button>
                   )}
                   {current && !activePlan.cancelled && confirmCancel && (
                     <div className="plan-cancel-confirm">
-                      <p>取消后套餐保留至 {formatExpiry(activePlan.expiresAt)}，期间额度照常使用，到期后不再续期。</p>
+                      <p>The plan runs until {formatExpiry(activePlan.expiresAt)} with its quota intact, then stops renewing.</p>
                       <div>
-                        <button type="button" onClick={() => onCancelPlan?.()} disabled={loading}>确认取消</button>
-                        <button type="button" onClick={() => setConfirmCancel(false)} disabled={loading}>保留套餐</button>
+                        <button type="button" onClick={() => onCancelPlan?.()} disabled={loading}>Confirm cancellation</button>
+                        <button type="button" onClick={() => setConfirmCancel(false)} disabled={loading}>Keep the plan</button>
                       </div>
                     </div>
                   )}
@@ -117,19 +117,19 @@ export default function PlanDialog({ billing, onClose, onCheckout, onTestPurchas
             })}
           </div>
         ) : (
-          <p className="plan-loading">正在读取套餐信息…</p>
+          <p className="plan-loading">Loading plan details…</p>
         )}
 
         <p className="plan-footnote">
-          套餐有效期均为 30 天，到期前后都可续订顺延 30 天；Go / Plus 的每日额度按东八区自然日次日刷新，Pro 在订阅期内不限量。已持有套餐时可补差价升级到更高级别，高级套餐不可降级。
+          Every plan lasts 30 days and can be renewed for another 30 at any time. Go and Plus refresh their daily quota each calendar day in UTC+8; Pro is unlimited for the whole subscription. An existing plan can be upgraded by paying the difference, but a higher plan cannot be downgraded.
         </p>
 
         <div className="single-credit-row">
-          <div><strong>单次下载</strong><span>¥5 · 1 次下载额度，永久有效</span></div>
+          <div><strong>Single download</strong><span>&yen;5 &middot; one credit, never expires</span></div>
           <div>
-            <button type="button" onClick={() => onCheckout?.(null)} disabled={loading}>购买 1 次</button>
+            <button type="button" onClick={() => onCheckout?.(null)} disabled={loading}>Buy one</button>
             {billing?.testPaymentEnabled && (
-              <button type="button" onClick={() => onTestPurchase?.(null)} disabled={loading}>模拟购买 1 次</button>
+              <button type="button" onClick={() => onTestPurchase?.(null)} disabled={loading}>Simulate buying one</button>
             )}
           </div>
         </div>

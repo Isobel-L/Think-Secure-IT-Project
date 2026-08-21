@@ -28,17 +28,17 @@ export default function HistoryModal({
   if (!open) return null;
 
   return (
-    <div className="dialog-overlay history-overlay" role="dialog" aria-modal="true" aria-label="全部生成记录">
+    <div className="dialog-overlay history-overlay" role="dialog" aria-modal="true" aria-label="All generations">
       <div className="dialog-card history-modal">
-        <button className="dialog-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="dialog-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
-        <span className="dialog-eyebrow">生成记录</span>
+        <span className="dialog-eyebrow">History</span>
         <div className="history-modal-heading">
-          <h3>全部头像（{items.length}）</h3>
-          <button className="ghost-mini" type="button" onClick={onRefresh} disabled={loading}>{loading ? '刷新中' : '刷新'}</button>
+          <h3>All avatars ({items.length})</h3>
+          <button className="ghost-mini" type="button" onClick={onRefresh} disabled={loading}>{loading ? 'Refreshing' : 'Refresh'}</button>
         </div>
-        <p className="dialog-message">点击图片可回到预览面板查看；确认下载后图片会锁定，不能继续修改。</p>
+        <p className="dialog-message">Click an avatar to open it in the preview panel.</p>
         <div className="history-modal-grid">
           {items.map((item) => (
             <HistoryItem

@@ -77,21 +77,21 @@ function buildEditPrompt({ original, instruction }) {
 
 export function customerFacingError(status, message) {
   if (/ComfyUI|ECONNREFUSED|fetch failed|system_stats|CheckpointLoaderSimple|checkpoint|Timed out/i.test(message)) {
-    return { status: 503, code: 'LOCAL_COMFYUI_UNAVAILABLE', error: '本地 ComfyUI 或 FLUX 模型暂不可用，请确认 ComfyUI 已启动且 checkpoint 名称正确。' };
+    return { status: 503, code: 'LOCAL_COMFYUI_UNAVAILABLE', error: 'The local ComfyUI or FLUX model is unavailable. Check that ComfyUI is running and the checkpoint name is correct.' };
   }
   if (/billing|quota|hard limit|insufficient_quota/i.test(message)) {
-    return { status: 503, code: 'SERVICE_QUOTA_EXCEEDED', error: '当前头像生成服务额度不足，请联系商家客服或稍后再试。' };
+    return { status: 503, code: 'SERVICE_QUOTA_EXCEEDED', error: 'The avatar service is out of quota. Contact support or try again later.' };
   }
   if (status === 401 || /api key|authentication/i.test(message)) {
-    return { status: 503, code: 'SERVICE_AUTH_ERROR', error: '头像生成服务正在维护，请联系商家客服。' };
+    return { status: 503, code: 'SERVICE_AUTH_ERROR', error: 'The avatar service is under maintenance. Please contact support.' };
   }
   if (/moderation|safety|content policy/i.test(message)) {
-    return { status: 400, code: 'CONTENT_NOT_ALLOWED', error: '当前描述可能包含不适合生成的内容，请调整后再试。' };
+    return { status: 400, code: 'CONTENT_NOT_ALLOWED', error: 'This description may contain content that cannot be generated. Please adjust it and try again.' };
   }
   if (status === 429) {
-    return { status: 429, code: 'SERVICE_BUSY', error: '当前生成用户较多，请稍后再试。' };
+    return { status: 429, code: 'SERVICE_BUSY', error: 'A lot of people are generating right now. Please try again shortly.' };
   }
-  return { status, code: 'IMAGE_GENERATION_FAILED', error: '头像生成暂时失败，请稍后重试。' };
+  return { status, code: 'IMAGE_GENERATION_FAILED', error: 'Avatar generation failed. Please try again.' };
 }
 
 app.disable('x-powered-by');
@@ -100,8 +100,8 @@ app.use(compression());
 app.use(cors({ origin: /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/, credentials: true }));
 app.use(cookieParser());
 
-const generateLimiter = createRateLimiter({ windowMs: 60_000, max: 6, code: 'GENERATION_RATE_LIMITED', message: '生成请求过于频繁，请稍等片刻再试。' });
-const inspirationLimiter = createRateLimiter({ windowMs: 60_000, max: 10, code: 'INSPIRATION_RATE_LIMITED', message: '随机灵感请求过于频繁，请稍后再试。' });
+const generateLimiter = createRateLimiter({ windowMs: 60_000, max: 6, code: 'GENERATION_RATE_LIMITED', message: 'Too many generation requests. Please wait a moment and try again.' });
+const inspirationLimiter = createRateLimiter({ windowMs: 60_000, max: 10, code: 'INSPIRATION_RATE_LIMITED', message: 'Too many inspiration requests. Please try again shortly.' });
 
 app.use(express.json({ limit: '1mb' }));
 app.use(attachGuestUser);
@@ -157,7 +157,7 @@ app.get('/api/local-model/health', async (_request, response) => {
     response.status(503).json({
       ok: false,
       endpoint: getLocalModelConfig().baseUrl,
-      error: error?.message || '本地模型服务不可用。',
+      error: error?.message || 'The local model service is unavailable.',
     });
   }
 });
@@ -258,23 +258,23 @@ function sendStoredImage(response, image) {
 
 app.get('/api/generations/:id/image', requireAuth, async (request, response) => {
   const image = await getAvatarGenerationImageBytes({ userId: request.user.id, generationId: request.params.id });
-  if (!image) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
+  if (!image) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: 'No such generation record.' });
   return sendStoredImage(response, image);
 });
 
 app.get('/api/generations/:id/thumb', requireAuth, async (request, response) => {
   const image = await getAvatarGenerationThumbBytes({ userId: request.user.id, generationId: request.params.id });
-  if (!image) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
+  if (!image) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: 'No such generation record.' });
   return sendStoredImage(response, image);
 });
 
 app.get('/api/generations/:id/download', requireAuth, async (request, response) => {
   const original = await getAvatarGeneration({ userId: request.user.id, generationId: request.params.id });
-  if (!original) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
+  if (!original) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: 'No such generation record.' });
 
   const stored = await getAvatarGenerationImageBytes({ userId: request.user.id, generationId: request.params.id });
   if (!stored) {
-    return response.status(422).json({ code: 'IMAGE_NOT_DOWNLOADABLE', error: '该生成记录没有可下载的图片数据。' });
+    return response.status(422).json({ code: 'IMAGE_NOT_DOWNLOADABLE', error: 'This record has no downloadable image data.' });
   }
 
   // Export options: size (1024/640/256) and shape (square, or circle with transparency).
@@ -301,24 +301,24 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
   const quality = allowedQualities.has(request.body?.quality) ? request.body.quality : 'medium';
 
   if (!instruction) {
-    return response.status(400).json({ code: 'EDIT_INSTRUCTION_REQUIRED', error: '请填写你想修改这张头像的要求。' });
+    return response.status(400).json({ code: 'EDIT_INSTRUCTION_REQUIRED', error: 'Describe how this avatar should change.' });
   }
   if (usesComfy || usesLocalModel) {
-    return response.status(503).json({ code: 'IMAGE_EDIT_UNSUPPORTED_BACKEND', error: '当前本地图片后端暂不支持基于历史头像修改，请切换到 OpenAI 图片后端。' });
+    return response.status(503).json({ code: 'IMAGE_EDIT_UNSUPPORTED_BACKEND', error: 'The local image backend cannot edit saved avatars. Switch to the OpenAI backend.' });
   }
   if (!process.env.OPENAI_API_KEY) {
     return response.status(503).json({
-      error: '服务端尚未配置 OPENAI_API_KEY。请复制 .env.example 为 .env 后填写密钥。',
+      error: 'OPENAI_API_KEY is not configured on the server. Copy .env.example to .env and fill in the key.',
       code: 'API_KEY_MISSING',
     });
   }
 
   const original = await getAvatarGeneration({ userId: request.user.id, generationId: request.params.id });
-  if (!original) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
+  if (!original) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: 'No such generation record.' });
 
   const inputImage = await getAvatarGenerationImageBytes({ userId: request.user.id, generationId: request.params.id });
   if (!inputImage) {
-    return response.status(422).json({ code: 'IMAGE_NOT_EDITABLE', error: '该生成记录没有可编辑的图片数据。' });
+    return response.status(422).json({ code: 'IMAGE_NOT_EDITABLE', error: 'This record has no editable image data.' });
   }
 
   try {
@@ -335,7 +335,7 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
       n: 1,
     });
     const image = result.data?.[0]?.b64_json;
-    if (!image) throw new Error('图片编辑服务未返回可用的图像数据。');
+    if (!image) throw new Error('The image editing service returned no usable image data.');
 
     const payload = {
       image: `data:image/png;base64,${image}`,
@@ -385,7 +385,7 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
     });
   } catch (error) {
     const status = Number(error?.status) >= 400 && Number(error?.status) < 600 ? Number(error.status) : 502;
-    const message = error?.error?.message || error?.message || '图片编辑服务暂时不可用。';
+    const message = error?.error?.message || error?.message || 'The image editing service is unavailable.';
     console.error('[image-edit]', { backend: activeBackend, status, message });
     const publicError = customerFacingError(status, message);
     return response.status(publicError.status).json(publicError);
@@ -394,7 +394,7 @@ app.post('/api/generations/:id/edit', requireAuth, generateLimiter, async (reque
 
 app.delete('/api/generations/:id', requireAuth, async (request, response) => {
   const deleted = await deleteAvatarGeneration({ userId: request.user.id, generationId: request.params.id });
-  if (!deleted) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: '没有找到该生成记录。' });
+  if (!deleted) return response.status(404).json({ code: 'GENERATION_NOT_FOUND', error: 'No such generation record.' });
   return response.json({ ok: true });
 });
 
@@ -448,7 +448,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
   const backend = requestedBackend || activeBackend;
 
   if (!brief) {
-    return response.status(400).json({ error: '请先填写头像文字描述，再生成头像。' });
+    return response.status(400).json({ error: 'Describe your avatar first, then generate.' });
   }
 
   let selections;
@@ -474,7 +474,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
 
   if (backend === 'openai' && !process.env.OPENAI_API_KEY) {
     return response.status(503).json({
-      error: '服务端尚未配置 OPENAI_API_KEY。请复制 .env.example 为 .env 后填写密钥。',
+      error: 'OPENAI_API_KEY is not configured on the server. Copy .env.example to .env and fill in the key.',
       code: 'API_KEY_MISSING',
     });
   }
@@ -515,7 +515,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
         n: count,
       });
       const images = (result.data || []).map((item) => item.b64_json).filter(Boolean);
-      if (!images.length) throw new Error('图片服务未返回可用的图像数据。');
+      if (!images.length) throw new Error('The image service returned no usable image data.');
 
       if (count > 1 && images.length > 1) {
         const createdAt = new Date().toISOString();
@@ -585,7 +585,7 @@ app.post('/api/generate', requireAuth, generateLimiter, async (request, response
     });
   } catch (error) {
     const status = Number(error?.status) >= 400 && Number(error?.status) < 600 ? Number(error.status) : 502;
-    const message = error?.error?.message || error?.message || '图片生成服务暂时不可用。';
+    const message = error?.error?.message || error?.message || 'The image generation service is unavailable.';
     console.error('[image-generation]', { backend, status, message });
     const publicError = customerFacingError(status, message);
     return response.status(publicError.status).json(publicError);

@@ -28,15 +28,15 @@ export function estimateExpectedMs({ backend, quality, operation = 'generate', c
 export function progressStageLabel(progress, operation = 'generate') {
   const value = Math.max(0, Number.isFinite(progress) ? progress : 0);
   if (operation === 'edit' || operation === 'remove') {
-    if (value < 0.2) return '正在分析原图…';
-    if (value < 0.6) return '正在重绘选区…';
-    if (value < 0.9) return '正在融合边缘…';
-    return '即将完成…';
+    if (value < 0.2) return 'Analysing the source image…';
+    if (value < 0.6) return 'Repainting the selection…';
+    if (value < 0.9) return 'Blending the edges…';
+    return 'Almost done…';
   }
 
-  if (value < 0.15) return '正在理解你的描述…';
-  if (value < 0.4) return '正在构图…';
-  if (value < 0.7) return '正在绘制细节…';
-  if (value < 0.9) return '正在优化面部与光影…';
-  return '即将完成，正在高清渲染…';
+  if (value < 0.15) return 'Reading your description…';
+  if (value < 0.4) return 'Laying out the composition…';
+  if (value < 0.7) return 'Painting the details…';
+  if (value < 0.9) return 'Refining the face and lighting…';
+  return 'Almost done, rendering at full resolution…';
 }

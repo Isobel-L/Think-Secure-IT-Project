@@ -13,7 +13,7 @@ export function DialogShell({ title, eyebrow, onClose, children }) {
   return (
     <div className="dialog-overlay" role="dialog" aria-modal="true" aria-label={title}>
       <div className="dialog-card">
-        <button className="dialog-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="dialog-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
         {eyebrow && <span className="dialog-eyebrow">{eyebrow}</span>}
@@ -24,7 +24,7 @@ export function DialogShell({ title, eyebrow, onClose, children }) {
   );
 }
 
-export function ConfirmDialog({ open, title, eyebrow, message, hint, confirmLabel = '确认', cancelLabel = '再想想', loading = false, onConfirm, onCancel }) {
+export function ConfirmDialog({ open, title, eyebrow, message, hint, confirmLabel = 'Confirm', cancelLabel = 'Go back', loading = false, onConfirm, onCancel }) {
   if (!open) return null;
 
   return (
@@ -34,14 +34,14 @@ export function ConfirmDialog({ open, title, eyebrow, message, hint, confirmLabe
       <div className="dialog-actions">
         <button className="dialog-secondary" type="button" onClick={onCancel} disabled={loading}>{cancelLabel}</button>
         <button className="dialog-primary" type="button" onClick={onConfirm} disabled={loading}>
-          {loading ? '处理中…' : confirmLabel}
+          {loading ? 'Working…' : confirmLabel}
         </button>
       </div>
     </DialogShell>
   );
 }
 
-export function PromptDialog({ open, title, eyebrow, message, placeholder, submitLabel = '提交', loading = false, onSubmit, onCancel }) {
+export function PromptDialog({ open, title, eyebrow, message, placeholder, submitLabel = 'Submit', loading = false, onSubmit, onCancel }) {
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
 
@@ -75,9 +75,9 @@ export function PromptDialog({ open, title, eyebrow, message, placeholder, submi
           rows="3"
         />
         <div className="dialog-actions">
-          <button className="dialog-secondary" type="button" onClick={onCancel} disabled={loading}>取消</button>
+          <button className="dialog-secondary" type="button" onClick={onCancel} disabled={loading}>Cancel</button>
           <button className="dialog-primary" type="submit" disabled={loading || !value.trim()}>
-            {loading ? '处理中…' : submitLabel}
+            {loading ? 'Working…' : submitLabel}
           </button>
         </div>
       </form>

@@ -27,37 +27,37 @@ export default function PromptPreviewDialog({ open, loading, preview, onClose })
   };
 
   return (
-    <div className="dialog-overlay" role="dialog" aria-modal="true" aria-label="AI 提示词预览">
+    <div className="dialog-overlay" role="dialog" aria-modal="true" aria-label="AI prompt preview">
       <div className="dialog-card prompt-preview-dialog">
-        <button className="dialog-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="dialog-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
-        <span className="dialog-eyebrow">生成透明度</span>
-        <h3>AI 提示词预览</h3>
+        <span className="dialog-eyebrow">Transparency</span>
+        <h3>AI prompt preview</h3>
         {loading ? (
-          <p className="dialog-message">正在根据当前描述与风格生成提示词…</p>
+          <p className="dialog-message">Building the prompt from your description and styles…</p>
         ) : preview ? (
           <>
-            <p className="dialog-message">这是当前描述与风格选择将发送给模型的完整提示词。</p>
+            <p className="dialog-message">This is the full prompt your description and style choices send to the model.</p>
             <div className="prompt-preview-block">
-              <h4>正向提示词</h4>
+              <h4>Positive prompt</h4>
               <pre>{preview.prompt}</pre>
             </div>
             {preview.negativePrompt && (
               <div className="prompt-preview-block">
-                <h4>避免出现</h4>
+                <h4>Negative prompt</h4>
                 <pre>{preview.negativePrompt}</pre>
               </div>
             )}
             <div className="dialog-actions">
-              <button className="dialog-secondary" type="button" onClick={onClose}>关闭</button>
+              <button className="dialog-secondary" type="button" onClick={onClose}>Close</button>
               <button className="dialog-primary" type="button" onClick={copyPrompt}>
-                {copied ? '已复制 ✓' : '复制提示词'}
+                {copied ? 'Copied ✓' : 'Copy prompt'}
               </button>
             </div>
           </>
         ) : (
-          <p className="dialog-message">暂时无法生成提示词预览，请稍后重试。</p>
+          <p className="dialog-message">The prompt preview is unavailable right now. Please try again.</p>
         )}
       </div>
     </div>

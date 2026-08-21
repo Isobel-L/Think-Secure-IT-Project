@@ -14,40 +14,40 @@ export default function AuthModal({ mode, onSwitchMode, onClose, onAuthed }) {
     setError('');
     try {
       const { ok, data } = await api(`/api/auth/${isRegister ? 'register' : 'login'}`, { method: 'POST', body: form });
-      if (!ok) throw new Error(data.error || '登录失败，请稍后重试。');
+      if (!ok) throw new Error(data.error || 'Sign-in failed. Please try again.');
       onAuthed(data.user);
     } catch (requestError) {
-      setError(requestError.message || '登录失败，请稍后重试。');
+      setError(requestError.message || 'Sign-in failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-overlay" role="dialog" aria-modal="true" aria-label="账号登录">
+    <div className="auth-overlay" role="dialog" aria-modal="true" aria-label="Sign in">
       <form className="auth-card" onSubmit={submit}>
-        <button className="auth-close" type="button" onClick={onClose} aria-label="关闭">
+        <button className="auth-close" type="button" onClick={onClose} aria-label="Close">
           <Icon name="close" size={15} />
         </button>
-        <span className="service-badge">账号中心</span>
-        <h2>{isRegister ? '注册天猫 AI 头像馆账号' : '登录天猫 AI 头像馆'}</h2>
-        <p>登录后，生成记录会自动保存到你的账号中。</p>
+        <span className="service-badge">Account</span>
+        <h2>{isRegister ? 'Create a Tmall AI Avatar Studio account' : 'Sign in to Tmall AI Avatar Studio'}</h2>
+        <p>Sign in and your generations are saved to your account automatically.</p>
         {isRegister && (
-          <label>昵称
-            <input value={form.displayName} onChange={(event) => setForm({ ...form, displayName: event.target.value })} placeholder="例如：Ziyun" />
+          <label>Display name
+            <input value={form.displayName} onChange={(event) => setForm({ ...form, displayName: event.target.value })} placeholder="For example: Ziyun" />
           </label>
         )}
-        <label>邮箱
+        <label>Email
           <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="you@example.com" required />
         </label>
-        <label>密码
-          <input type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} placeholder="至少 8 位" minLength="8" required />
+        <label>Password
+          <input type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} placeholder="At least 8 characters" minLength="8" required />
         </label>
         {error && <div className="auth-error">{error}</div>}
-        <button className="auth-submit" type="submit" disabled={loading}>{loading ? '处理中…' : isRegister ? '注册并登录' : '登录'}</button>
-        <button className="google-button" type="button" onClick={() => { window.location.href = '/api/auth/google'; }}>使用 Google 账号登录</button>
+        <button className="auth-submit" type="submit" disabled={loading}>{loading ? 'Working…' : isRegister ? 'Create account' : 'Sign in'}</button>
+        <button className="google-button" type="button" onClick={() => { window.location.href = '/api/auth/google'; }}>Continue with Google</button>
         <button className="auth-switch" type="button" onClick={() => { onSwitchMode(isRegister ? 'login' : 'register'); setError(''); }}>
-          {isRegister ? '已有账号？去登录' : '没有账号？注册一个'}
+          {isRegister ? 'Already have an account? Sign in' : 'No account yet? Create one'}
         </button>
       </form>
     </div>

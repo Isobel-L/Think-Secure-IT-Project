@@ -13,7 +13,7 @@ export function securityHeaders(_request, response, next) {
  * to the client IP for unauthenticated requests). Suitable for the current
  * single-process deployment; swap for a shared store if the API is scaled out.
  */
-export function createRateLimiter({ windowMs = 60_000, max = 10, code = 'RATE_LIMITED', message = '操作过于频繁，请稍后再试。' } = {}) {
+export function createRateLimiter({ windowMs = 60_000, max = 10, code = 'RATE_LIMITED', message = 'Too many requests. Please try again shortly.' } = {}) {
   const hits = new Map();
 
   const sweep = setInterval(() => {

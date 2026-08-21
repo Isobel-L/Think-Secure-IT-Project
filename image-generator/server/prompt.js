@@ -8,7 +8,7 @@ function cleanText(value, maxLength) {
 
 export class ParameterSelectionError extends Error {
   constructor(details) {
-    super('提交的参数选择无效，请刷新页面后重新选择。');
+    super('Those style selections are not valid. Reload the page and choose again.');
     this.name = 'ParameterSelectionError';
     this.code = 'PARAMETER_SELECTION_INVALID';
     this.status = 400;

@@ -100,7 +100,7 @@ test('accepts only supported image MIME types', () => {
 test('rejects PNG export when canvas toBlob yields null', async () => {
   await assert.rejects(
     canvasToPngBlob({ toBlob: (callback, type) => { assert.equal(type, 'image/png'); callback(null); } }),
-    /导出蒙版失败/,
+    /Could not export the mask/,
   );
 });
 

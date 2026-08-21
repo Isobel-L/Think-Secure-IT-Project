@@ -26,7 +26,7 @@ import {
 const avatarSize = '1024x1024';
 const historyPreviewCount = 6;
 const historyLimit = 60;
-const flux2HealthResponseError = '图像编辑服务状态响应格式无效。';
+const flux2HealthResponseError = 'The image editing service returned an invalid status response.';
 
 const isGenerationLocked = (generation) =>
   Boolean(generation?.locked || generation?.downloadedAt || generation?.lockedAt);
@@ -88,9 +88,9 @@ function App() {
   const completion = Math.min(100, Math.round(((brief.trim() ? 3 : 0) + selectedCount) / 12 * 100));
   const activeStep = result?.image ? 3 : selectedCount > 0 ? 2 : 1;
   const steps = [
-    { id: 1, label: '描述头像' },
-    { id: 2, label: '选择风格' },
-    { id: 3, label: '生成下载' },
+    { id: 1, label: 'Describe' },
+    { id: 2, label: 'Pick a style' },
+    { id: 3, label: 'Generate & save' },
   ];
 
   const loadHistory = async () => {
@@ -104,7 +104,7 @@ function App() {
         }
         return;
       }
-      const data = await readJsonResponse(response, '历史记录响应格式无效。');
+      const data = await readJsonResponse(response, 'The history response was not valid JSON.');
       const pendingGeneration = pendingEditedGenerationRef.current;
       const acceptedRefresh = resolveHistoryRefresh({
         requestId,
@@ -142,7 +142,7 @@ function App() {
     try {
       const response = await fetch('/api/comfyui/models');
       const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error(data.error || '无法读取本地模型列表。');
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not read the local model list.');
 
       const available = Array.isArray(data.checkpoints) ? data.checkpoints : [];
       const normalizedPromptModes = normalizePromptModes(data);
@@ -166,7 +166,7 @@ function App() {
       setPromptModes(normalizedPromptModes.modes);
       setPromptMode(normalizedPromptModes.selected);
       setTranslatorReady(false);
-      setModelsError('本地 ComfyUI 未连接，暂时只能使用云端模型。');
+      setModelsError('Local ComfyUI is not connected, so only the cloud model is available.');
       setGenBackend((current) => (current === 'comfyui' ? '' : current));
     } finally {
       setModelsLoading(false);
@@ -183,13 +183,13 @@ function App() {
       if (requestId !== flux2HealthRequestRef.current) return;
       const ready = response.ok && health.ok;
       setFlux2Ready(ready);
-      if (!ready) setEditError(health.error || '图像编辑服务未就绪。');
+      if (!ready) setEditError(health.error || 'The image editing service is not ready.');
     } catch (healthError) {
       if (requestId !== flux2HealthRequestRef.current) return;
       setFlux2Ready(false);
       setEditError(healthError.message === flux2HealthResponseError
         ? flux2HealthResponseError
-        : '无法连接图像编辑服务。');
+        : 'Could not reach the image editing service.');
     } finally {
       if (requestId === flux2HealthRequestRef.current) setFlux2Checking(false);
     }
@@ -198,7 +198,7 @@ function App() {
   const openEditor = (item = result) => {
     const generation = item?.generation || item;
     if (generation?.locked || generation?.downloadedAt || generation?.lockedAt) {
-      setError('这张头像已经确认下载并锁定，不能继续修改。');
+      setError('This avatar was locked after download and cannot be edited further.');
       return;
     }
     window.clearTimeout(editorSuccessCloseTimerRef.current);
@@ -233,8 +233,8 @@ function App() {
         credentials: 'include',
         body: buildEditFormData(submission),
       });
-      const payload = await readJsonResponse(response, '图片修改响应格式无效，请稍后重试。');
-      if (!response.ok) throw new Error(payload.error || '图片修改失败，请稍后重试。');
+      const payload = await readJsonResponse(response, 'The edit response was not valid JSON. Please try again.');
+      if (!response.ok) throw new Error(payload.error || 'The edit failed. Please try again.');
 
       setResult(payload);
       if (payload.generation) {
@@ -252,7 +252,7 @@ function App() {
       }, 750);
       void loadHistory();
     } catch (editFailure) {
-      setEditError(editFailure.message || '图片修改失败，请稍后重试。');
+      setEditError(editFailure.message || 'The edit failed. Please try again.');
     } finally {
       editSubmissionRef.current = false;
       setEditing(false);
@@ -269,7 +269,7 @@ function App() {
 
   const toggleOption = (group, option) => {
     if (!hasBrief) {
-      setError('请先填写头像文字描述，再选择头像风格。');
+      setError('Describe your avatar first, then pick a style.');
       document.querySelector('.brief-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -289,12 +289,12 @@ function App() {
         method: 'POST',
         body: { labels: selectionLabels(random.selections) },
       });
-      if (!ok || !data.brief) throw new Error(data.error || '灵感生成失败，请稍后再试。');
+      if (!ok || !data.brief) throw new Error(data.error || 'Could not come up with an idea. Please try again.');
       setBrief(data.brief);
       setSelections(random.selections);
       setSelectionNotice('');
     } catch (inspirationError) {
-      setError(inspirationError.message || '灵感生成失败，请稍后再试。');
+      setError(inspirationError.message || 'Could not come up with an idea. Please try again.');
     } finally {
       setInspirationLoading(false);
     }
@@ -321,7 +321,7 @@ function App() {
 
   const generate = async () => {
     if (!hasBrief) {
-      setError('请先填写头像文字描述，再生成头像。');
+      setError('Describe your avatar first, then generate.');
       document.querySelector('.brief-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -345,7 +345,7 @@ function App() {
             ...(genBackend ? { backend: genBackend } : {}),
           },
         },
-        '生成失败，请稍后重试。',
+        'Generation failed. Please try again.',
       );
       if (data.candidates?.length) {
         setCandidates(data.candidates);
@@ -360,7 +360,7 @@ function App() {
       }
       setPaymentNotice('');
     } catch (requestError) {
-      setError(requestError.message || '暂时无法连接头像生成服务。');
+      setError(requestError.message || 'Could not reach the avatar service right now.');
     } finally {
       setLoading(false);
     }
@@ -377,7 +377,7 @@ function App() {
     try {
       const response = await fetch(`${downloadUrl}?size=${size}&shape=${shape}`, { credentials: 'include' });
       if (!response.ok) {
-        let message = '下载失败，请稍后重试。';
+        let message = 'Download failed. Please try again.';
         try {
           const data = await response.json();
           message = data.error || message;
@@ -397,9 +397,9 @@ function App() {
       link.remove();
       URL.revokeObjectURL(objectUrl);
 
-      setPaymentNotice('头像已下载，可以继续修改这张图。');
+      setPaymentNotice('Avatar downloaded. You can keep editing this image.');
     } catch (downloadError) {
-      setError(downloadError.message || '下载失败，请稍后重试。');
+      setError(downloadError.message || 'Download failed. Please try again.');
     } finally {
       setDownloadLoadingId('');
     }
@@ -408,7 +408,7 @@ function App() {
   const downloadGeneration = (generationLike) => {
     const generation = generationLike?.generation || generationLike;
     if (!generation?.id && !generationLike?.downloadUrl) {
-      setError('请先生成或选择一张头像。');
+      setError('Generate or pick an avatar first.');
       return;
     }
     // Every download opens the export dialog so the user can pick a size and a shape.
@@ -422,13 +422,13 @@ function App() {
       const data = await apiOrThrow(
         `/api/generations/${generation.id}/edit`,
         { method: 'POST', body: { instruction, quality } },
-        '修改失败，请稍后重试。',
+        'The edit failed. Please try again.',
       );
       setResult(data);
       if (data.generation) setHistory((current) => [data.generation, ...current.filter((item) => item.id !== data.generation.id)].slice(0, historyLimit));
-      setPaymentNotice('已基于原图生成一个可继续修改的新版本。');
+      setPaymentNotice('Created a new version from the original that you can keep editing.');
     } catch (editError) {
-      setError(editError.message || '修改失败，请稍后重试。');
+      setError(editError.message || 'The edit failed. Please try again.');
     } finally {
       setEditLoadingId('');
     }
@@ -437,11 +437,11 @@ function App() {
   const editGeneration = (generationLike) => {
     const generation = generationLike?.generation || generationLike;
     if (!generation?.id) {
-      setError('请先选择一张已生成的头像。');
+      setError('Pick an avatar you have already generated.');
       return;
     }
     if (isGenerationLocked(generation)) {
-      setError('这张头像已经确认下载并锁定，不能继续修改。');
+      setError('This avatar was locked after download and cannot be edited further.');
       return;
     }
     // The local ComfyUI / SD backends cannot do semantic edits, so fall back to the retouch editor.
@@ -460,7 +460,7 @@ function App() {
       const data = await apiOrThrow(
         '/api/prompt-preview',
         { method: 'POST', body: { brief, selections, avoid } },
-        '无法生成提示词预览。',
+        'Could not build the prompt preview.',
       );
       setPromptPreview(data);
     } catch {
@@ -474,16 +474,16 @@ function App() {
     setDeleteLoading(true);
     setError('');
     try {
-      await apiOrThrow(`/api/generations/${generation.id}`, { method: 'DELETE' }, '删除失败，请稍后重试。');
+      await apiOrThrow(`/api/generations/${generation.id}`, { method: 'DELETE' }, 'Delete failed. Please try again.');
       setHistory((current) => current.filter((item) => item.id !== generation.id));
       setResult((current) => {
         if (!current) return current;
         if (current.id === generation.id || current.generation?.id === generation.id) return null;
         return current;
       });
-      setPaymentNotice('已删除这张头像记录。');
+      setPaymentNotice('Avatar record deleted.');
     } catch (deleteError) {
-      setError(deleteError.message || '删除失败，请稍后重试。');
+      setError(deleteError.message || 'Delete failed. Please try again.');
     } finally {
       setDeleteLoading(false);
       setDeleteTarget(null);
@@ -494,10 +494,10 @@ function App() {
     <div className="app-shell">
       <div className="utility-bar">
         <div>
-          <span>天猫 AI 头像馆</span>
-          <span>消费者服务平台</span>
+          <span>Tmall AI Avatar Studio</span>
+          <span>Consumer service platform</span>
           <a href="https://www.tmall.com/?page_offline=true" target="_blank" rel="noreferrer">
-            访问天猫官网 <span aria-hidden="true">↗</span>
+            Visit Tmall <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>
@@ -508,14 +508,14 @@ function App() {
           href="https://www.tmall.com/?page_offline=true"
           target="_blank"
           rel="noreferrer"
-          aria-label="访问天猫官网（新窗口打开）"
-          title="访问天猫官网"
+          aria-label="Visit the Tmall site (opens in a new window)"
+          title="Visit the Tmall site"
         >
-          <img className="brand-logo" src="/tmall-logo.png" alt="天猫" />
-          <span className="brand-copy"><strong>天猫</strong><small>AI 头像馆</small></span>
+          <img className="brand-logo" src="/tmall-logo.png" alt="Tmall" />
+          <span className="brand-copy"><strong>Tmall</strong><small>AI Avatar Studio</small></span>
           <span className="brand-external" aria-hidden="true">↗</span>
         </a>
-        <nav className="step-nav" aria-label="定制步骤">
+        <nav className="step-nav" aria-label="Customisation steps">
           {steps.map((step, index) => (
             <Fragment key={step.id}>
               {index > 0 && <i className={activeStep > step.id - 1 ? 'completed' : ''} />}
@@ -533,25 +533,25 @@ function App() {
           ))}
         </nav>
         <div className="account-actions">
-          <span className="guest-pill" title="当前版本不需要登录，生成记录保存在服务端本地文件夹">访客模式</span>
-          <button className="reset-button" type="button" onClick={reset}><Icon name="reset" size={17} />重新定制</button>
+          <span className="guest-pill" title="No sign-in needed; generations are saved to a folder on the server">Guest mode</span>
+          <button className="reset-button" type="button" onClick={reset}><Icon name="reset" size={17} />Start over</button>
         </div>
       </header>
 
       <section className="tmall-hero">
         <div className="hero-content">
-          <span className="hero-tag"><Icon name="spark" size={13} /> 天猫 AI 智能定制服务</span>
-          <h1>一句话，生成你的<br /><em>专属 AI 头像</em></h1>
-          <p>选风格、定形象、挑氛围。无需专业提示词，轻松生成适合社交平台的高清头像。</p>
+          <span className="hero-tag"><Icon name="spark" size={13} /> Tmall AI customisation service</span>
+          <h1>One sentence, one<br /><em>AI avatar of your own</em></h1>
+          <p>Pick a style, a character and a mood. No prompt engineering needed &mdash; just a high-resolution avatar ready for social media.</p>
           <div className="hero-benefits">
-            <span><b>1:1</b> 标准方形</span>
-            <span><b>高清</b> PNG 下载</span>
-            <span><b>适配</b> 圆形裁剪</span>
+            <span><b>1:1</b> square</span>
+            <span><b>HD</b> PNG download</span>
+            <span><b>Ready</b> for circle crops</span>
           </div>
           <div className="hero-actions">
-            <a className="hero-primary" href="#customizer">开始定制头像</a>
+            <a className="hero-primary" href="#customizer">Start designing</a>
             <a className="hero-secondary" href="https://www.tmall.com/?page_offline=true" target="_blank" rel="noreferrer">
-              逛天猫商城 <span aria-hidden="true">↗</span>
+              Browse Tmall <span aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
@@ -559,34 +559,34 @@ function App() {
       </section>
 
       <div className="trust-strip">
-        <div><strong>01</strong><span>自由描述<br /><small>说出你的头像灵感</small></span></div>
-        <div><strong>02</strong><span>百种组合<br /><small>人物与画风随心选</small></span></div>
-        <div><strong>03</strong><span>智能构图<br /><small>自动适配头像安全区</small></span></div>
-        <div><strong>04</strong><span>高清交付<br /><small>生成后即可下载</small></span></div>
+        <div><strong>01</strong><span>Describe it<br /><small>Say what you want to see</small></span></div>
+        <div><strong>02</strong><span>Mix and match<br /><small>Characters and art styles, your call</small></span></div>
+        <div><strong>03</strong><span>Smart framing<br /><small>Fits the avatar safe area automatically</small></span></div>
+        <div><strong>04</strong><span>HD delivery<br /><small>Download the moment it is ready</small></span></div>
       </div>
 
       <main className="customizer-layout" id="customizer">
         <section className="creator-panel">
           <div className="section-card brief-card">
             <div className="card-heading">
-              <div className="number-title"><b>1</b><div><h2>描述你的理想头像</h2><p>写下人物、故事或感觉，AI 会帮你补全画面</p></div></div>
-              <span className="required-pill">必填</span>
+              <div className="number-title"><b>1</b><div><h2>Describe your ideal avatar</h2><p>Write the character, the story or the feeling and the AI fills in the rest</p></div></div>
+              <span className="required-pill">Required</span>
             </div>
             <label className="brief-input">
-              <span className="sr-only">头像创意描述</span>
+              <span className="sr-only">Avatar description</span>
               <textarea
                 value={brief}
                 onChange={(event) => {
                   setBrief(event.target.value.slice(0, 1200));
-                  if (error.includes('请先填写头像文字描述')) setError('');
+                  if (error.includes('Describe your avatar first')) setError('');
                 }}
-                placeholder="例如：一位银发少女戴着耳机，清冷又温柔，背景是淡粉色的模糊光斑……"
+                placeholder="For example: a silver-haired girl wearing headphones, cool but gentle, against soft pink bokeh&hellip;"
                 rows="5"
               />
               <small>{brief.length} / 1200</small>
             </label>
             <div className="inspiration-row">
-              <span>灵感模板</span>
+              <span>Starter ideas</span>
               {examples.map((example) => (
                 <button type="button" onClick={() => applyExample(example)} key={example.label}>
                   <Icon name="wand" size={15} /><strong>{example.label}</strong><small>{example.description}</small>
@@ -594,16 +594,16 @@ function App() {
               ))}
               <button type="button" className="inspiration-random" onClick={applyRandomInspiration} disabled={inspirationLoading}>
                 <Icon name="spark" size={15} />
-                <strong>{inspirationLoading ? '生成中…' : '随机灵感'}</strong>
-                <small>AI 随机写描述 + 随机勾风格</small>
+                <strong>{inspirationLoading ? 'Writing…' : 'Surprise me'}</strong>
+                <small>The AI writes a description and picks styles for you</small>
               </button>
             </div>
           </div>
 
           <div className="section-card recipe-card">
             <div className="card-heading recipe-heading">
-              <div className="number-title"><b>2</b><div><h2>选择头像风格</h2><p>已选择 {selectedCount} 项，单选项目会自动替换</p></div></div>
-              <div className="completion"><span>完成度 {completion}%</span><i><b style={{ width: `${completion}%` }} /></i></div>
+              <div className="number-title"><b>2</b><div><h2>Choose a style</h2><p>{selectedCount} selected; single-choice options replace each other</p></div></div>
+              <div className="completion"><span>{completion}% complete</span><i><b style={{ width: `${completion}%` }} /></i></div>
             </div>
             {selectionNotice && <p className="selection-notice" role="status">{selectionNotice}</p>}
             <div className="parameter-list">
@@ -621,27 +621,27 @@ function App() {
           </div>
 
           <div className="section-card output-settings">
-            <div className="number-title"><b>3</b><div><h2>确认头像规格</h2><p>已锁定为社交头像安全构图</p></div></div>
+            <div className="number-title"><b>3</b><div><h2>Confirm the output</h2><p>Locked to a social-avatar safe composition</p></div></div>
             <div className="settings-grid">
-              <div className="locked-setting"><span>输出规格</span><strong>1024 × 1024</strong><small>1:1 标准方形 PNG</small></div>
-              <label>生成精度
+              <div className="locked-setting"><span>Output</span><strong>1024 &times; 1024</strong><small>1:1 square PNG</small></div>
+              <label>Quality
                 <select value={quality} onChange={(event) => setQuality(event.target.value)}>
-                  <option value="low">快速预览</option>
-                  <option value="medium">高清头像（推荐）</option>
-                  <option value="high">超精细头像</option>
+                  <option value="low">Fast preview</option>
+                  <option value="medium">High definition (recommended)</option>
+                  <option value="high">Ultra detailed</option>
                 </select>
               </label>
-              <label>生成数量
+              <label>How many
                 <select
                   value={genBackend === 'openai' ? genCount : 1}
                   onChange={(event) => setGenCount(Number(event.target.value) === 4 ? 4 : 1)}
                   disabled={genBackend !== 'openai'}
                 >
-                  <option value="1">1 张</option>
-                  <option value="4">4 张候选（挑一张，仅云端）</option>
+                  <option value="1">1 image</option>
+                  <option value="4">4 candidates (cloud only)</option>
                 </select>
               </label>
-              <label className="model-setting">生成模型
+              <label className="model-setting">Model
                 <span className="model-control">
                   <select
                     value={genBackend === 'openai' ? 'openai' : genBackend === 'comfyui' && checkpoint ? `comfy:${checkpoint}` : ''}
@@ -656,19 +656,19 @@ function App() {
                     }}
                     disabled={modelsLoading || (!openaiAvailable && checkpoints.length === 0)}
                   >
-                    {!openaiAvailable && checkpoints.length === 0 && <option value="">暂无可用模型</option>}
-                    {(genBackend === '' && (openaiAvailable || checkpoints.length > 0)) && <option value="" disabled>选择生成模型</option>}
-                    {openaiAvailable && <option value="openai">OpenAI · {openaiModelName}（云端）</option>}
-                    {checkpoints.map((name) => <option key={name} value={`comfy:${name}`}>ComfyUI 本地 · {name}</option>)}
+                    {!openaiAvailable && checkpoints.length === 0 && <option value="">No models available</option>}
+                    {(genBackend === '' && (openaiAvailable || checkpoints.length > 0)) && <option value="" disabled>Choose a model</option>}
+                    {openaiAvailable && <option value="openai">OpenAI &middot; {openaiModelName} (cloud)</option>}
+                    {checkpoints.map((name) => <option key={name} value={`comfy:${name}`}>ComfyUI local &middot; {name}</option>)}
                   </select>
                   <button type="button" onClick={loadComfyModels} disabled={modelsLoading}>
-                    {modelsLoading ? '读取中' : '刷新'}
+                    {modelsLoading ? 'Loading' : 'Refresh'}
                   </button>
                 </span>
                 {modelsError && genBackend !== 'openai' && <small className="model-error">{modelsError}</small>}
               </label>
               {genBackend === 'comfyui' && (
-                <label className="model-setting">中文指令处理
+                <label className="model-setting">Prompt handling
                   <select
                     value={promptMode}
                     onChange={(event) => setPromptMode(event.target.value)}
@@ -676,33 +676,33 @@ function App() {
                   >
                     {promptModes.map((mode) => (
                       <option key={mode.id} value={mode.id} disabled={!mode.available}>
-                        {mode.label}{mode.available ? '' : '（不可用）'}
+                        {mode.label}{mode.available ? '' : ' (unavailable)'}
                       </option>
                     ))}
                   </select>
                   <small>{translatorReady
-                    ? 'Qwen3 先将中文整理为英文，再交给 FLUX.1 生图。'
-                    : 'Qwen3 暂不可用，当前使用 FLUX.1 原始提示词。'}</small>
+                    ? 'Qwen3 rewrites the prompt into English before FLUX.1 generates the image.'
+                    : 'Qwen3 is unavailable, so FLUX.1 uses the raw prompt.'}</small>
                 </label>
               )}
             </div>
-            <label className="avoid-input">不希望出现的内容（选填）
-              <input value={avoid} onChange={(event) => setAvoid(event.target.value.slice(0, 400))} placeholder="例如：不要文字、不要复杂背景、不要夸张表情" />
+            <label className="avoid-input">Things to avoid (optional)
+              <input value={avoid} onChange={(event) => setAvoid(event.target.value.slice(0, 400))} placeholder="For example: no text, no busy background, no exaggerated expressions" />
             </label>
             <div className="avatar-standard">
               <Icon name="check" size={15} />
-              <span>系统会自动保持头部完整、面部居中，并为微信、QQ、微博等圆形头像预留安全边距。</span>
+              <span>The head stays complete and the face centred, with a safe margin left for circular avatars on WeChat, QQ and Weibo.</span>
             </div>
-            <button className="prompt-preview-button" type="button" onClick={openPromptPreview} disabled={!hasBrief} title={hasBrief ? '查看将发送给模型的完整提示词' : '先填写头像描述'}>
+            <button className="prompt-preview-button" type="button" onClick={openPromptPreview} disabled={!hasBrief} title={hasBrief ? 'See the full prompt sent to the model' : 'Write a description first'}>
               <Icon name="copy" size={14} />
-              查看 AI 提示词
+              View the AI prompt
             </button>
           </div>
 
           <section className="section-card history-card">
             <div className="card-heading">
-              <div className="number-title"><b>4</b><div><h2>我的生成记录</h2><p>生成和修改都会保存到服务端本地文件夹，可以反复修改和下载</p></div></div>
-              <button className="ghost-mini" type="button" onClick={loadHistory} disabled={historyLoading}>{historyLoading ? '刷新中' : '刷新'}</button>
+              <div className="number-title"><b>4</b><div><h2>My generations</h2><p>Every generation and edit is saved to a folder on the server; edit and download as often as you like</p></div></div>
+              <button className="ghost-mini" type="button" onClick={loadHistory} disabled={historyLoading}>{historyLoading ? 'Refreshing' : 'Refresh'}</button>
             </div>
             <div className="history-grid">
               {history.length ? history.slice(0, historyPreviewCount).map((item) => (
@@ -718,12 +718,12 @@ function App() {
                   editBusy={editLoadingId === item.id}
                 />
               )) : (
-                <div className="history-empty">{historyLoading ? '正在读取历史记录…' : '暂无记录。生成第一张头像后会自动保存。'}</div>
+                <div className="history-empty">{historyLoading ? 'Loading history…' : 'Nothing yet. Your first avatar is saved here automatically.'}</div>
               )}
             </div>
             {history.length > historyPreviewCount && (
               <button className="history-more" type="button" onClick={() => setHistoryModalOpen(true)}>
-                查看全部 {history.length} 张头像
+                See all {history.length} avatars
                 <Icon name="arrow" size={15} />
               </button>
             )}
@@ -749,15 +749,15 @@ function App() {
           downloadLoading={Boolean(downloadLoadingId)}
           editLoading={Boolean(editLoadingId)}
           genBackend={genBackend}
-          defaultModelLabel={genBackend === 'openai' ? openaiModelName : checkpoints.length ? 'ComfyUI 本地' : '未选择模型'}
+          defaultModelLabel={genBackend === 'openai' ? openaiModelName : checkpoints.length ? 'ComfyUI local' : 'No model selected'}
           onFlux2Edit={() => openEditor(result)}
           onUploadEdit={() => openEditor(null)}
         />
       </main>
 
       <footer>
-        <div className="footer-brand"><strong>天猫 AI 头像馆</strong><span>让每个人都有一张专属好头像</span></div>
-        <p>本服务由 AI 生成，请遵守平台规则并妥善使用生成内容。</p>
+        <div className="footer-brand"><strong>Tmall AI Avatar Studio</strong><span>A great avatar for everyone</span></div>
+        <p>Images are AI generated. Please follow the platform rules and use them responsibly.</p>
         <span>Powered by ComfyUI</span>
       </footer>
 
@@ -789,10 +789,10 @@ function App() {
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}
-        eyebrow="删除确认"
-        title="删除这张头像记录？"
-        message="删除后头像文件和记录将一并移除，无法恢复。"
-        confirmLabel="删除"
+        eyebrow="Delete"
+        title="Delete this avatar?"
+        message="The image file and its record are removed for good."
+        confirmLabel="Delete"
         loading={deleteLoading}
         onConfirm={() => deleteTarget && performDelete(deleteTarget)}
         onCancel={() => setDeleteTarget(null)}
@@ -812,11 +812,11 @@ function App() {
 
       <PromptDialog
         open={Boolean(editTarget)}
-        eyebrow="继续修改"
-        title="你想怎么修改这张头像？"
-        message="描述要修改的部分，其余内容会尽量保持不变。"
-        placeholder="例如：把背景换成樱花校园，保持人物脸型和发型不变。"
-        submitLabel="生成新版本"
+        eyebrow="Keep editing"
+        title="How should this avatar change?"
+        message="Describe what to change; everything else stays as close to the original as possible."
+        placeholder="For example: change the background to a cherry blossom campus, keep the face and hair the same."
+        submitLabel="Create a new version"
         loading={Boolean(editLoadingId)}
         onSubmit={async (instruction) => {
           const target = editTarget;

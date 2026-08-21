@@ -9,7 +9,7 @@ test('selects the server-recommended available FLUX.1 prompt mode', () => {
     selectedPromptMode: 'flux1-qwen',
     promptModes: [
       { id: 'flux1-qwen', label: 'FLUX.1 中文增强（推荐）', available: true },
-      { id: 'flux1-raw', label: 'FLUX.1 原始提示词', available: true },
+      { id: 'flux1-raw', label: 'FLUX.1 raw prompt', available: true },
     ],
   });
   assert.equal(result.selected, 'flux1-qwen');
@@ -21,8 +21,8 @@ test('falls back to raw FLUX.1 prompts when Qwen is unavailable', () => {
     translatorReady: false,
     selectedPromptMode: 'flux1-qwen',
     promptModes: [
-      { id: 'flux1-qwen', label: '中文增强', available: false },
-      { id: 'flux1-raw', label: '原始提示词', available: true },
+      { id: 'flux1-qwen', label: 'Prompt translation', available: false },
+      { id: 'flux1-raw', label: 'Raw prompt', available: true },
     ],
   });
   assert.equal(result.selected, 'flux1-raw');
@@ -35,8 +35,8 @@ test('ignores unknown mode IDs and supplies stable FLUX.1 defaults', () => {
   });
   assert.deepEqual(result, {
     modes: [
-      { id: 'flux1-qwen', label: 'FLUX.1 中文增强（推荐）', available: false },
-      { id: 'flux1-raw', label: 'FLUX.1 原始提示词', available: true },
+      { id: 'flux1-qwen', label: 'FLUX.1 with prompt translation (recommended)', available: false },
+      { id: 'flux1-raw', label: 'FLUX.1 raw prompt', available: true },
     ],
     selected: 'flux1-raw',
   });

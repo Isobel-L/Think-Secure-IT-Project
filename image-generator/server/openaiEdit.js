@@ -24,7 +24,7 @@ export async function getOpenAIEditHealth(config = getOpenAIEditConfig()) {
       provider: 'openai',
       model: config.model,
       code: 'API_KEY_MISSING',
-      error: '服务端尚未配置 OPENAI_API_KEY，图片微调暂不可用。',
+      error: 'OPENAI_API_KEY is not configured on the server, so retouching is unavailable.',
     };
   }
   return { ok: true, provider: 'openai', model: config.model };
