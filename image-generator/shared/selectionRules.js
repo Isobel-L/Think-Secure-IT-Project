@@ -72,9 +72,13 @@ export function resolveSelectionToggle(selections, groupId, optionId, modelId = 
 export function randomSelections(modelId = 'flux1-schnell', random = Math.random) {
   const groups = flattenedGroups.filter((group) => group.options.some((option) => option.modelSupport.includes(modelId)));
   const shuffled = [...groups].sort(() => random() - 0.5);
-  const chosen = shuffled.slice(0, 4 + Math.floor(random() * 4));
+  const picked = shuffled.slice(0, 4 + Math.floor(random() * 4));
   const baseStyle = groups.find((group) => group.id === 'baseStyle');
-  if (baseStyle && !chosen.includes(baseStyle)) chosen.push(baseStyle);
+  // baseStyle has to be applied last: resolveSelectionToggle drops earlier conflicting picks, so a
+  // baseStyle landing early in the shuffle could be evicted by a later group.
+  const chosen = baseStyle
+    ? [...picked.filter((group) => group !== baseStyle), baseStyle]
+    : picked;
 
   let selections = {};
   for (const group of chosen) {
