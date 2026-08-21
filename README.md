@@ -10,7 +10,7 @@
 > Everything else — prompt building, image generation, editing, local file storage and downloads —
 > works without a database.
 
-A React + Express AI avatar customization site aimed at Tmall shoppers. The user writes an idea and
+A React + Express AI avatar customization site aimed at IT Project1. The user writes an idea and
 picks character/visual tags; the backend assembles an avatar-specific structured prompt and calls an
 image model.
 
