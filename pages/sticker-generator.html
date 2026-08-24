@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sticker Studio | ThinkSecure</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+
+        <div class="logo">
+            <h1>ThinkSecure</h1>
+        </div>
+
+        <nav class="navigation">
+            <a href="../index.html">Home</a>
+            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
+            <a href="password-checker.html">Password Checker</a>
+            <a href="passphrase-maker.html">Passphrase Maker</a>
+            <a href="sticker-generator.html">Sticker Studio</a>
+        </nav>
+
+    </header>
+
+
+    <!-- Chequered band (SAPOL style) -->
+    <div class="sapol-checker"></div>
+
+
+    <!-- Main Content -->
+    <main class="sticker-main">
+
+        <!-- Introduction -->
+        <section class="sticker-intro">
+
+            <h2>Cyber Safety Sticker Studio</h2>
+
+            <p>
+                Design a reward sticker for the Cyber Safety Test. Choose a badge
+                theme, describe what you want on it, then generate artwork with
+                your own OpenAI account and download it as a PNG.
+            </p>
+
+        </section>
+
+
+        <div class="sticker-layout">
+
+
+            <!-- ------------------------------
+                 Controls
+            ------------------------------ -->
+            <section class="sticker-panel">
+
+
+                <!-- Step 1 : API Key -->
+                <div class="panel-step">
+
+                    <h3><span class="step-number">1</span> Connect your OpenAI key</h3>
+
+                    <div class="form-group">
+
+                        <label for="api-key">OpenAI API Key</label>
+
+                        <div class="key-row">
+
+                            <input
+                                type="password"
+                                id="api-key"
+                                placeholder="sk-..."
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+
+                            <button type="button" id="toggle-key-button" class="small-button">
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="checkbox-group">
+
+                        <input type="checkbox" id="remember-key">
+
+                        <label for="remember-key">
+                            Remember the key until I close this tab
+                        </label>
+
+                    </div>
+
+                    <p class="key-notice">
+                        Your key stays in this browser and is sent only to
+                        <strong>api.openai.com</strong>. It is never saved to the
+                        project or shared with anyone else. Use a key with a
+                        spending limit, and remove it when you are finished.
+                    </p>
+
+                    <button type="button" id="clear-key-button" class="small-button">
+                        Clear stored key
+                    </button>
+
+                </div>
+
+
+                <!-- Step 2 : Sticker Design -->
+                <div class="panel-step">
+
+                    <h3><span class="step-number">2</span> Design the sticker</h3>
+
+
+                    <div class="form-group">
+
+                        <label>Badge Theme</label>
+
+                        <div class="theme-grid" id="theme-grid">
+
+                            <button type="button" class="theme-button selected" data-theme="guardian">
+                                <span class="theme-icon">🛡️</span>
+                                Cyber Guardian
+                            </button>
+
+                            <button type="button" class="theme-button" data-theme="scam-spotter">
+                                <span class="theme-icon">🔍</span>
+                                Scam Spotter
+                            </button>
+
+                            <button type="button" class="theme-button" data-theme="password-hero">
+                                <span class="theme-icon">🔐</span>
+                                Password Hero
+                            </button>
+
+                            <button type="button" class="theme-button" data-theme="phishing-catcher">
+                                <span class="theme-icon">🎣</span>
+                                Phishing Catcher
+                            </button>
+
+                            <button type="button" class="theme-button" data-theme="privacy-protector">
+                                <span class="theme-icon">🕵️</span>
+                                Privacy Protector
+                            </button>
+
+                            <button type="button" class="theme-button" data-theme="custom">
+                                <span class="theme-icon">✏️</span>
+                                Custom
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="subject">What should be on the sticker?</label>
+
+                        <textarea
+                            id="subject"
+                            rows="3"
+                            placeholder="For example: a friendly cartoon shield wearing a police cap"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="caption">Caption on the sticker (optional)</label>
+
+                        <input
+                            type="text"
+                            id="caption"
+                            maxlength="24"
+                            placeholder="CYBER GUARDIAN"
+                        >
+
+                        <p class="field-hint">
+                            Short words work best. Long captions are often
+                            misspelt by the image model.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="art-style">Art Style</label>
+
+                        <select id="art-style">
+                            <option value="flat-vector">Flat vector illustration</option>
+                            <option value="cartoon-mascot">Cartoon mascot</option>
+                            <option value="retro-badge">Retro embroidered badge</option>
+                            <option value="comic-outline">Bold comic outline</option>
+                            <option value="kawaii">Kawaii / chibi</option>
+                            <option value="pixel-art">Pixel art</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Step 3 : Output Options -->
+                <div class="panel-step">
+
+                    <h3><span class="step-number">3</span> Output options</h3>
+
+
+                    <div class="form-group">
+
+                        <label for="model">Image Model</label>
+
+                        <select id="model">
+                            <option value="gpt-image-1">gpt-image-1 (recommended)</option>
+                            <option value="dall-e-3">dall-e-3</option>
+                        </select>
+
+                        <p class="field-hint">
+                            gpt-image-1 supports transparent backgrounds but needs a
+                            verified OpenAI organisation. Switch to dall-e-3 if you
+                            get a verification error.
+                        </p>
+
+                    </div>
+
+
+                    <div class="option-row">
+
+                        <div class="form-group">
+
+                            <label for="size">Size</label>
+
+                            <select id="size">
+                                <option value="1024x1024">Square</option>
+                                <option value="1024x1536">Portrait</option>
+                                <option value="1536x1024">Landscape</option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="quality">Quality</label>
+
+                            <select id="quality">
+                                <option value="low">Low (fastest, cheapest)</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="checkbox-group">
+
+                        <input type="checkbox" id="transparent" checked>
+
+                        <label for="transparent">
+                            Transparent background (die-cut sticker)
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Generate -->
+                <button type="button" id="generate-button" class="quiz-button generate-button">
+                    Generate Sticker
+                </button>
+
+                <p class="error-message" id="sticker-error"></p>
+
+            </section>
+
+
+            <!-- ------------------------------
+                 Output
+            ------------------------------ -->
+            <section class="sticker-output">
+
+                <h3>Preview</h3>
+
+                <div class="sticker-stage" id="sticker-stage">
+
+                    <!-- Empty state -->
+                    <div class="stage-placeholder" id="stage-placeholder">
+
+                        <div class="placeholder-icon">🎖️</div>
+
+                        <p>Your sticker will appear here.</p>
+
+                    </div>
+
+
+                    <!-- Loading state -->
+                    <div class="stage-loading hidden" id="stage-loading">
+
+                        <div class="spinner"></div>
+
+                        <p id="loading-message">Drawing your sticker...</p>
+
+                    </div>
+
+
+                    <!-- Result -->
+                    <img class="hidden" id="sticker-image" alt="Generated cyber safety sticker">
+
+                </div>
+
+
+                <div class="stage-actions hidden" id="stage-actions">
+
+                    <a href="#" id="download-button" class="quiz-button" download="cyber-sticker.png">
+                        Download PNG
+                    </a>
+
+                    <button type="button" id="regenerate-button" class="answer-button">
+                        Generate Another
+                    </button>
+
+                </div>
+
+
+                <!-- Prompt that was sent -->
+                <details class="prompt-details">
+
+                    <summary>Prompt sent to OpenAI</summary>
+
+                    <pre id="prompt-preview">Choose a theme to build a prompt.</pre>
+
+                </details>
+
+
+                <!-- Session gallery -->
+                <div class="gallery-block hidden" id="gallery-block">
+
+                    <h3>This session</h3>
+
+                    <div class="sticker-gallery" id="sticker-gallery"></div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            ThinkSecure | Cybersecurity Awareness
+        </p>
+
+    </footer>
+
+
+    <script src="../js/sticker-generator.js"></script>
+
+</body>
+
+</html>

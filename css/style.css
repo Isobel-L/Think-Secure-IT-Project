@@ -35,7 +35,12 @@ body {
 
 .navigation {
     display: flex;
-    gap: 20px;
+
+    /* Wraps rather than crowding the logo once there are several links */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    gap: 12px 20px;
 }
 
 .navigation a {
@@ -456,4 +461,511 @@ footer {
     border-radius: 6px;
 
     font-weight: bold;
+}
+
+/* ------------------------------
+   Sticker Studio
+------------------------------ */
+
+/* SAPOL style colours */
+
+:root {
+    --sapol-navy: #0b2545;
+    --sapol-blue: #0b57a4;
+    --sapol-light: #e8eef6;
+}
+
+
+/* Chequered band under the header */
+
+.sapol-checker {
+    height: 24px;
+
+    background-image:
+        repeating-conic-gradient(
+            var(--sapol-navy) 0% 25%,
+            #ffffff 0% 50%
+        );
+
+    background-size: 24px 24px;
+}
+
+
+.sticker-main {
+    min-height: 75vh;
+    padding: 50px 8% 60px;
+}
+
+
+/* Introduction */
+
+.sticker-intro {
+    max-width: 750px;
+
+    margin: 0 auto 40px;
+
+    text-align: center;
+}
+
+.sticker-intro h2 {
+    font-size: 34px;
+
+    margin-top: 0;
+    margin-bottom: 15px;
+
+    color: var(--sapol-navy);
+}
+
+.sticker-intro p {
+    color: #555555;
+
+    font-size: 17px;
+    line-height: 1.6;
+
+    margin: 0;
+}
+
+
+/* Two column layout */
+
+.sticker-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+
+    gap: 30px;
+
+    max-width: 1150px;
+    margin: 0 auto;
+
+    align-items: start;
+}
+
+
+/* ------------------------------
+   Controls Panel
+------------------------------ */
+
+.sticker-panel {
+    background-color: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.panel-step {
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-step h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 18px;
+
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    color: var(--sapol-navy);
+}
+
+.step-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 26px;
+    height: 26px;
+
+    border-radius: 50%;
+
+    background-color: var(--sapol-blue);
+    color: white;
+
+    font-size: 14px;
+}
+
+
+/* Text fields */
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group textarea {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: 2px solid var(--sapol-blue);
+    outline-offset: 1px;
+}
+
+.field-hint {
+    margin: 8px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* API key row */
+
+.key-row {
+    display: flex;
+    gap: 10px;
+}
+
+.small-button {
+    padding: 10px 14px;
+
+    border: 1px solid var(--sapol-blue);
+    border-radius: 6px;
+
+    background-color: white;
+    color: var(--sapol-blue);
+
+    font-size: 14px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+}
+
+.small-button:hover {
+    background-color: var(--sapol-blue);
+    color: white;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+.checkbox-group label {
+    font-size: 14px;
+    color: #444444;
+}
+
+.key-notice {
+    padding: 14px;
+
+    margin-bottom: 15px;
+
+    background-color: var(--sapol-light);
+
+    border-left: 4px solid var(--sapol-blue);
+    border-radius: 4px;
+
+    color: #374151;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* Theme buttons */
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+.theme-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    padding: 12px 6px;
+
+    border: 2px solid #dddddd;
+    border-radius: 8px;
+
+    background-color: white;
+    color: #374151;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: bold;
+
+    text-align: center;
+
+    cursor: pointer;
+}
+
+.theme-button:hover {
+    border-color: var(--sapol-blue);
+}
+
+.theme-button.selected {
+    border-color: var(--sapol-blue);
+    background-color: var(--sapol-light);
+    color: var(--sapol-navy);
+}
+
+.theme-icon {
+    font-size: 24px;
+}
+
+
+/* Side by side options */
+
+.option-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+/* Generate */
+
+.generate-button {
+    width: 100%;
+
+    padding: 15px;
+
+    font-size: 17px;
+
+    background-color: var(--sapol-navy);
+}
+
+.generate-button:hover {
+    background-color: var(--sapol-blue);
+}
+
+.generate-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+
+/* ------------------------------
+   Output Panel
+------------------------------ */
+
+.sticker-output {
+    background-color: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sticker-output h3 {
+    font-size: 18px;
+
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    color: var(--sapol-navy);
+}
+
+
+/* Preview area, chequered so transparent stickers are visible */
+
+.sticker-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 420px;
+
+    padding: 20px;
+
+    border: 2px dashed #d1d5db;
+    border-radius: 10px;
+
+    background-color: #fafbfc;
+
+    background-image:
+        linear-gradient(45deg, #eef1f5 25%, transparent 25%),
+        linear-gradient(-45deg, #eef1f5 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eef1f5 75%),
+        linear-gradient(-45deg, transparent 75%, #eef1f5 75%);
+
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+
+.sticker-stage img {
+    max-width: 100%;
+    max-height: 520px;
+
+    border-radius: 8px;
+}
+
+.stage-placeholder,
+.stage-loading {
+    text-align: center;
+    color: #6b7280;
+}
+
+
+/* Spinner */
+
+.spinner {
+    width: 44px;
+    height: 44px;
+
+    margin: 0 auto 18px;
+
+    border: 4px solid #d1d5db;
+    border-top-color: var(--sapol-blue);
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* Actions under the preview */
+
+.stage-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+
+    margin-top: 20px;
+}
+
+/* .hidden is declared earlier in the file, so it needs restating here */
+
+.stage-actions.hidden {
+    display: none;
+}
+
+
+/* Prompt that was sent */
+
+.prompt-details {
+    margin-top: 25px;
+
+    padding: 15px;
+
+    background-color: #f4f6f8;
+
+    border-radius: 8px;
+}
+
+.prompt-details summary {
+    font-weight: bold;
+    color: var(--sapol-navy);
+
+    cursor: pointer;
+}
+
+.prompt-details pre {
+    margin: 15px 0 0;
+
+    color: #374151;
+
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* Session gallery */
+
+.gallery-block {
+    margin-top: 30px;
+}
+
+.sticker-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.gallery-item {
+    width: 82px;
+    height: 82px;
+
+    padding: 4px;
+
+    border: 2px solid #dddddd;
+    border-radius: 8px;
+
+    background-color: white;
+
+    cursor: pointer;
+}
+
+.gallery-item:hover {
+    border-color: var(--sapol-blue);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* ------------------------------
+   Sticker Studio Mobile Layout
+------------------------------ */
+
+@media (max-width: 950px) {
+
+    .sticker-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sticker-main {
+        padding: 40px 20px;
+    }
+
+    .theme-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stage-actions {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
 }
