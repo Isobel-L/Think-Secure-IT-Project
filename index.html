@@ -12,149 +12,49 @@
 
 <body>
 
-    <!-- Header -->
-    <header class="site-header">
+    <!-- Start Screen -->
+    <main class="start-screen">
 
-        <div class="logo">
+        <div class="start-card">
+
+            <div class="start-badge">🛡️</div>
+
             <h1>ThinkSecure</h1>
-        </div>
 
-        <nav class="navigation">
-            <a href="index.html">Home</a>
-            <a href="pages/cyber-quiz.html">Cyber Safety Quiz</a>
-            <a href="pages/password-checker.html">Password Checker</a>
-            <a href="pages/passphrase-maker.html">Passphrase Maker</a>
-            <a href="pages/sticker-generator.html">Sticker Studio</a>
-        </nav>
-
-    </header>
-
-
-    <!-- Main Content -->
-    <main>
-
-        <!-- Introduction -->
-        <section class="hero">
-
-            <h2>Learn. Recognise. Stay Secure.</h2>
-
-            <p>
-                Explore interactive activities designed to improve your
-                cybersecurity awareness and help you stay safer online.
+            <p class="start-tagline">
+                Learn. Recognise. Stay Secure.
             </p>
 
-        </section>
+            <p class="start-introduction">
+                A short four part game about staying safe online. Spot the
+                scams, test a password, build a passphrase you can actually
+                remember, then take home a sticker.
+            </p>
+
+            <a href="pages/cyber-quiz.html" class="start-button">
+                Start the Game
+            </a>
+
+            <p class="start-duration">
+                Takes about five minutes
+            </p>
+
+        </div>
 
 
-        <!-- Activities -->
-        <section class="activities">
+        <!-- Skip straight to the activity menu -->
+        <a href="pages/menu.html" class="next-step next-step-light">
 
-            <h2>Choose an Activity</h2>
+            <span class="next-step-label">Not in the mood for a game?</span>
+            <span class="next-step-name">Skip the Game →</span>
 
-            <div class="activity-container">
-
-
-                <!-- Cyber Safety Quiz -->
-                <article class="activity-card">
-
-                    <div class="activity-icon">
-                        💬
-                    </div>
-
-                    <h3>Cyber Safety Quiz</h3>
-
-                    <p>
-                        Test your ability to recognise scams through realistic
-                        messages, emails, pop-ups and other online scenarios.
-                    </p>
-
-                    <a
-                        href="pages/cyber-quiz.html"
-                        class="activity-button"
-                    >
-                        Start Quiz
-                    </a>
-
-                </article>
-
-
-                <!-- Password Checker -->
-                <article class="activity-card">
-
-                    <div class="activity-icon">
-                        🔐
-                    </div>
-
-                    <h3>Password Checker</h3>
-
-                    <p>
-                        Test the strength of a sample password and learn how
-                        stronger passwords can better protect your accounts.
-                    </p>
-
-                    <a
-                        href="pages/password-checker.html"
-                        class="activity-button"
-                    >
-                        Check a Password
-                    </a>
-
-                </article>
-
-
-                <!-- Passphrase Maker -->
-                <article class="activity-card">
-
-                    <div class="activity-icon">
-                        🎨
-                    </div>
-
-                    <h3>Passphrase Maker</h3>
-
-                    <p>
-                        Create a memorable passphrase using words and visual
-                        associations to make secure passwords easier to remember.
-                    </p>
-
-                    <a
-                        href="pages/passphrase-maker.html"
-                        class="activity-button"
-                    >
-                        Create a Passphrase
-                    </a>
-
-                </article>
-
-
-                <!-- Sticker Studio -->
-                <article class="activity-card">
-
-                    <div class="activity-icon">
-                        🎖️
-                    </div>
-
-                    <h3>Sticker Studio</h3>
-
-                    <p>
-                        Design and generate your own reward sticker for the
-                        Cyber Safety Test using your own OpenAI API key.
-                    </p>
-
-                    <a
-                        href="pages/sticker-generator.html"
-                        class="activity-button"
-                    >
-                        Open Sticker Studio
-                    </a>
-
-                </article>
-
-
-            </div>
-
-        </section>
+        </a>
 
     </main>
+
+
+    <!-- Chequered band -->
+    <div class="sapol-checker"></div>
 
 
     <!-- Footer -->
@@ -165,9 +65,6 @@
         </p>
 
     </footer>
-
-
-    <script src="js/main.js"></script>
 
 </body>
 

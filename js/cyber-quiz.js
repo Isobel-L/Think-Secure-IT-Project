@@ -23,6 +23,10 @@ const feedbackTitle = document.getElementById("feedback-title");
 const feedbackMessage = document.getElementById("feedback-message");
 
 
+// Corner button through to the next activity
+const quizNextStep = document.getElementById("quiz-next-step");
+
+
 
 /*
     Start Quiz
@@ -117,5 +121,9 @@ finishButton.addEventListener("click", function () {
     feedbackSection.classList.add("hidden");
 
     completeSection.classList.remove("hidden");
+
+
+    // Only offer the next activity once the quiz has been finished
+    quizNextStep.classList.remove("hidden");
 
 });
