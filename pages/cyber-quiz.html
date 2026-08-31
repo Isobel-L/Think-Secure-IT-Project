@@ -3,212 +3,624 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cyber Safety Quiz | ThinkSecure</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="../css/style.css">
+    <title>
+        Cyber Safety Challenge | ThinkSecure
+    </title>
+
+
+    <!-- Main ThinkSecure stylesheet -->
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- Cyber Quiz stylesheet -->
+    <link
+        rel="stylesheet"
+        href="../css/cyber-quiz.css"
+    >
 </head>
+
 
 <body>
 
-    <!-- Header -->
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
     <header class="site-header">
 
         <div class="logo">
-            <h1>ThinkSecure</h1>
+
+            <h1>
+                ThinkSecure
+            </h1>
+
         </div>
 
-        <nav class="navigation">
-            <a href="../index.html">Home</a>
-            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
-            <a href="password-checker.html">Password Checker</a>
-            <a href="passphrase-maker.html">Passphrase Maker</a>
-            <a href="sticker-generator.html">Sticker Studio</a>
+
+        <nav
+            class="navigation"
+            aria-label="Main navigation"
+        >
+
+            <a href="../index.html">
+                Home
+            </a>
+
+
+            <a
+                href="cyber-quiz.html"
+                aria-current="page"
+            >
+                Cyber Safety Quiz
+            </a>
+
+
+            <a href="password-checker.html">
+                Password Checker
+            </a>
+
+
+            <a href="passphrase-maker.html">
+                Passphrase Maker
+            </a>
+
+
+            <a href="sticker-generator.html">
+                Sticker Studio
+            </a>
+
         </nav>
 
     </header>
 
 
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
     <main class="quiz-main">
 
-        <!-- Introduction / Demographic Selection -->
-        <section id="quiz-start" class="quiz-section">
 
-            <h2>Cyber Safety Quiz</h2>
+        <!-- =================================================
+             START SCREEN
+        ================================================== -->
 
-            <p class="quiz-introduction">
-                Test your ability to recognise scams and suspicious online activity.
-                Your answers below will help tailor scenarios to your demographic.
+        <section
+            id="quiz-start"
+            class="quiz-shell quiz-start"
+        >
+
+            <div class="eyebrow">
+
+                Interactive cyber safety experience
+
+            </div>
+
+
+            <h2>
+                Cyber Safety Challenge
+            </h2>
+
+
+            <p class="quiz-intro">
+
+                You will move through five realistic digital
+                situations.
+
+                Explore what is on screen, decide what you
+                would do, then receive practical cyber safety
+                advice.
+
             </p>
 
 
-            <div class="form-group">
 
-                <label for="age-range">Age Range</label>
+            <!-- How it works -->
 
-                <select id="age-range">
-                    <option value="">Select your age range</option>
-                    <option value="under-18">Under 18</option>
-                    <option value="18-24">18 - 24</option>
-                    <option value="25-34">25 - 34</option>
-                    <option value="35-44">35 - 44</option>
-                    <option value="45-54">45 - 54</option>
-                    <option value="55-64">55 - 64</option>
-                    <option value="65-plus">65+</option>
-                </select>
+            <div
+                class="intro-grid"
+                aria-label="How the quiz works"
+            >
+
+
+                <article class="intro-step">
+
+                    <span class="intro-step-number">
+                        1
+                    </span>
+
+
+                    <div>
+
+                        <h3>
+                            Explore
+                        </h3>
+
+                        <p>
+                            Open the message, email, website,
+                            call, or game screen.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+
+                <article class="intro-step">
+
+                    <span class="intro-step-number">
+                        2
+                    </span>
+
+
+                    <div>
+
+                        <h3>
+                            Decide
+                        </h3>
+
+                        <p>
+                            Choose the action you would
+                            genuinely take.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+
+                <article class="intro-step">
+
+                    <span class="intro-step-number">
+                        3
+                    </span>
+
+
+                    <div>
+
+                        <h3>
+                            Learn
+                        </h3>
+
+                        <p>
+                            See feedback and practical
+                            cyber safety tips.
+                        </p>
+
+                    </div>
+
+                </article>
 
             </div>
 
 
-            <div class="form-group">
 
-                <label for="gender">Gender</label>
+            <!-- Demographics -->
 
-                <select id="gender">
-                    <option value="">Select your gender</option>
-                    <option value="woman">Woman</option>
-                    <option value="man">Man</option>
-                    <option value="non-binary">Non-binary</option>
-                    <option value="prefer-not">Prefer not to say</option>
-                </select>
+            <div class="profile-panel">
+
+
+                <!-- Age -->
+
+                <div class="form-group">
+
+                    <label for="age-range">
+                        Age range
+                    </label>
+
+
+                    <select id="age-range">
+
+                        <option value="">
+                            Select your age range
+                        </option>
+
+                        <option value="under-18">
+                            Under 18
+                        </option>
+
+                        <option value="18-24">
+                            18 - 24
+                        </option>
+
+                        <option value="25-34">
+                            25 - 34
+                        </option>
+
+                        <option value="35-44">
+                            35 - 44
+                        </option>
+
+                        <option value="45-54">
+                            45 - 54
+                        </option>
+
+                        <option value="55-64">
+                            55 - 64
+                        </option>
+
+                        <option value="65-plus">
+                            65+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Gender -->
+
+                <div class="form-group">
+
+                    <label for="gender">
+                        Gender
+                    </label>
+
+
+                    <select id="gender">
+
+                        <option value="">
+                            Select your gender
+                        </option>
+
+                        <option value="woman">
+                            Woman
+                        </option>
+
+                        <option value="man">
+                            Man
+                        </option>
+
+                        <option value="non-binary">
+                            Non-binary
+                        </option>
+
+                        <option value="prefer-not">
+                            Prefer not to say
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
 
-            <p id="form-error" class="error-message"></p>
+
+            <p
+                id="form-error"
+                class="form-error"
+                role="alert"
+            ></p>
+
 
 
             <button
                 id="start-quiz-button"
-                class="quiz-button"
+                class="primary-action"
                 type="button"
             >
-                Start Quiz
+
+                Start challenge
+
+                <span aria-hidden="true">
+                    →
+                </span>
+
             </button>
 
         </section>
 
 
-        <!-- Quiz Scenario -->
-        <section id="quiz-scenario" class="quiz-section hidden">
 
-            <p class="question-counter">
-                Scenario 1
-            </p>
+        <!-- =================================================
+             SCENARIO
+        ================================================== -->
 
-            <h2>Is this a scam?</h2>
+        <section
+            id="quiz-scenario"
+            class="quiz-shell hidden"
+        >
 
 
-            <!-- Fake SMS -->
-            <div class="scenario-card">
+            <!-- Progress -->
 
-                <div class="scenario-header">
-                    📱 Text Message
+            <div class="quiz-progress-wrap">
+
+
+                <div class="progress-meta">
+
+                    <strong id="question-counter">
+                        Scenario 1 of 5
+                    </strong>
+
+
+                    <span id="scenario-medium">
+                        Phone • Messages
+                    </span>
+
                 </div>
 
-                <div class="message-box">
 
-                    <strong>Parcel Delivery</strong>
+                <div
+                    class="progress-track"
+                    aria-hidden="true"
+                >
 
-                    <p>
-                        Your package could not be delivered.
-                    </p>
-
-                    <p>
-                        A $2.99 redelivery fee is required.
-                        Please update your details using the link below:
-                    </p>
-
-                    <p class="fake-link">
-                        parcel-redelivery-example.com
-                    </p>
+                    <div
+                        id="progress-fill"
+                        class="progress-fill"
+                    ></div>
 
                 </div>
 
             </div>
 
 
-            <p class="scenario-question">
-                What do you think?
-            </p>
+
+            <!-- Scenario description -->
+
+            <header class="scenario-copy">
+
+                <h2 id="scenario-title"></h2>
+
+                <p id="scenario-introduction"></p>
+
+            </header>
 
 
-            <div class="answer-buttons">
 
-                <button
-                    id="safe-button"
-                    class="answer-button"
-                    type="button"
+            <!-- Instructions -->
+
+            <div
+                class="instruction-banner"
+                id="interaction-instruction"
+            >
+
+                <span
+                    class="instruction-pointer"
+                    aria-hidden="true"
                 >
-                    Looks Safe
-                </button>
+                    ↳
+                </span>
 
-                <button
-                    id="scam-button"
-                    class="answer-button"
-                    type="button"
-                >
-                    Looks Like a Scam
-                </button>
+
+                <span id="instruction-text"></span>
 
             </div>
+
+
+
+            <!-- Interactive device -->
+
+            <div
+                id="scenario-visual"
+                class="scenario-stage"
+                aria-live="polite"
+            ></div>
+
+
+
+            <!-- Decision -->
+
+            <section
+                id="decision-area"
+                class="decision-area hidden"
+                aria-live="polite"
+            >
+
+                <div class="decision-kicker">
+
+                    Your decision
+
+                </div>
+
+
+                <h3 id="scenario-question"></h3>
+
+
+                <div
+                    id="answer-buttons"
+                    class="answer-grid"
+                ></div>
+
+            </section>
 
         </section>
 
 
-        <!-- Feedback -->
-        <section id="quiz-feedback" class="quiz-section hidden">
 
-            <h2 id="feedback-title"></h2>
+        <!-- =================================================
+             FEEDBACK
+        ================================================== -->
 
-            <p id="feedback-message"></p>
+        <section
+            id="quiz-feedback"
+            class="quiz-shell hidden"
+        >
 
 
-            <div class="cyber-tip">
+            <div
+                id="feedback-status"
+                class="feedback-status"
+            >
 
-                <h3>Cyber Safety Tip</h3>
 
-                <p>
-                    Be cautious of unexpected messages asking you to make
-                    payments or click unfamiliar links.
-                </p>
+                <div
+                    id="feedback-icon"
+                    class="feedback-icon"
+                    aria-hidden="true"
+                ></div>
 
-                <p>
-                    Instead of following the link, visit the organisation's
-                    official website directly.
-                </p>
+
+                <div>
+
+                    <div
+                        id="feedback-label"
+                        class="feedback-label"
+                    ></div>
+
+
+                    <h2 id="feedback-title"></h2>
+
+                </div>
 
             </div>
+
+
+
+            <p
+                id="feedback-message"
+                class="feedback-message"
+            ></p>
+
+
+
+            <!-- Tips -->
+
+            <div class="tips-panel">
+
+
+                <div class="tips-heading">
+
+                    <div
+                        class="shield-mark"
+                        aria-hidden="true"
+                    >
+                        ✓
+                    </div>
+
+
+                    <div>
+
+                        <div class="tips-kicker">
+
+                            ThinkSecure advice
+
+                        </div>
+
+
+                        <h3>
+                            What should you remember?
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <ul id="cyber-tip-list"></ul>
+
+            </div>
+
 
 
             <button
-                id="finish-button"
-                class="quiz-button"
+                id="next-question-button"
+                class="primary-action"
                 type="button"
             >
-                Finish Quiz
+
+                Next scenario
+
+                <span aria-hidden="true">
+                    →
+                </span>
+
             </button>
 
         </section>
 
 
-        <!-- Quiz Complete -->
-        <section id="quiz-complete" class="quiz-section hidden">
 
-            <h2>Quiz Complete!</h2>
+        <!-- =================================================
+             RESULTS
+        ================================================== -->
 
-            <p>
-                You have completed the Cyber Safety Quiz demonstration.
-            </p>
+        <section
+            id="quiz-complete"
+            class="quiz-shell results-screen hidden"
+        >
 
-            <p>
-                Next, see how a password holds up when it is tested.
-            </p>
+            <div class="results-badge">
 
-            <a href="password-checker.html" class="quiz-button">
-                Continue to Password Checker
-            </a>
+                Challenge complete
+
+            </div>
+
+
+            <h2>
+                Your Cyber Safety Score
+            </h2>
+
+
+
+            <div
+                class="score-ring"
+                aria-label="Final score"
+            >
+
+                <span id="score-value">
+                    0
+                </span>
+
+
+                <small>
+                    / 5
+                </small>
+
+            </div>
+
+
+
+            <p
+                id="score-message"
+                class="score-message"
+            ></p>
+
+
+
+            <div class="results-actions">
+
+                <a
+                    class="primary-action"
+                    href="password-checker.html"
+                >
+                    Continue to Password Checker
+                </a>
+
+
+                <button
+                    id="restart-button"
+                    class="secondary-action"
+                    type="button"
+                >
+                    Try again
+                </button>
+
+
+                <a
+                    class="secondary-action"
+                    href="../index.html"
+                >
+                    Return home
+                </a>
+
+            </div>
 
         </section>
 
@@ -219,10 +631,66 @@
     <a href="password-checker.html" id="quiz-next-step" class="next-step hidden">
 
         <span class="next-step-label">Next step</span>
-        <span class="next-step-name">Password Checker →</span>
+        <span class="next-step-name">Password Checker &rarr;</span>
 
     </a>
 
+
+
+    <!-- =====================================================
+         SIMULATED LINK / WEBSITE MODAL
+    ====================================================== -->
+
+    <div
+        id="simulation-modal"
+        class="simulation-modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="simulation-title"
+    >
+
+        <div class="simulation-window">
+
+
+            <div class="simulation-window-top">
+
+                <div>
+
+                    <span class="simulation-label">
+
+                        ThinkSecure simulation
+
+                    </span>
+
+
+                    <h2 id="simulation-title"></h2>
+
+                </div>
+
+
+                <button
+                    id="close-simulation"
+                    class="modal-close"
+                    type="button"
+                    aria-label="Close simulated page"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div id="simulation-content"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
     <footer>
 
@@ -233,7 +701,13 @@
     </footer>
 
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
     <script src="../js/cyber-quiz.js"></script>
+
 
 </body>
 
