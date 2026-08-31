@@ -68,6 +68,12 @@ function loadPassphrase() {
     const stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
 
 
+    // A passphrase is good for one sticker. Clearing it as soon as it is
+    // read means leaving this page and coming back always needs a freshly
+    // built passphrase rather than quietly reusing the last one.
+    sessionStorage.removeItem(PHRASE_STORAGE_NAME);
+
+
     if (!stored) {
 
         noPhraseSection.classList.remove("hidden");
