@@ -24,37 +24,214 @@
             <a href="cyber-quiz.html">Cyber Safety Quiz</a>
             <a href="password-checker.html">Password Checker</a>
             <a href="passphrase-maker.html">Passphrase Maker</a>
+            <a href="sticker-generator.html">Sticker Studio</a>
         </nav>
 
     </header>
 
 
-    <!-- Main Content -->
-    <main class="placeholder-main">
+    <!-- Chequered band -->
+    <div class="sapol-checker"></div>
 
-        <section class="placeholder-card">
 
-            <div class="placeholder-icon">
-                🎨
+    <main class="phrase-main">
+
+
+        <!-- ------------------------------
+             Explanation
+        ------------------------------ -->
+        <section id="phrase-intro" class="phrase-section">
+
+            <div class="phrase-icon">🔑</div>
+
+            <h2>What is a passphrase?</h2>
+
+            <p class="phrase-lead">
+                A passphrase is a password made from several unrelated words
+                instead of one short, complicated word.
+            </p>
+
+            <div class="compare-grid">
+
+                <div class="compare-card compare-weak">
+
+                    <h3>A typical password</h3>
+
+                    <code>P@ssw0rd1</code>
+
+                    <p>
+                        Short, full of awkward symbols, hard to remember, and
+                        the substitutions are exactly what guessing software
+                        tries first.
+                    </p>
+
+                </div>
+
+                <div class="compare-card compare-strong">
+
+                    <h3>A passphrase</h3>
+
+                    <code>Ocean-Gorilla-Watermelon-Japan</code>
+
+                    <p>
+                        Much longer, easy to picture in your head, and far
+                        harder to guess because the words have nothing to do
+                        with each other.
+                    </p>
+
+                </div>
+
             </div>
 
-            <h2>Passphrase Maker</h2>
+            <div class="phrase-points">
 
-            <p>
-                Create a secure and memorable passphrase using words
-                and visual associations designed to make strong
-                passwords easier to remember.
+                <div class="phrase-point">
+                    <span class="point-icon">📏</span>
+                    <p><strong>Length beats complexity.</strong> Every extra
+                    character multiplies the work an attacker has to do.</p>
+                </div>
+
+                <div class="phrase-point">
+                    <span class="point-icon">🧠</span>
+                    <p><strong>Pictures stick.</strong> You remember a gorilla
+                    in the ocean far better than a string of symbols.</p>
+                </div>
+
+                <div class="phrase-point">
+                    <span class="point-icon">🎲</span>
+                    <p><strong>Unrelated is the point.</strong> Words that
+                    belong together are easier to guess.</p>
+                </div>
+
+            </div>
+
+            <p class="phrase-instruction">
+                You are about to pick four words: a place, an animal, a fruit
+                and a country. Choose whatever sticks in your mind.
             </p>
 
-            <p class="development-message">
-                This activity is currently under development.
-            </p>
-
-            <a href="../index.html" class="quiz-button">
-                Return Home
-            </a>
+            <button type="button" id="begin-button" class="quiz-button">
+                Start Building
+            </button>
 
         </section>
+
+
+        <!-- ------------------------------
+             Word Picker
+        ------------------------------ -->
+        <section id="phrase-picker" class="phrase-section hidden">
+
+            <!-- Progress -->
+            <div class="phrase-progress">
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <p class="progress-label" id="progress-label">Step 1 of 4</p>
+
+            </div>
+
+
+            <h2 id="picker-title">Choose a place</h2>
+
+            <p class="phrase-lead" id="picker-hint">
+                Where does your passphrase happen?
+            </p>
+
+
+            <!-- Words chosen so far -->
+            <div class="chosen-strip" id="chosen-strip"></div>
+
+
+            <!-- The 20 options -->
+            <div class="word-grid" id="word-grid"></div>
+
+
+            <div class="picker-actions">
+
+                <button type="button" id="back-button" class="answer-button">
+                    Back
+                </button>
+
+                <button type="button" id="shuffle-button" class="answer-button">
+                    Surprise Me
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ------------------------------
+             Result
+        ------------------------------ -->
+        <section id="phrase-result" class="phrase-section hidden">
+
+            <div class="phrase-icon">✅</div>
+
+            <h2>Your passphrase</h2>
+
+            <div class="result-emoji" id="result-emoji"></div>
+
+            <div class="passphrase-box">
+
+                <code id="passphrase-text"></code>
+
+                <button type="button" id="copy-button" class="small-button">
+                    Copy
+                </button>
+
+            </div>
+
+            <p class="copy-status" id="copy-status"></p>
+
+
+            <div class="result-stats">
+
+                <div class="result-stat">
+                    <span class="stat-value" id="stat-length">0</span>
+                    <span class="stat-label">characters</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">words</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="stat-value">160,000</span>
+                    <span class="stat-label">combinations</span>
+                </div>
+
+            </div>
+
+            <p class="result-note">
+                This is a demonstration. When you make a real passphrase,
+                pick the words yourself rather than from a list of twenty,
+                and never reuse it across accounts.
+            </p>
+
+
+            <div class="result-actions">
+
+                <a href="sticker-generator.html" class="quiz-button">
+                    Make My Sticker
+                </a>
+
+                <a href="password-checker.html?check=passphrase" class="answer-button">
+                    Test Its Strength
+                </a>
+
+                <button type="button" id="restart-button" class="answer-button">
+                    Start Over
+                </button>
+
+            </div>
+
+        </section>
+
 
     </main>
 
@@ -67,6 +244,9 @@
         </p>
 
     </footer>
+
+
+    <script src="../js/passphrase-maker.js"></script>
 
 </body>
 

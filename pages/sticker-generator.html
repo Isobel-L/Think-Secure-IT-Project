@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sticker Studio | ThinkSecure</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+
+        <div class="logo">
+            <h1>ThinkSecure</h1>
+        </div>
+
+        <nav class="navigation">
+            <a href="../index.html">Home</a>
+            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
+            <a href="password-checker.html">Password Checker</a>
+            <a href="passphrase-maker.html">Passphrase Maker</a>
+            <a href="sticker-generator.html">Sticker Studio</a>
+        </nav>
+
+    </header>
+
+
+    <!-- Chequered band -->
+    <div class="sapol-checker"></div>
+
+
+    <main class="sticker-main">
+
+
+        <!-- Shown when there is no passphrase to work from -->
+        <section id="no-phrase" class="phrase-section hidden">
+
+            <div class="phrase-icon">🎨</div>
+
+            <h2>Make a passphrase first</h2>
+
+            <p class="phrase-lead">
+                The Sticker Studio turns the four words from your passphrase
+                into a sticker. Head back and pick your words, then come
+                straight here.
+            </p>
+
+            <a href="passphrase-maker.html" class="quiz-button">
+                Go to Passphrase Maker
+            </a>
+
+        </section>
+
+
+        <!-- The studio itself -->
+        <div id="studio" class="hidden">
+
+            <section class="sticker-intro">
+
+                <h2>Sticker Studio</h2>
+
+                <p>
+                    Here are the four words you chose. Arrange them, then
+                    download your sticker as a PNG.
+                </p>
+
+            </section>
+
+
+            <div class="sticker-layout">
+
+
+                <!-- Controls -->
+                <section class="sticker-panel">
+
+                    <h3>Your words</h3>
+
+                    <div class="studio-words" id="studio-words"></div>
+
+
+                    <div class="panel-step">
+
+                        <h3>Layout</h3>
+
+                        <div class="option-buttons" id="layout-options">
+
+                            <button type="button" class="option-button selected" data-layout="grid">
+                                Square
+                            </button>
+
+                            <button type="button" class="option-button" data-layout="row">
+                                Wide
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-step">
+
+                        <h3>Background</h3>
+
+                        <div class="option-buttons" id="background-options">
+
+                            <button type="button" class="option-button selected" data-background="light">
+                                Light
+                            </button>
+
+                            <button type="button" class="option-button" data-background="navy">
+                                Navy
+                            </button>
+
+                            <button type="button" class="option-button" data-background="transparent">
+                                Transparent
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-step">
+
+                        <h3>Text</h3>
+
+                        <div class="checkbox-group">
+
+                            <input type="checkbox" id="show-labels" checked>
+
+                            <label for="show-labels">
+                                Show the word under each picture
+                            </label>
+
+                        </div>
+
+                        <div class="checkbox-group">
+
+                            <input type="checkbox" id="show-phrase">
+
+                            <label for="show-phrase">
+                                Print the full passphrase on the sticker
+                            </label>
+
+                        </div>
+
+                        <p class="key-notice">
+                            Leave the full passphrase off if you plan to stick
+                            this anywhere other people can see. The pictures on
+                            their own are enough to jog your memory, which is
+                            the whole point of a passphrase.
+                        </p>
+
+                    </div>
+
+
+                    <a href="#" id="download-button" class="quiz-button generate-button" download="thinksecure-sticker.png">
+                        Download PNG
+                    </a>
+
+                </section>
+
+
+                <!-- Preview -->
+                <section class="sticker-output">
+
+                    <h3>Preview</h3>
+
+                    <div class="sticker-stage">
+
+                        <canvas id="sticker-canvas" width="1000" height="1000"></canvas>
+
+                    </div>
+
+                    <div class="stage-actions">
+
+                        <a href="passphrase-maker.html" class="answer-button">
+                            Change My Words
+                        </a>
+
+                        <a href="../index.html" class="answer-button">
+                            Back to Start
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            ThinkSecure | Cybersecurity Awareness
+        </p>
+
+    </footer>
+
+
+    <script src="../js/sticker-generator.js"></script>
+
+</body>
+
+</html>

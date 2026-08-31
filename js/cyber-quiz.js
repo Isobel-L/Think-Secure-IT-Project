@@ -1802,6 +1802,12 @@ const completeSection =
     );
 
 
+const quizNextStep =
+    document.getElementById(
+        "quiz-next-step"
+    );
+
+
 const ageRange =
     document.getElementById(
         "age-range"
@@ -5537,6 +5543,13 @@ function showSection(
 
     section.classList.remove(
         "hidden"
+    );
+
+
+    // Only offer the next activity once the quiz has been finished
+    quizNextStep.classList.toggle(
+        "hidden",
+        section !== completeSection
     );
 
 

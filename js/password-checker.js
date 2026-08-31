@@ -1,4 +1,9 @@
 // ==========================================
+// ThinkSecure Password Checker
+// ==========================================
+
+
+// ==========================================
 // Get HTML elements
 // ==========================================
 
@@ -7,6 +12,11 @@ const passwordInput = document.getElementById("passwordInput");
 const resultPanel = document.getElementById("resultPanel");
 const togglePassword = document.getElementById("togglePassword");
 const clearButton = document.getElementById("clearButton");
+
+// Robot elements
+const robotImage = document.getElementById("robotImage");
+const crackerTitle = document.getElementById("crackerTitle");
+const crackerMessage = document.getElementById("crackerMessage");
 
 
 // ==========================================
@@ -29,60 +39,216 @@ const strengthLabels = [
 
 passwordForm.addEventListener("submit", async (event) => {
 
-    // Prevent the page from refreshing
+    // Prevent page refresh
     event.preventDefault();
 
     const password = passwordInput.value;
 
-    // Check if the input is empty
+
+    // ======================================
+    // Check empty input
+    // ======================================
+
     if (!password) {
+
         renderEmpty("Enter an example password first.");
+
         passwordInput.focus();
+
         return;
     }
 
+
+    // ======================================
     // Make sure zxcvbn has loaded
+    // ======================================
+
     if (typeof zxcvbn !== "function") {
+
         renderEmpty(
             "The strength checker is still loading. Try again in a moment."
         );
+
         return;
     }
 
-    // --------------------------------------
-    // Step 1: Check password strength
-    // --------------------------------------
+
+    // ======================================
+    // Step 1: Password strength check
+    // ======================================
 
     const strength = zxcvbn(password);
 
-    // Show the strength result immediately
-    // while HIBP is still checking
-    renderResult(strength, {
-        status: "checking"
-    });
+
+    // Change robot expression
+    updateRobotExpression(strength.score);
 
 
-    // --------------------------------------
-    // Step 2: Check HIBP breach database
-    // --------------------------------------
+    // Show strength result immediately
+    // while HIBP is checking
+    renderResult(
+        strength,
+        {
+            status: "checking"
+        }
+    );
+
+
+    // ======================================
+    // Step 2: HIBP breach check
+    // ======================================
 
     try {
 
-        const breach = await checkPwnedPassword(password);
+        const breach =
+            await checkPwnedPassword(password);
 
-        renderResult(strength, breach);
+
+        renderResult(
+            strength,
+            breach
+        );
 
     } catch (error) {
 
-        console.error("HIBP check failed:", error);
+        console.error(
+            "HIBP check failed:",
+            error
+        );
 
-        // Strength checker still works
-        // even if HIBP is unavailable
-        renderResult(strength, {
-            status: "error"
-        });
+
+        // Password strength still works
+        // even if HIBP fails
+        renderResult(
+            strength,
+            {
+                status: "error"
+            }
+        );
     }
 });
+
+
+// ==========================================
+// Robot Expression
+// ==========================================
+
+function updateRobotExpression(score) {
+
+    // --------------------------------------
+    // Score 0
+    // VERY WEAK
+    // Angry
+    // --------------------------------------
+
+    if (score === 0) {
+
+        robotImage.src =
+            "../robotimage/angry.png";
+
+        robotImage.alt =
+            "Angry ThinkSecure Security Bot";
+
+        crackerTitle.textContent =
+            "Very Weak";
+
+        crackerMessage.textContent =
+            "That password is far too easy to guess. Try again!";
+
+        return;
+    }
+
+
+    // --------------------------------------
+    // Score 1
+    // WEAK
+    // Annoyed
+    // --------------------------------------
+
+    if (score === 1) {
+
+        robotImage.src =
+            "../robotimage/annoyed.png";
+
+        robotImage.alt =
+            "Annoyed ThinkSecure Security Bot";
+
+        crackerTitle.textContent =
+            "Weak";
+
+        crackerMessage.textContent =
+            "Still too predictable. Can you make it stronger?";
+
+        return;
+    }
+
+
+    // --------------------------------------
+    // Score 2
+    // FAIR
+    // Neutral
+    // --------------------------------------
+
+    if (score === 2) {
+
+        robotImage.src =
+            "../robotimage/neutral.png";
+
+        robotImage.alt =
+            "Neutral ThinkSecure Security Bot";
+
+        crackerTitle.textContent =
+            "Fair";
+
+        crackerMessage.textContent =
+            "Getting better, but I can still recognise some predictable patterns.";
+
+        return;
+    }
+
+
+    // --------------------------------------
+    // Score 3
+    // STRONG
+    // Happy
+    // --------------------------------------
+
+    if (score === 3) {
+
+        robotImage.src =
+            "../robotimage/happy.png";
+
+        robotImage.alt =
+            "Happy ThinkSecure Security Bot";
+
+        crackerTitle.textContent =
+            "Strong";
+
+        crackerMessage.textContent =
+            "Nice! This password is much harder to guess.";
+
+        return;
+    }
+
+
+    // --------------------------------------
+    // Score 4
+    // VERY STRONG
+    // Excited
+    // --------------------------------------
+
+    robotImage.src =
+        "../robotimage/excited.png";
+
+    robotImage.alt =
+        "Excited ThinkSecure Security Bot";
+
+    crackerTitle.textContent =
+        "Very Strong";
+
+    crackerMessage.textContent =
+        "Excellent! You beat the password challenge!";
+}
 
 
 // ==========================================
@@ -91,13 +257,20 @@ passwordForm.addEventListener("submit", async (event) => {
 
 togglePassword.addEventListener("click", () => {
 
-    const isHidden = passwordInput.type === "password";
+    const isHidden =
+        passwordInput.type === "password";
+
 
     passwordInput.type =
-        isHidden ? "text" : "password";
+        isHidden
+            ? "text"
+            : "password";
+
 
     togglePassword.textContent =
-        isHidden ? "Hide" : "Show";
+        isHidden
+            ? "Hide"
+            : "Show";
 });
 
 
@@ -107,15 +280,38 @@ togglePassword.addEventListener("click", () => {
 
 clearButton.addEventListener("click", () => {
 
+    // Clear input
     passwordInput.value = "";
 
+
+    // Hide password again
     passwordInput.type = "password";
+
 
     togglePassword.textContent = "Show";
 
+
+    // Reset robot to Neutral
+    robotImage.src =
+        "../robotimage/neutral.png";
+
+    robotImage.alt =
+        "Neutral ThinkSecure Security Bot";
+
+
+    crackerTitle.textContent =
+        "Password Challenge Ready";
+
+
+    crackerMessage.textContent =
+        "Think your example password is strong? Put it to the test.";
+
+
+    // Reset result panel
     renderEmpty(
         "Enter an example password to see its strength, risks, and improvement tips."
     );
+
 
     passwordInput.focus();
 });
@@ -129,6 +325,7 @@ function renderEmpty(message) {
 
     resultPanel.className =
         "result-panel is-empty";
+
 
     resultPanel.innerHTML = `
         <div class="empty-state">
@@ -151,15 +348,17 @@ function renderEmpty(message) {
 function renderResult(strength, breach) {
 
     // zxcvbn score: 0 - 4
-    const score = strength.score;
+    const score =
+        strength.score;
+
 
     const label =
         strengthLabels[score];
 
 
-    // --------------------------------------
-    // Decide the visual risk level
-    // --------------------------------------
+    // ======================================
+    // Visual risk level
+    // ======================================
 
     const riskClass =
         score <= 1
@@ -169,7 +368,7 @@ function renderResult(strength, breach) {
                 : "risk-low";
 
 
-    // --------------------------------------
+    // ======================================
     // Strength bar width
     //
     // Score 0 = 20%
@@ -177,13 +376,13 @@ function renderResult(strength, breach) {
     // Score 2 = 60%
     // Score 3 = 80%
     // Score 4 = 100%
-    // --------------------------------------
+    // ======================================
 
     const meterWidth =
         `${(score + 1) * 20}%`;
 
 
-    // Build improvement advice
+    // Build educational advice
     const advice =
         buildAdvice(
             strength,
@@ -191,12 +390,13 @@ function renderResult(strength, breach) {
         );
 
 
-    // --------------------------------------
-    // Render result
-    // --------------------------------------
+    // ======================================
+    // Render UI
+    // ======================================
 
     resultPanel.className =
         `result-panel ${riskClass}`;
+
 
     resultPanel.innerHTML = `
 
@@ -236,7 +436,9 @@ function renderResult(strength, breach) {
 
         <section class="feedback-section">
 
-            <h3>What this means</h3>
+            <h3>
+                What this means
+            </h3>
 
             <p>
                 ${escapeHtml(
@@ -254,7 +456,9 @@ function renderResult(strength, breach) {
 
         <section class="feedback-section">
 
-            <h3>Breach check</h3>
+            <h3>
+                Breach check
+            </h3>
 
             ${renderBreachStatus(breach)}
 
@@ -265,7 +469,9 @@ function renderResult(strength, breach) {
 
         <section class="feedback-section">
 
-            <h3>How to improve it</h3>
+            <h3>
+                How to improve it
+            </h3>
 
             <ul>
 
@@ -277,6 +483,53 @@ function renderResult(strength, breach) {
                     .join("")}
 
             </ul>
+
+        </section>
+
+
+        <!-- Challenge -->
+
+        <section class="challenge-next">
+
+            ${
+                score < 4
+
+                    ? `
+                        <h3>
+                            🛠️ Your next challenge
+                        </h3>
+
+                        <p>
+                            Change your example password
+                            and test it again.
+                            Can you make the Security Bot
+                            excited?
+                        </p>
+                    `
+
+                    : `
+                        <h3>
+                            🏆 Challenge Complete!
+                        </h3>
+
+                        <p>
+                            Excellent!
+                            You reached Very Strong.
+                            Next, learn how a memorable
+                            passphrase can also provide
+                            strong security.
+                        </p>
+
+                        <p>
+                            <a
+                                href="passphrase-maker.html"
+                                class="quiz-button"
+                            >
+                                Build a Passphrase →
+                            </a>
+                        </p>
+                    `
+            }
 
         </section>
     `;
@@ -292,6 +545,7 @@ function getStrengthSummary(
     guessesLog10
 ) {
 
+    // Very Weak / Weak
     if (score <= 1) {
 
         return (
@@ -300,6 +554,7 @@ function getStrengthSummary(
     }
 
 
+    // Fair
     if (score === 2) {
 
         return (
@@ -308,6 +563,7 @@ function getStrengthSummary(
     }
 
 
+    // Strong or Very Strong
     if (guessesLog10 >= 12) {
 
         return (
@@ -333,25 +589,40 @@ function buildAdvice(
 
     const suggestions =
         strength.feedback?.suggestions
-            ?.filter(Boolean) || [];
+            ?.filter(Boolean)
+        || [];
+
 
     const warning =
         strength.feedback?.warning;
 
+
     const advice = [];
 
 
+    // ======================================
     // zxcvbn warning
+    // ======================================
+
     if (warning) {
+
         advice.push(warning);
     }
 
 
+    // ======================================
     // zxcvbn suggestions
-    advice.push(...suggestions);
+    // ======================================
+
+    advice.push(
+        ...suggestions
+    );
 
 
+    // ======================================
     // ThinkSecure educational advice
+    // ======================================
+
     if (passwordLength < 14) {
 
         advice.push(
@@ -372,8 +643,9 @@ function buildAdvice(
 
     // Remove duplicates
     // Maximum 5 suggestions
-    return [...new Set(advice)]
-        .slice(0, 5);
+    return [
+        ...new Set(advice)
+    ].slice(0, 5);
 }
 
 
@@ -383,8 +655,10 @@ function buildAdvice(
 
 function renderBreachStatus(breach) {
 
-
+    // ======================================
     // Still checking
+    // ======================================
+
     if (breach.status === "checking") {
 
         return `
@@ -393,8 +667,9 @@ function renderBreachStatus(breach) {
                 <span class="status-dot"></span>
 
                 <p>
-                    Checking known breached-password data
-                    without sending your full password...
+                    Checking known breached-password
+                    data without sending your full
+                    password...
                 </p>
 
             </div>
@@ -402,7 +677,10 @@ function renderBreachStatus(breach) {
     }
 
 
-    // API error
+    // ======================================
+    // API Error
+    // ======================================
+
     if (breach.status === "error") {
 
         return `
@@ -411,8 +689,9 @@ function renderBreachStatus(breach) {
                 <span class="status-dot"></span>
 
                 <p>
-                    The online breach check could not be completed.
-                    The password strength result above still works.
+                    The online breach check could not
+                    be completed. The password strength
+                    result above still works.
                 </p>
 
             </div>
@@ -420,7 +699,10 @@ function renderBreachStatus(breach) {
     }
 
 
-    // Password found in breaches
+    // ======================================
+    // Password found
+    // ======================================
+
     if (breach.found) {
 
         return `
@@ -429,8 +711,13 @@ function renderBreachStatus(breach) {
                 <span class="status-dot"></span>
 
                 <p>
-                    This password appears in known breach data
-                    ${breach.count.toLocaleString()} times.
+                    This password appears in known
+                    breach data
+                    <strong>
+                        ${breach.count.toLocaleString()}
+                    </strong>
+                    times.
+
                     Do not use it.
                 </p>
 
@@ -439,16 +726,22 @@ function renderBreachStatus(breach) {
     }
 
 
-    // Not found
+    // ======================================
+    // Password not found
+    // ======================================
+
     return `
         <div class="breach-status">
 
             <span class="status-dot"></span>
 
             <p>
-                This exact password was not found in the
-                Have I Been Pwned password data.
-                This does not guarantee that the password is secure.
+                This exact password was not found
+                in the Have I Been Pwned password data.
+
+                This does not guarantee that the
+                password is secure.
+
                 It should still be long and unique.
             </p>
 
@@ -463,10 +756,9 @@ function renderBreachStatus(breach) {
 
 async function checkPwnedPassword(password) {
 
-
-    // --------------------------------------
+    // ======================================
     // Convert password to SHA-1 locally
-    // --------------------------------------
+    // ======================================
 
     const hash =
         await sha1(password);
@@ -482,10 +774,10 @@ async function checkPwnedPassword(password) {
         hash.slice(5);
 
 
-    // --------------------------------------
-    // Send ONLY the first 5 hash characters
-    // to HIBP
-    // --------------------------------------
+    // ======================================
+    // Send ONLY the first five hash
+    // characters to HIBP
+    // ======================================
 
     const response =
         await fetch(
@@ -498,6 +790,10 @@ async function checkPwnedPassword(password) {
         );
 
 
+    // ======================================
+    // Check API response
+    // ======================================
+
     if (!response.ok) {
 
         throw new Error(
@@ -506,39 +802,48 @@ async function checkPwnedPassword(password) {
     }
 
 
-    // --------------------------------------
+    // ======================================
     // Read API response
-    // --------------------------------------
+    // ======================================
 
     const text =
         await response.text();
 
 
-    // --------------------------------------
+    // ======================================
     // Find our hash suffix locally
-    // --------------------------------------
+    // ======================================
 
     const match =
         text
             .split("\n")
+
             .map(
                 (line) =>
                     line
                         .trim()
                         .split(":")
             )
+
             .find(
                 ([returnedSuffix, count]) =>
-                    returnedSuffix === suffix &&
+
+                    returnedSuffix === suffix
+                    &&
                     Number(count) > 0
             );
 
+
+    // ======================================
+    // Return result
+    // ======================================
 
     return {
 
         status: "complete",
 
-        found: Boolean(match),
+        found:
+            Boolean(match),
 
         count:
             match
@@ -557,6 +862,7 @@ async function sha1(value) {
     const encoder =
         new TextEncoder();
 
+
     const data =
         encoder.encode(value);
 
@@ -571,20 +877,24 @@ async function sha1(value) {
     return [
         ...new Uint8Array(digest)
     ]
+
         .map(
             (byte) =>
                 byte
                     .toString(16)
                     .padStart(2, "0")
         )
+
         .join("")
+
         .toUpperCase();
 }
 
 
 // ==========================================
 // Escape HTML
-// Prevent text from being interpreted as HTML
+// Prevent text from being interpreted
+// as HTML
 // ==========================================
 
 function escapeHtml(value) {
@@ -592,6 +902,7 @@ function escapeHtml(value) {
     return String(value)
         .replace(
             /[&<>"']/g,
+
             (char) => {
 
                 const entities = {
