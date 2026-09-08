@@ -1435,3 +1435,10 @@ footer {
     }
 
 }
+
+/* Password Checker language selector */
+.language-control{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.language-control select{font:inherit;padding:8px;border:1px solid #aab7c4;border-radius:6px;background:white;color:#0b2545}.language-control select:focus-visible{outline:3px solid #80bfff;outline-offset:2px}.site-header:has(.language-control){flex-wrap:wrap;gap:16px}html[lang="zh-CN"] .checker-shell{font-family:Arial,"Microsoft YaHei","PingFang SC",sans-serif}html[lang="zh-CN"] .checker-shell h1{line-height:1.4}
+@media(max-width:600px){.site-header:has(.language-control) .navigation{justify-content:flex-start}.checker-shell .input-row{flex-wrap:wrap}.checker-shell .input-row input{min-width:0;max-width:100%}.checker-shell .actions{flex-wrap:wrap}}
+
+@media(max-width:600px){body:has(.checker-shell) > .next-step{position:static;display:flex;width:fit-content;max-width:calc(100% - 32px);margin:20px auto;transform:none}}
+

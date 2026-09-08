@@ -87,8 +87,8 @@ function showNote(form, phrase) {
 
     note.className = "handoff-note";
 
-    note.textContent = "This is the passphrase you just built. "
-        + "Compare it against a password you would normally choose.";
+    note.dataset.i18n = "password.handoffNote";
+    note.textContent = I18n.t("password.handoffNote");
 
 
     form.parentNode.insertBefore(note, form);
