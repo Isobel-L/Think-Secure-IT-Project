@@ -34,7 +34,7 @@ const PHRASE_STORAGE_NAME = "thinksecure-passphrase";
 const EMOJI_FONT = "\"Apple Color Emoji\", \"Segoe UI Emoji\", "
     + "\"Noto Color Emoji\", sans-serif";
 
-const TEXT_FONT = "Arial, Helvetica, sans-serif";
+const TEXT_FONT = 'Arial, "Microsoft YaHei", "PingFang SC", sans-serif';
 
 
 // Colours, kept in step with the stylesheet
@@ -89,7 +89,7 @@ function loadPassphrase() {
 
 
     // Anything other than four complete words means starting again
-    if (!passphrase.words || passphrase.words.length !== 4) {
+    if (!passphrase || typeof passphrase.phrase !== "string" || !Array.isArray(passphrase.words) || passphrase.words.length !== 4 || !passphrase.words.every(item => item && typeof item.word === "string" && item.word && typeof item.emoji === "string")) {
 
         noPhraseSection.classList.remove("hidden");
 
@@ -120,9 +120,13 @@ function drawWordList() {
 
         chip.className = "studio-word";
 
-        chip.innerHTML =
-            "<span class=\"studio-emoji\">" + item.emoji + "</span>"
-            + "<span>" + item.word + "</span>";
+        const emoji = document.createElement("span");
+        emoji.className = "studio-emoji"; emoji.textContent = item.emoji;
+        const label = document.createElement("span");
+        const key = "passphrase.word." + item.word;
+        const translated = window.ThinkSecureLocales[I18n.getLanguage()]?.[key];
+        label.textContent = I18n.getLanguage() !== "en" && translated ? translated + " " + item.word : item.word;
+        chip.append(emoji, label);
 
 
         studioWords.appendChild(chip);
@@ -349,7 +353,7 @@ function drawHeading() {
 
     context.font = "28px " + TEXT_FONT;
 
-    context.fillText("MY PASSPHRASE", canvas.width / 2, 172);
+    context.fillText(I18n.t("sticker.canvasTitle"), canvas.width / 2, 172);
 
 }
 
@@ -384,6 +388,9 @@ function drawEmoji() {
 
             context.font = "bold " + cell.labelSize + "px " + TEXT_FONT;
 
+            let labelSize = cell.labelSize;
+            const maxWidth = layout === "row" ? canvas.width / 4 - 40 : canvas.width * 0.4 - 40;
+            while (context.measureText(item.word.toUpperCase()).width > maxWidth && labelSize > 16) { labelSize -= 2; context.font = "bold " + labelSize + "px " + TEXT_FONT; }
             context.fillText(item.word.toUpperCase(), cell.x, cell.labelY);
 
         }
@@ -420,10 +427,10 @@ function buildCellPositions() {
 
 
     // Two by two
-    const size = 220;
+    const size = 160;
 
     const columnX = [canvas.width * 0.3, canvas.width * 0.7];
-    const rowY = [385, 645];
+    const rowY = [360, 650];
 
     return passphrase.words.map(function (item, index) {
 
@@ -527,3 +534,6 @@ function buildFileName() {
     return "thinksecure-" + words + ".png";
 
 }
+
+window.addEventListener("languagechange", () => { if (!studio.classList.contains("hidden")) { drawWordList(); drawSticker(); } });
+

@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Choose an Activity | ThinkSecure</title>
+    <title data-i18n="menu.pageTitle">Choose an Activity | ThinkSecure</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body>
+<body class="menu-page">
 
     <!-- Header -->
     <header class="site-header">
@@ -20,13 +20,14 @@
         </div>
 
         <nav class="navigation">
-            <a href="../index.html">Home</a>
-            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
-            <a href="password-checker.html">Password Checker</a>
-            <a href="passphrase-maker.html">Passphrase Maker</a>
-            <a href="sticker-generator.html">Sticker Studio</a>
+            <a href="../index.html" data-i18n="common.home">Home</a>
+            <a href="cyber-quiz.html" data-i18n="common.quiz">Cyber Safety Quiz</a>
+            <a href="password-checker.html" data-i18n="common.passwordChecker">Password Checker</a>
+            <a href="passphrase-maker.html" data-i18n="common.passphraseMaker">Passphrase Maker</a>
+            <a href="sticker-generator.html" data-i18n="common.stickerStudio">Sticker Studio</a>
         </nav>
 
+    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option></select></div>
     </header>
 
 
@@ -40,9 +41,9 @@
         <!-- Introduction -->
         <section class="hero">
 
-            <h2>Learn. Recognise. Stay Secure.</h2>
+            <h2 data-i18n="home.tagline">Learn. Recognise. Stay Secure.</h2>
 
-            <p>
+            <p data-i18n="menu.intro">
                 Explore interactive activities designed to improve your
                 cybersecurity awareness and help you stay safer online.
                 Pick any activity below, in any order.
@@ -54,7 +55,7 @@
         <!-- Activities -->
         <section class="activities">
 
-            <h2>Choose an Activity</h2>
+            <h2 data-i18n="menu.title">Choose an Activity</h2>
 
             <div class="activity-container">
 
@@ -66,14 +67,14 @@
                         💬
                     </div>
 
-                    <h3>Cyber Safety Quiz</h3>
+                    <h3 data-i18n="common.quiz">Cyber Safety Quiz</h3>
 
-                    <p>
+                    <p data-i18n="menu.quizBody">
                         Test your ability to recognise scams through realistic
                         messages, emails, pop-ups and other online scenarios.
                     </p>
 
-                    <a href="cyber-quiz.html" class="activity-button">
+                    <a href="cyber-quiz.html" class="activity-button" data-i18n="menu.quizStart">
                         Start Quiz
                     </a>
 
@@ -87,14 +88,14 @@
                         🔐
                     </div>
 
-                    <h3>Password Checker</h3>
+                    <h3 data-i18n="common.passwordChecker">Password Checker</h3>
 
-                    <p>
+                    <p data-i18n="menu.passwordBody">
                         Test the strength of a sample password and learn how
                         stronger passwords can better protect your accounts.
                     </p>
 
-                    <a href="password-checker.html" class="activity-button">
+                    <a href="password-checker.html" class="activity-button" data-i18n="menu.passwordStart">
                         Check a Password
                     </a>
 
@@ -108,14 +109,14 @@
                         🎨
                     </div>
 
-                    <h3>Passphrase Maker</h3>
+                    <h3 data-i18n="common.passphraseMaker">Passphrase Maker</h3>
 
-                    <p>
+                    <p data-i18n="menu.phraseBody">
                         Create a memorable passphrase using words and visual
                         associations to make secure passwords easier to remember.
                     </p>
 
-                    <a href="passphrase-maker.html" class="activity-button">
+                    <a href="passphrase-maker.html" class="activity-button" data-i18n="menu.phraseStart">
                         Create a Passphrase
                     </a>
 
@@ -129,14 +130,14 @@
                         🎖️
                     </div>
 
-                    <h3>Sticker Studio</h3>
+                    <h3 data-i18n="common.stickerStudio">Sticker Studio</h3>
 
-                    <p>
+                    <p data-i18n="menu.stickerBody">
                         Turn the four words from your passphrase into a
                         sticker you can download and keep.
                     </p>
 
-                    <a href="sticker-generator.html" class="activity-button">
+                    <a href="sticker-generator.html" class="activity-button" data-i18n="menu.stickerStart">
                         Open Sticker Studio
                     </a>
 
@@ -153,8 +154,8 @@
     <!-- Back to the guided game -->
     <a href="../index.html" class="next-step">
 
-        <span class="next-step-label">Prefer the guided version?</span>
-        <span class="next-step-name">Play the Game →</span>
+        <span class="next-step-label" data-i18n="menu.guidedLabel">Prefer the guided version?</span>
+        <span class="next-step-name" data-i18n="menu.guided">Play the Game →</span>
 
     </a>
 
@@ -162,12 +163,15 @@
     <!-- Footer -->
     <footer>
 
-        <p>
+        <p data-i18n="common.footer">
             ThinkSecure | Cybersecurity Awareness
         </p>
 
     </footer>
 
+<script src="../languages/en.js"></script>
+<script src="../languages/zh-CN.js"></script>
+<script src="../js/i18n.js"></script>
 </body>
 
 </html>

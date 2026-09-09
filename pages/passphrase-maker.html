@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Passphrase Maker | ThinkSecure</title>
+    <title data-i18n="passphrase.pageTitle">Passphrase Maker | ThinkSecure</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -20,14 +20,14 @@
         </div>
 
         <nav class="navigation">
-            <a href="../index.html">Home</a>
-            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
-            <a href="password-checker.html">Password Checker</a>
-            <a href="passphrase-maker.html">Passphrase Maker</a>
-            <a href="sticker-generator.html">Sticker Studio</a>
+            <a href="../index.html" data-i18n="common.home">Home</a>
+            <a href="cyber-quiz.html" data-i18n="common.quiz">Cyber Safety Quiz</a>
+            <a href="password-checker.html" data-i18n="common.passwordChecker">Password Checker</a>
+            <a href="passphrase-maker.html" data-i18n="common.passphraseMaker">Passphrase Maker</a>
+            <a href="sticker-generator.html" data-i18n="common.stickerStudio">Sticker Studio</a>
         </nav>
 
-    </header>
+    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option></select></div></header>
 
 
     <!-- Chequered band -->
@@ -41,12 +41,13 @@
              Explanation
         ------------------------------ -->
         <section id="phrase-intro" class="phrase-section">
+<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             <div class="phrase-icon">🔑</div>
 
-            <h2>What is a passphrase?</h2>
+            <h2 data-i18n="passphrase.introTitle">What is a passphrase?</h2>
 
-            <p class="phrase-lead">
+            <p class="phrase-lead" data-i18n="passphrase.intro">
                 A passphrase is a password made from several unrelated words
                 instead of one short, complicated word.
             </p>
@@ -55,11 +56,11 @@
 
                 <div class="compare-card compare-weak">
 
-                    <h3>A typical password</h3>
+                    <h3 data-i18n="passphrase.typical">A typical password</h3>
 
                     <code>P@ssw0rd1</code>
 
-                    <p>
+                    <p data-i18n="passphrase.weak">
                         Short, full of awkward symbols, hard to remember, and
                         the substitutions are exactly what guessing software
                         tries first.
@@ -69,11 +70,11 @@
 
                 <div class="compare-card compare-strong">
 
-                    <h3>A passphrase</h3>
+                    <h3 data-i18n="passphrase.example">A passphrase</h3>
 
                     <code>Ocean-Gorilla-Watermelon-Japan</code>
 
-                    <p>
+                    <p data-i18n="passphrase.strong">
                         Much longer, easy to picture in your head, and far
                         harder to guess because the words have nothing to do
                         with each other.
@@ -87,30 +88,30 @@
 
                 <div class="phrase-point">
                     <span class="point-icon">📏</span>
-                    <p><strong>Length beats complexity.</strong> Every extra
-                    character multiplies the work an attacker has to do.</p>
+                    <p><strong data-i18n="passphrase.lengthTitle">Length beats complexity.</strong><span data-i18n="passphrase.lengthBody"> Every extra
+                    character multiplies the work an attacker has to do.</span></p>
                 </div>
 
                 <div class="phrase-point">
                     <span class="point-icon">🧠</span>
-                    <p><strong>Pictures stick.</strong> You remember a gorilla
-                    in the ocean far better than a string of symbols.</p>
+                    <p><strong data-i18n="passphrase.pictureTitle">Pictures stick.</strong><span data-i18n="passphrase.pictureBody"> You remember a gorilla
+                    in the ocean far better than a string of symbols.</span></p>
                 </div>
 
                 <div class="phrase-point">
                     <span class="point-icon">🎲</span>
-                    <p><strong>Unrelated is the point.</strong> Words that
-                    belong together are easier to guess.</p>
+                    <p><strong data-i18n="passphrase.unrelatedTitle">Unrelated is the point.</strong><span data-i18n="passphrase.unrelatedBody"> Words that
+                    belong together are easier to guess.</span></p>
                 </div>
 
             </div>
 
-            <p class="phrase-instruction">
+            <p class="phrase-instruction" data-i18n="passphrase.instruction">
                 You are about to pick four words: a place, an animal, a fruit
                 and a country. Choose whatever sticks in your mind.
             </p>
 
-            <button type="button" id="begin-button" class="quiz-button">
+            <button type="button" id="begin-button" class="quiz-button" data-i18n="passphrase.begin">
                 Start Building
             </button>
 
@@ -121,6 +122,7 @@
              Word Picker
         ------------------------------ -->
         <section id="phrase-picker" class="phrase-section hidden">
+<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             <!-- Progress -->
             <div class="phrase-progress">
@@ -151,11 +153,11 @@
 
             <div class="picker-actions">
 
-                <button type="button" id="back-button" class="answer-button">
+                <button type="button" id="back-button" class="answer-button" data-i18n="passphrase.back">
                     Back
                 </button>
 
-                <button type="button" id="shuffle-button" class="answer-button">
+                <button type="button" id="shuffle-button" class="answer-button" data-i18n="passphrase.random">
                     Surprise Me
                 </button>
 
@@ -168,10 +170,11 @@
              Result
         ------------------------------ -->
         <section id="phrase-result" class="phrase-section hidden">
+<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             <div class="phrase-icon">✅</div>
 
-            <h2>Your passphrase</h2>
+            <h2 data-i18n="passphrase.resultTitle">Your passphrase</h2>
 
             <div class="result-emoji" id="result-emoji"></div>
 
@@ -179,35 +182,35 @@
 
                 <code id="passphrase-text"></code>
 
-                <button type="button" id="copy-button" class="small-button">
+                <button type="button" id="copy-button" class="small-button" data-i18n="passphrase.copy">
                     Copy
                 </button>
 
             </div>
 
-            <p class="copy-status" id="copy-status"></p>
+            <p role="status" class="copy-status" id="copy-status"></p>
 
 
             <div class="result-stats">
 
                 <div class="result-stat">
                     <span class="stat-value" id="stat-length">0</span>
-                    <span class="stat-label">characters</span>
+                    <span class="stat-label" data-i18n="passphrase.characters">characters</span>
                 </div>
 
                 <div class="result-stat">
                     <span class="stat-value">4</span>
-                    <span class="stat-label">words</span>
+                    <span class="stat-label" data-i18n="passphrase.words">words</span>
                 </div>
 
                 <div class="result-stat">
                     <span class="stat-value">160,000</span>
-                    <span class="stat-label">combinations</span>
+                    <span class="stat-label" data-i18n="passphrase.combinations">combinations</span>
                 </div>
 
             </div>
 
-            <p class="result-note">
+            <p class="result-note" data-i18n="passphrase.note">
                 This is a demonstration. When you make a real passphrase,
                 pick the words yourself rather than from a list of twenty,
                 and never reuse it across accounts.
@@ -216,15 +219,15 @@
 
             <div class="result-actions">
 
-                <a href="sticker-generator.html" class="quiz-button">
+                <a href="sticker-generator.html" class="quiz-button" data-i18n="passphrase.sticker">
                     Make My Sticker
                 </a>
 
-                <a href="password-checker.html?check=passphrase" class="answer-button">
+                <a href="password-checker.html?check=passphrase" class="answer-button" data-i18n="passphrase.check">
                     Test Its Strength
                 </a>
 
-                <button type="button" id="restart-button" class="answer-button">
+                <button type="button" id="restart-button" class="answer-button" data-i18n="passphrase.restart">
                     Start Over
                 </button>
 
@@ -239,14 +242,17 @@
     <!-- Footer -->
     <footer>
 
-        <p>
+        <p data-i18n="common.footer">
             ThinkSecure | Cybersecurity Awareness
         </p>
 
     </footer>
 
 
-    <script src="../js/passphrase-maker.js"></script>
+    <script src="../languages/en.js"></script>
+<script src="../languages/zh-CN.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/passphrase-maker.js"></script>
 
 </body>
 
