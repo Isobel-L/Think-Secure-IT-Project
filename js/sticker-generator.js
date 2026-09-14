@@ -1,9 +1,10 @@
 /*
     Sticker Studio
 
-    Takes the four words picked in the Passphrase Maker and draws their emoji
-    onto a canvas, which the user can then download as a PNG. No image
-    generation service is involved, so this works offline.
+    Takes the four words picked in the Passphrase Maker and draws them onto a
+    canvas: the place as a background picture, the other three as emoji in a
+    row. The user can then download it as a PNG. No image generation service
+    is involved.
 */
 
 
@@ -15,7 +16,6 @@ const studio = document.getElementById("studio");
 // Panel elements
 const studioWords = document.getElementById("studio-words");
 const layoutOptions = document.getElementById("layout-options");
-const backgroundOptions = document.getElementById("background-options");
 const showLabels = document.getElementById("show-labels");
 const showPhrase = document.getElementById("show-phrase");
 const downloadButton = document.getElementById("download-button");
@@ -39,13 +39,25 @@ const TEXT_FONT = 'Arial, "Microsoft YaHei", "PingFang SC", sans-serif';
 
 // Colours, kept in step with the stylesheet
 const NAVY = "#0b2545";
-const BLUE = "#0b57a4";
-const LIGHT = "#f4f6f8";
+
+
+// The Passphrase Maker hands the words over in category order:
+// place, animal, fruit, country. The place becomes the background picture
+// and the rest sit in a row, left to right: country, fruit, animal.
+const PLACE_INDEX = 0;
+const ROW_ORDER = [3, 2, 1];
+
+
+// One picture per place word, named after the word
+const BACKGROUND_FOLDER = "../Images/BackGround/";
 
 
 // Current options
 let layout = "grid";
-let background = "light";
+
+
+// The background picture for the current passphrase, once it has loaded
+let backgroundImage = null;
 
 
 // The words handed over by the Passphrase Maker
@@ -109,6 +121,29 @@ function loadPassphrase() {
 
     drawSticker();
 
+    loadBackgroundImage();
+
+}
+
+
+/*
+    Fetch the picture for the chosen place, then redraw with it.
+    Until it arrives, or if it is missing, the card stays plain navy.
+*/
+function loadBackgroundImage() {
+
+    const image = new Image();
+
+    image.addEventListener("load", function () {
+
+        backgroundImage = image;
+
+        drawSticker();
+
+    });
+
+    image.src = BACKGROUND_FOLDER + passphrase.words[PLACE_INDEX].word + ".png";
+
 }
 
 
@@ -162,27 +197,6 @@ layoutOptions.addEventListener("click", function (event) {
     selectOption(layoutOptions, button);
 
     layout = button.dataset.layout;
-
-    drawSticker();
-
-});
-
-
-/*
-    Light, navy or transparent
-*/
-backgroundOptions.addEventListener("click", function (event) {
-
-    const button = event.target.closest(".option-button");
-
-    if (!button) {
-        return;
-    }
-
-
-    selectOption(backgroundOptions, button);
-
-    background = button.dataset.background;
 
     drawSticker();
 
@@ -244,14 +258,24 @@ function drawSticker() {
 
 
     // Point the download link at the picture just drawn
-    downloadButton.href = canvas.toDataURL("image/png");
-    downloadButton.download = buildFileName();
+    try {
+
+        downloadButton.href = canvas.toDataURL("image/png");
+        downloadButton.download = buildFileName();
+
+    } catch (error) {
+
+        // Browsers refuse to export a canvas holding a picture loaded
+        // straight from disk (file://). Served over http it works.
+        downloadButton.removeAttribute("href");
+
+    }
 
 }
 
 
 /*
-    Fill the card and draw its border
+    Fill the card with the place picture and draw its border
 */
 function drawBackground() {
 
@@ -259,20 +283,44 @@ function drawBackground() {
     const radius = 60;
 
 
-    // A transparent sticker still needs its white die-cut edge
-    if (background !== "transparent") {
+    context.save();
 
-        context.fillStyle = background === "navy" ? NAVY : LIGHT;
+    roundedRectangle(0, 0, canvas.width, canvas.height, radius);
+    context.clip();
 
-        roundedRectangle(0, 0, canvas.width, canvas.height, radius);
 
-        context.fill();
+    context.fillStyle = NAVY;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    if (backgroundImage) {
+
+        drawImageCover(backgroundImage);
 
     }
 
 
+    // Darken the top and bottom so the white text stays readable
+    const top = context.createLinearGradient(0, 0, 0, 280);
+    top.addColorStop(0, "rgba(11, 37, 69, 0.7)");
+    top.addColorStop(1, "rgba(11, 37, 69, 0)");
+
+    context.fillStyle = top;
+    context.fillRect(0, 0, canvas.width, 280);
+
+
+    const bottom = context.createLinearGradient(0, canvas.height - 320, 0, canvas.height);
+    bottom.addColorStop(0, "rgba(11, 37, 69, 0)");
+    bottom.addColorStop(1, "rgba(11, 37, 69, 0.75)");
+
+    context.fillStyle = bottom;
+    context.fillRect(0, canvas.height - 320, canvas.width, 320);
+
+    context.restore();
+
+
     // Die-cut border
-    context.strokeStyle = background === "navy" ? "#ffffff" : NAVY;
+    context.strokeStyle = "#ffffff";
     context.lineWidth = 14;
 
     roundedRectangle(
@@ -287,6 +335,30 @@ function drawBackground() {
 
 
     drawChequeredBand();
+
+}
+
+
+/*
+    Scale the picture to fill the whole card, cropping the overflow evenly
+*/
+function drawImageCover(image) {
+
+    const scale = Math.max(
+        canvas.width / image.naturalWidth,
+        canvas.height / image.naturalHeight
+    );
+
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+
+    context.drawImage(
+        image,
+        (canvas.width - width) / 2,
+        (canvas.height - height) / 2,
+        width,
+        height
+    );
 
 }
 
@@ -340,45 +412,81 @@ function drawChequeredBand() {
 
 
 /*
-    The wordmark across the top
+    White text with a soft shadow, so it reads on any picture
 */
-function drawHeading() {
+function withTextShadow(draw) {
 
-    context.fillStyle = background === "navy" ? "#ffffff" : NAVY;
+    context.save();
 
-    context.textAlign = "center";
-    context.textBaseline = "middle";
+    context.shadowColor = "rgba(0, 0, 0, 0.55)";
+    context.shadowBlur = 12;
+    context.shadowOffsetY = 3;
 
+    draw();
 
-    context.font = "bold 52px " + TEXT_FONT;
-
-    context.fillText("THINKSECURE", canvas.width / 2, 118);
-
-
-    context.fillStyle = background === "navy" ? "#9fc2e8" : BLUE;
-
-    context.font = "28px " + TEXT_FONT;
-
-    context.fillText(I18n.t("sticker.canvasTitle"), canvas.width / 2, 172);
+    context.restore();
 
 }
 
 
 /*
-    The four pictures, either two by two or in a single row
+    The wordmark across the top
+*/
+function drawHeading() {
+
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+
+
+    withTextShadow(function () {
+
+        context.fillStyle = "#ffffff";
+        context.font = "bold 52px " + TEXT_FONT;
+
+        context.fillText("THINKSECURE", canvas.width / 2, 118);
+
+
+        context.fillStyle = "#dbe9f7";
+        context.font = "28px " + TEXT_FONT;
+
+        context.fillText(I18n.t("sticker.canvasTitle"), canvas.width / 2, 172);
+
+    });
+
+}
+
+
+/*
+    Country, fruit and animal in a single row over the picture
 */
 function drawEmoji() {
 
     const cells = buildCellPositions();
 
 
-    passphrase.words.forEach(function (item, index) {
+    ROW_ORDER.forEach(function (wordIndex, position) {
 
-        const cell = cells[index];
+        const item = passphrase.words[wordIndex];
+        const cell = cells[position];
 
 
         context.textAlign = "center";
         context.textBaseline = "middle";
+
+
+        // A frosted disc behind the picture
+        context.save();
+
+        context.fillStyle = "rgba(255, 255, 255, 0.72)";
+        context.shadowColor = "rgba(0, 0, 0, 0.3)";
+        context.shadowBlur = 24;
+        context.shadowOffsetY = 6;
+
+        context.beginPath();
+        context.arc(cell.x, cell.y, cell.size * 0.72, 0, Math.PI * 2);
+        context.fill();
+
+        context.restore();
 
 
         // The picture
@@ -390,14 +498,29 @@ function drawEmoji() {
         // The word under it
         if (showLabels.checked) {
 
-            context.fillStyle = background === "navy" ? "#ffffff" : NAVY;
-
-            context.font = "bold " + cell.labelSize + "px " + TEXT_FONT;
+            const text = item.word.toUpperCase();
+            const maxWidth = canvas.width / 3 - 40;
 
             let labelSize = cell.labelSize;
-            const maxWidth = layout === "row" ? canvas.width / 4 - 40 : canvas.width * 0.4 - 40;
-            while (context.measureText(item.word.toUpperCase()).width > maxWidth && labelSize > 16) { labelSize -= 2; context.font = "bold " + labelSize + "px " + TEXT_FONT; }
-            context.fillText(item.word.toUpperCase(), cell.x, cell.labelY);
+
+            context.font = "bold " + labelSize + "px " + TEXT_FONT;
+
+            while (context.measureText(text).width > maxWidth && labelSize > 16) {
+
+                labelSize = labelSize - 2;
+
+                context.font = "bold " + labelSize + "px " + TEXT_FONT;
+
+            }
+
+
+            withTextShadow(function () {
+
+                context.fillStyle = "#ffffff";
+
+                context.fillText(text, cell.x, cell.labelY);
+
+            });
 
         }
 
@@ -407,47 +530,26 @@ function drawEmoji() {
 
 
 /*
-    Work out where each picture sits for the current layout
+    Work out where each picture sits in the row for the current layout
 */
 function buildCellPositions() {
 
-    if (layout === "row") {
+    const wide = layout === "row";
 
-        const size = 200;
+    const size = wide ? 190 : 150;
+    const y = wide ? 380 : 470;
 
-        const spacing = canvas.width / 4;
-
-        return passphrase.words.map(function (item, index) {
-
-            return {
-                x: spacing * index + (spacing / 2),
-                y: 390,
-                size: size,
-                labelSize: 34,
-                labelY: 390 + (size / 2) + 48
-            };
-
-        });
-
-    }
+    const spacing = canvas.width / ROW_ORDER.length;
 
 
-    // Two by two
-    const size = 160;
-
-    const columnX = [canvas.width * 0.3, canvas.width * 0.7];
-    const rowY = [360, 650];
-
-    return passphrase.words.map(function (item, index) {
-
-        const y = rowY[Math.floor(index / 2)];
+    return ROW_ORDER.map(function (wordIndex, position) {
 
         return {
-            x: columnX[index % 2],
+            x: spacing * position + (spacing / 2),
             y: y,
             size: size,
-            labelSize: 36,
-            labelY: y + (size / 2) + 45
+            labelSize: wide ? 36 : 34,
+            labelY: y + (size * 0.72) + 44
         };
 
     });
@@ -464,8 +566,6 @@ function drawFooterText() {
         return;
     }
 
-
-    context.fillStyle = background === "navy" ? "#ffffff" : BLUE;
 
     context.textAlign = "center";
     context.textBaseline = "middle";
@@ -488,11 +588,17 @@ function drawFooterText() {
     }
 
 
-    context.fillText(
-        passphrase.phrase,
-        canvas.width / 2,
-        canvas.height - 132
-    );
+    withTextShadow(function () {
+
+        context.fillStyle = "#ffffff";
+
+        context.fillText(
+            passphrase.phrase,
+            canvas.width / 2,
+            canvas.height - 132
+        );
+
+    });
 
 }
 
