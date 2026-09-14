@@ -16,6 +16,12 @@
    ['接下来试试密码短语','想换一种方法？点击「下一步」进入密码短语生成器，试试把几个互不相关的词组合起来。']
   ]}
  };
+ copy['zh-TW']={help:'需要幫忙嗎？',name:'Security Bot 安全小助手',subtitle:'陪你體驗密碼檢測器',close:'關閉提示',section:'一個安全小提示',next:'下一條提示 →',count:'第 {n} 條，共 4 條',tips:[
+    ['先用一個虛構密碼試試','在輸入框裡填寫一個虛構的示例密碼。不要輸入你正在用於真實帳戶的密碼。'],
+    ['看看檢測結果在說什麼','檢測後，閱讀密碼強度和改進建議。這裡的估算用於幫助學習，並不代表安全保證。'],
+    ['每次改一點，再比較','試著增加示例密碼的長度，或替換容易預測的規律。再次檢測，看看回饋有什麼變化。'],
+    ['接下來試試密碼短語','想換一種方法？點選「下一步」進入密碼短語生成器，試試把幾個互不相關的詞組合起來。']
+   ]};
  copy.vi={"help":"Cần trợ giúp?","name":"Security Bot","subtitle":"Hướng dẫn kiểm tra mật khẩu","close":"Đóng mẹo","section":"MẸO AN TOÀN NHỎ","next":"Mẹo tiếp theo →","count":"Mẹo {n} / 4","tips":[["Thử bằng mật khẩu giả","Nhập một mật khẩu mẫu giả định vào công cụ. Không nhập mật khẩu bạn dùng cho tài khoản thật."],["Đọc phản hồi","Kiểm tra mật khẩu mẫu, rồi đọc kết quả độ mạnh và gợi ý. Đây là công cụ học tập, không phải bảo đảm an toàn."],["Mỗi lần thay đổi một chút","Tăng độ dài hoặc thay các mẫu dễ đoán trong mật khẩu mẫu. Kiểm tra lại và so sánh phản hồi."],["Tiếp theo, thử cụm mật khẩu","Bạn muốn thử cách khác? Nhấn nút Bước tiếp theo để mở trang tạo cụm mật khẩu và thử kết hợp các từ không liên quan."]]};
  const host=document.createElement('aside');host.className='security-helper';
  host.innerHTML=`<section class="helper-panel" id="security-helper-panel" aria-labelledby="helper-name" hidden><div class="helper-head"><span class="helper-avatar"><img alt="" src="${image}"></span><div><div class="helper-name" id="helper-name"></div><div class="helper-subtitle"></div></div><button class="helper-close" type="button">×</button></div><div class="helper-content"><div class="helper-kicker"></div><div aria-live="polite" aria-atomic="true"><h2 class="helper-title"></h2><p class="helper-copy"></p></div><div class="helper-footer"><span class="helper-count"></span><button class="helper-next" type="button"></button></div></div></section><button class="helper-launch" type="button" aria-expanded="false" aria-controls="security-helper-panel"><span class="helper-avatar"><img alt="" src="${image}"></span><span class="helper-label"></span></button>`;
