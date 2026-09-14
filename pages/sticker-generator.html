@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sticker Studio | ThinkSecure</title>
+    <title data-i18n="sticker.pageTitle">Sticker Studio | ThinkSecure</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -20,14 +20,15 @@
         </div>
 
         <nav class="navigation">
-            <a href="../index.html">Home</a>
-            <a href="cyber-quiz.html">Cyber Safety Quiz</a>
-            <a href="password-checker.html">Password Checker</a>
-            <a href="passphrase-maker.html">Passphrase Maker</a>
-            <a href="sticker-generator.html">Sticker Studio</a>
+            <a href="../index.html" data-i18n="common.home">Home</a>
+            <a href="cyber-quiz.html" data-i18n="common.quiz">Cyber Safety Quiz</a>
+            <a href="password-checker.html" data-i18n="common.passwordChecker">Password Checker</a>
+            <a href="passphrase-maker.html" data-i18n="common.passphraseMaker">Passphrase Maker</a>
+            <a href="sticker-generator.html" data-i18n="common.stickerStudio">Sticker Studio</a>
         </nav>
 
-    </header>
+    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option>
+<option value="vi" lang="vi">Tiếng Việt</option></select></div></header>
 
 
     <!-- Chequered band -->
@@ -42,16 +43,16 @@
 
             <div class="phrase-icon">🎨</div>
 
-            <h2>Make a passphrase first</h2>
+            <h2 data-i18n="sticker.emptyTitle">Make a passphrase first</h2>
 
-            <p class="phrase-lead">
+            <p class="phrase-lead" data-i18n="sticker.emptyBody">
                 The Sticker Studio turns the four words from your passphrase
                 into a sticker. Each sticker needs its own freshly built
                 passphrase, so head back and pick four words, then come
                 straight here.
             </p>
 
-            <a href="passphrase-maker.html" class="quiz-button">
+            <a href="passphrase-maker.html" class="quiz-button" data-i18n="sticker.goMaker">
                 Go to Passphrase Maker
             </a>
 
@@ -63,9 +64,9 @@
 
             <section class="sticker-intro">
 
-                <h2>Sticker Studio</h2>
+                <h2 data-i18n="common.stickerStudio">Sticker Studio</h2>
 
-                <p>
+                <p data-i18n="sticker.intro">
                     Here are the four words you chose. Arrange them, then
                     download your sticker as a PNG.
                 </p>
@@ -79,22 +80,23 @@
                 <!-- Controls -->
                 <section class="sticker-panel">
 
-                    <h3>Your words</h3>
+                    <h3 data-i18n="sticker.words">Your words</h3>
 
-                    <div class="studio-words" id="studio-words"></div>
+                    <p class="key-notice" data-i18n="sticker.wordNote">Translated labels help identify your words. Words printed on the sticker and the full passphrase stay in English.</p>
+<div class="studio-words" id="studio-words"></div>
 
 
                     <div class="panel-step">
 
-                        <h3>Layout</h3>
+                        <h3 data-i18n="sticker.layout">Layout</h3>
 
                         <div class="option-buttons" id="layout-options">
 
-                            <button type="button" class="option-button selected" data-layout="grid">
+                            <button type="button" class="option-button selected" data-layout="grid" data-i18n="sticker.square">
                                 Square
                             </button>
 
-                            <button type="button" class="option-button" data-layout="row">
+                            <button type="button" class="option-button" data-layout="row" data-i18n="sticker.wide">
                                 Wide
                             </button>
 
@@ -105,19 +107,19 @@
 
                     <div class="panel-step">
 
-                        <h3>Background</h3>
+                        <h3 data-i18n="sticker.background">Background</h3>
 
                         <div class="option-buttons" id="background-options">
 
-                            <button type="button" class="option-button selected" data-background="light">
+                            <button type="button" class="option-button selected" data-background="light" data-i18n="sticker.light">
                                 Light
                             </button>
 
-                            <button type="button" class="option-button" data-background="navy">
+                            <button type="button" class="option-button" data-background="navy" data-i18n="sticker.navy">
                                 Navy
                             </button>
 
-                            <button type="button" class="option-button" data-background="transparent">
+                            <button type="button" class="option-button" data-background="transparent" data-i18n="sticker.transparent">
                                 Transparent
                             </button>
 
@@ -128,13 +130,13 @@
 
                     <div class="panel-step">
 
-                        <h3>Text</h3>
+                        <h3 data-i18n="sticker.text">Text</h3>
 
                         <div class="checkbox-group">
 
                             <input type="checkbox" id="show-labels" checked>
 
-                            <label for="show-labels">
+                            <label for="show-labels" data-i18n="sticker.labels">
                                 Show the word under each picture
                             </label>
 
@@ -144,13 +146,13 @@
 
                             <input type="checkbox" id="show-phrase">
 
-                            <label for="show-phrase">
+                            <label for="show-phrase" data-i18n="sticker.fullPhrase">
                                 Print the full passphrase on the sticker
                             </label>
 
                         </div>
 
-                        <p class="key-notice">
+                        <p class="key-notice" data-i18n="sticker.notice">
                             Leave the full passphrase off if you plan to stick
                             this anywhere other people can see. The pictures on
                             their own are enough to jog your memory, which is
@@ -160,7 +162,7 @@
                     </div>
 
 
-                    <a href="#" id="download-button" class="quiz-button generate-button" download="thinksecure-sticker.png">
+                    <a href="#" id="download-button" class="quiz-button generate-button" download="thinksecure-sticker.png" data-i18n="sticker.download">
                         Download PNG
                     </a>
 
@@ -170,21 +172,21 @@
                 <!-- Preview -->
                 <section class="sticker-output">
 
-                    <h3>Preview</h3>
+                    <h3 data-i18n="sticker.preview">Preview</h3>
 
                     <div class="sticker-stage">
 
-                        <canvas id="sticker-canvas" width="1000" height="1000"></canvas>
+                        <canvas role="img" aria-label="Preview of your passphrase sticker" data-i18n-aria-label="sticker.canvasAlt" id="sticker-canvas" width="1000" height="1000"></canvas>
 
                     </div>
 
                     <div class="stage-actions">
 
-                        <a href="passphrase-maker.html" class="answer-button">
+                        <a href="passphrase-maker.html" class="answer-button" data-i18n="sticker.change">
                             Change My Words
                         </a>
 
-                        <a href="../index.html" class="answer-button">
+                        <a href="../index.html" class="answer-button" data-i18n="sticker.home">
                             Back to Start
                         </a>
 
@@ -204,14 +206,18 @@
     <!-- Footer -->
     <footer>
 
-        <p>
+        <p data-i18n="common.footer">
             ThinkSecure | Cybersecurity Awareness
         </p>
 
     </footer>
 
 
-    <script src="../js/sticker-generator.js"></script>
+    <script src="../languages/en.js"></script>
+<script src="../languages/zh-CN.js"></script>
+<script src="../languages/vi.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/sticker-generator.js"></script>
 
 </body>
 

@@ -170,6 +170,8 @@ const categories = [
 
 // Which category the user is on
 let currentStep = 0;
+let copyKey = "";
+let copyVersion = 0;
 
 // The word chosen from each category so far
 const chosenWords = [];
@@ -203,8 +205,8 @@ function showStep(step) {
     const category = categories[step];
 
 
-    pickerTitle.textContent = category.title;
-    pickerHint.textContent = category.hint;
+    pickerTitle.textContent = I18n.t("passphrase.title." + category.key);
+    pickerHint.textContent = I18n.t("passphrase.hint." + category.key);
 
 
     // Progress bar
@@ -213,7 +215,7 @@ function showStep(step) {
     progressFill.style.width = percent + "%";
 
     progressLabel.textContent =
-        "Step " + (step + 1) + " of " + categories.length;
+        I18n.t("passphrase.progress", { current: step + 1, total: categories.length });
 
 
     // The first category has nothing to go back to
@@ -252,7 +254,7 @@ function drawWordGrid(category) {
         const label = document.createElement("span");
 
         label.className = "word-label";
-        label.textContent = item.word;
+        label.textContent = displayWord(item);
 
 
         button.appendChild(emoji);
@@ -294,7 +296,7 @@ function drawChosenStrip() {
                 "<span class=\"chosen-emoji\">"
                 + chosenWords[index].emoji
                 + "</span><span class=\"chosen-word\">"
-                + chosenWords[index].word
+                + escapePhraseLabel(displayWord(chosenWords[index]))
                 + "</span>";
 
         } else {
@@ -302,7 +304,7 @@ function drawChosenStrip() {
             slot.innerHTML =
                 "<span class=\"chosen-emoji\">?</span>"
                 + "<span class=\"chosen-word\">"
-                + category.key
+                + escapePhraseLabel(I18n.t("passphrase.category." + category.key))
                 + "</span>";
 
         }
@@ -456,16 +458,20 @@ function buildPassphrase() {
 */
 copyButton.addEventListener("click", async function () {
 
+    const version = ++copyVersion;
     try {
 
         await navigator.clipboard.writeText(passphraseText.textContent);
 
-        copyStatus.textContent = "Copied to your clipboard.";
+        if (version !== copyVersion) return;
+        copyKey = "passphrase.copySuccess";
+        copyStatus.textContent = I18n.t(copyKey);
 
     } catch (error) {
 
-        copyStatus.textContent = "Could not copy automatically. "
-            + "Select the text above and copy it yourself.";
+        if (version !== copyVersion) return;
+        copyKey = "passphrase.copyError";
+        copyStatus.textContent = I18n.t(copyKey);
 
     }
 
@@ -478,6 +484,7 @@ copyButton.addEventListener("click", async function () {
 restartButton.addEventListener("click", function () {
 
     chosenWords.length = 0;
+    ++copyVersion; copyKey = "";
 
     sessionStorage.removeItem(PHRASE_STORAGE_NAME);
 
@@ -489,3 +496,8 @@ restartButton.addEventListener("click", function () {
     showStep(0);
 
 });
+
+function displayWord(item) { const label = I18n.t("passphrase.word." + item.word); return I18n.getLanguage() === "en" ? item.word : label + " " + item.word; }
+function escapePhraseLabel(value) { return value.replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[char])); }
+window.addEventListener("languagechange", () => { if (!pickerSection.classList.contains("hidden")) showStep(currentStep); copyStatus.textContent = copyKey ? I18n.t(copyKey) : ""; });
+
