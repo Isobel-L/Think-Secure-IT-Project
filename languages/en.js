@@ -248,7 +248,7 @@ window.ThinkSecureLocales["en"]={
   "passphrase.word.NewZealand": "NewZealand",
   "sticker.pageTitle": "Sticker Studio | ThinkSecure",
   "sticker.emptyTitle": "Make a passphrase first",
-  "sticker.emptyBody": "The Sticker Studio turns the four words from your passphrase into a sticker. Head back and pick your words, then come straight here.",
+  "sticker.emptyBody": "The Sticker Studio turns the four words from your passphrase into a sticker. Each sticker needs its own freshly built passphrase, so head back and pick four words, then come straight here.",
   "sticker.goMaker": "Go to Passphrase Maker",
   "sticker.intro": "Here are the four words you chose. Arrange them, then download your sticker as a PNG.",
   "sticker.words": "Your words",
