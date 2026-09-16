@@ -2,9 +2,10 @@
     Sticker Studio
 
     Takes the four words picked in the Passphrase Maker and draws them onto a
-    canvas: the place as a background picture, the other three as emoji in a
-    row. The user can then download it as a PNG. No image generation service
-    is involved.
+    canvas: the place as a background picture, the other three in a row as
+    their own pictures, or as emoji while a category has no pictures yet. The
+    user can then download it as a PNG. No image generation service is
+    involved.
 */
 
 
@@ -43,21 +44,36 @@ const NAVY = "#0b2545";
 
 // The Passphrase Maker hands the words over in category order:
 // place, animal, fruit, country. The place becomes the background picture
-// and the rest sit in a row, left to right: country, fruit, animal.
+// and the rest sit in a row, left to right: animal, fruit, country.
 const PLACE_INDEX = 0;
-const ROW_ORDER = [3, 2, 1];
+const ROW_ORDER = [1, 2, 3];
 
 
-// One picture per place word, named after the word
-const BACKGROUND_FOLDER = "../Images/BackGround/";
+// One picture per word, named after the word, in its category folder.
+// A folder with no picture for a word simply falls back to the emoji.
+const IMAGE_FOLDERS = [
+    "../Images/BackGround/",
+    "../Images/Animal/",
+    "../Images/Food/",
+    "../Images/Country/"
+];
+
+
+// Cut-outs are saved as PNG, whole photographs as JPG
+const IMAGE_TYPES = [".png", ".jpg"];
 
 
 // Current options
 let layout = "grid";
 
 
-// The background picture for the current passphrase, once it has loaded
-let backgroundImage = null;
+// The picture for each word, once it has loaded. Missing ones stay null.
+const wordImages = [null, null, null, null];
+
+
+// A JPG cannot be transparent, so it is a whole photograph rather than a
+// cut-out and fills its circle instead of sitting inside it.
+const wordImageFills = [false, false, false, false];
 
 
 // The words handed over by the Passphrase Maker
@@ -121,28 +137,59 @@ function loadPassphrase() {
 
     drawSticker();
 
-    loadBackgroundImage();
+    loadWordPictures();
 
 }
 
 
 /*
-    Fetch the picture for the chosen place, then redraw with it.
-    Until it arrives, or if it is missing, the card stays plain navy.
+    Fetch a picture for each chosen word, then redraw as they arrive.
+
+    Each file type is tried in turn. A word with no picture at all keeps its
+    emoji, and the place keeps its plain navy card, so adding files to Images
+    later needs no change here.
 */
-function loadBackgroundImage() {
+function loadWordPictures() {
+
+    passphrase.words.forEach(function (item, index) {
+
+        tryPicture(index, item.word, 0);
+
+    });
+
+}
+
+
+/*
+    Try one file type for a word, moving on to the next if it is not there
+*/
+function tryPicture(index, word, typeIndex) {
+
+    if (typeIndex >= IMAGE_TYPES.length) {
+        return;
+    }
+
+
+    const type = IMAGE_TYPES[typeIndex];
 
     const image = new Image();
 
     image.addEventListener("load", function () {
 
-        backgroundImage = image;
+        wordImages[index] = image;
+        wordImageFills[index] = type === ".jpg";
 
         drawSticker();
 
     });
 
-    image.src = BACKGROUND_FOLDER + passphrase.words[PLACE_INDEX].word + ".png";
+    image.addEventListener("error", function () {
+
+        tryPicture(index, word, typeIndex + 1);
+
+    });
+
+    image.src = IMAGE_FOLDERS[index] + word + type;
 
 }
 
@@ -293,9 +340,9 @@ function drawBackground() {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
 
-    if (backgroundImage) {
+    if (wordImages[PLACE_INDEX]) {
 
-        drawImageCover(backgroundImage);
+        drawImageCover(wordImages[PLACE_INDEX]);
 
     }
 
@@ -359,6 +406,63 @@ function drawImageCover(image) {
         width,
         height
     );
+
+}
+
+
+/*
+    Fit the whole picture inside a box, centred, without distorting it
+*/
+function drawImageContain(image, centreX, centreY, box) {
+
+    const scale = Math.min(
+        box / image.naturalWidth,
+        box / image.naturalHeight
+    );
+
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+
+    context.drawImage(
+        image,
+        centreX - (width / 2),
+        centreY - (height / 2),
+        width,
+        height
+    );
+
+}
+
+
+/*
+    Fill a circle with a photograph, cropping the overflow evenly
+*/
+function drawImageInCircle(image, centreX, centreY, radius) {
+
+    context.save();
+
+    context.beginPath();
+    context.arc(centreX, centreY, radius, 0, Math.PI * 2);
+    context.clip();
+
+
+    const scale = Math.max(
+        (radius * 2) / image.naturalWidth,
+        (radius * 2) / image.naturalHeight
+    );
+
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+
+    context.drawImage(
+        image,
+        centreX - (width / 2),
+        centreY - (height / 2),
+        width,
+        height
+    );
+
+    context.restore();
 
 }
 
@@ -489,10 +593,24 @@ function drawEmoji() {
         context.restore();
 
 
-        // The picture
-        context.font = cell.size + "px " + EMOJI_FONT;
+        // The picture, or its emoji while there is no picture for the word
+        const picture = wordImages[wordIndex];
 
-        context.fillText(item.emoji, cell.x, cell.y);
+        if (picture && wordImageFills[wordIndex]) {
+
+            drawImageInCircle(picture, cell.x, cell.y, cell.size * 0.72);
+
+        } else if (picture) {
+
+            drawImageContain(picture, cell.x, cell.y, cell.size * 1.28);
+
+        } else {
+
+            context.font = cell.size + "px " + EMOJI_FONT;
+
+            context.fillText(item.emoji, cell.x, cell.y);
+
+        }
 
 
         // The word under it
