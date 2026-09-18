@@ -248,7 +248,7 @@ window.ThinkSecureLocales.vi={
   "passphrase.word.NewZealand": "New Zealand",
   "sticker.pageTitle": "Xưởng nhãn dán | ThinkSecure",
   "sticker.emptyTitle": "Hãy tạo cụm mật khẩu trước",
-  "sticker.emptyBody": "Xưởng nhãn dán biến bốn từ trong cụm mật khẩu của bạn thành nhãn dán. Hãy quay lại chọn từ, rồi đến đây.",
+  "sticker.emptyBody": "Xưởng nhãn dán biến bốn từ trong cụm mật khẩu của bạn thành nhãn dán. Mỗi nhãn dán cần một cụm mật khẩu mới, hãy quay lại chọn bốn từ, rồi đến thẳng đây.",
   "sticker.goMaker": "Đến trang tạo cụm mật khẩu",
   "sticker.intro": "Đây là bốn từ bạn đã chọn. Sắp xếp chúng rồi tải nhãn dán dưới dạng PNG.",
   "sticker.words": "Các từ của bạn",

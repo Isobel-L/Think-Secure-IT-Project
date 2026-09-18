@@ -27,7 +27,7 @@
             <a href="sticker-generator.html" data-i18n="common.stickerStudio">Sticker Studio</a>
         </nav>
 
-    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option>
+    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option><option value="zh-TW" lang="zh-TW">繁體中文</option>
 <option value="vi" lang="vi">Tiếng Việt</option></select></div></header>
 
 
@@ -41,80 +41,122 @@
         <!-- ------------------------------
              Explanation
         ------------------------------ -->
-        <section id="phrase-intro" class="phrase-section">
-<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
+        <section id="phrase-intro" class="phrase-section apple-intro">
 
-            <div class="phrase-icon">🔑</div>
 
-            <h2 data-i18n="passphrase.introTitle">What is a passphrase?</h2>
+            <!-- Hero -->
+            <div class="ai-hero">
 
-            <p class="phrase-lead" data-i18n="passphrase.intro">
-                A passphrase is a password made from several unrelated words
-                instead of one short, complicated word.
-            </p>
+                <div class="ai-glow ai-glow-one" aria-hidden="true"></div>
+                <div class="ai-glow ai-glow-two" aria-hidden="true"></div>
 
-            <div class="compare-grid">
+                <div class="ai-hero-inner" data-hero-parallax>
 
-                <div class="compare-card compare-weak">
+                    <p class="ai-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
-                    <h3 data-i18n="passphrase.typical">A typical password</h3>
+                    <div class="ai-key" aria-hidden="true"><span>🔑</span></div>
 
-                    <code>P@ssw0rd1</code>
+                    <h2 class="ai-title" data-i18n="passphrase.introTitle">What is a passphrase?</h2>
 
-                    <p data-i18n="passphrase.weak">
-                        Short, full of awkward symbols, hard to remember, and
-                        the substitutions are exactly what guessing software
-                        tries first.
+                    <p class="ai-lead" data-i18n="passphrase.intro">
+                        A passphrase is a password made from several unrelated words
+                        instead of one short, complicated word.
                     </p>
 
-                </div>
-
-                <div class="compare-card compare-strong">
-
-                    <h3 data-i18n="passphrase.example">A passphrase</h3>
-
-                    <code>Ocean-Gorilla-Watermelon-Japan</code>
-
-                    <p data-i18n="passphrase.strong">
-                        Much longer, easy to picture in your head, and far
-                        harder to guess because the words have nothing to do
-                        with each other.
-                    </p>
+                    <div class="ai-scroll-cue" aria-hidden="true"><span></span></div>
 
                 </div>
 
             </div>
 
-            <div class="phrase-points">
 
-                <div class="phrase-point">
-                    <span class="point-icon">📏</span>
+            <!-- Password against passphrase -->
+            <div class="ai-compare">
+
+                <div class="ai-compare-grid">
+
+                    <article class="ai-card ai-card-weak" data-reveal>
+
+                        <h3 data-i18n="passphrase.typical">A typical password</h3>
+
+                        <code class="ai-code ai-code-weak">P@ssw0rd1</code>
+
+                        <div class="ai-meter" aria-hidden="true"><span style="--fill: 22%"></span></div>
+
+                        <p class="ai-count"><span class="ai-count-number" data-count-to="9">9</span> <span data-i18n="passphrase.characters">characters</span></p>
+
+                        <p class="ai-card-body" data-i18n="passphrase.weak">
+                            Short, full of awkward symbols, hard to remember, and
+                            the substitutions are exactly what guessing software
+                            tries first.
+                        </p>
+
+                    </article>
+
+                    <article class="ai-card ai-card-strong" data-reveal>
+
+                        <h3 data-i18n="passphrase.example">A passphrase</h3>
+
+                        <code class="ai-code ai-code-strong" data-word-split>Ocean-Gorilla-Watermelon-Japan</code>
+
+                        <div class="ai-meter" aria-hidden="true"><span style="--fill: 100%"></span></div>
+
+                        <p class="ai-count"><span class="ai-count-number" data-count-to="30">30</span> <span data-i18n="passphrase.characters">characters</span></p>
+
+                        <p class="ai-card-body" data-i18n="passphrase.strong">
+                            Much longer, easy to picture in your head, and far
+                            harder to guess because the words have nothing to do
+                            with each other.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+
+            <!-- Three supporting points -->
+            <div class="ai-points">
+
+                <div class="ai-point" data-reveal data-spotlight>
+                    <span class="ai-point-icon" aria-hidden="true">📏</span>
                     <p><strong data-i18n="passphrase.lengthTitle">Length beats complexity.</strong><span data-i18n="passphrase.lengthBody"> Every extra
                     character multiplies the work an attacker has to do.</span></p>
                 </div>
 
-                <div class="phrase-point">
-                    <span class="point-icon">🧠</span>
+                <div class="ai-point" data-reveal data-spotlight>
+                    <span class="ai-point-icon" aria-hidden="true">🧠</span>
                     <p><strong data-i18n="passphrase.pictureTitle">Pictures stick.</strong><span data-i18n="passphrase.pictureBody"> You remember a gorilla
                     in the ocean far better than a string of symbols.</span></p>
                 </div>
 
-                <div class="phrase-point">
-                    <span class="point-icon">🎲</span>
+                <div class="ai-point" data-reveal data-spotlight>
+                    <span class="ai-point-icon" aria-hidden="true">🎲</span>
                     <p><strong data-i18n="passphrase.unrelatedTitle">Unrelated is the point.</strong><span data-i18n="passphrase.unrelatedBody"> Words that
                     belong together are easier to guess.</span></p>
                 </div>
 
             </div>
 
-            <p class="phrase-instruction" data-i18n="passphrase.instruction">
-                You are about to pick four words: a place, an animal, a fruit
-                and a country. Choose whatever sticks in your mind.
-            </p>
 
-            <button type="button" id="begin-button" class="quiz-button" data-i18n="passphrase.begin">
-                Start Building
-            </button>
+            <!-- Call to action -->
+            <div class="ai-cta" data-reveal>
+
+                <div class="ai-cta-emoji" aria-hidden="true">
+                    <span>🌊</span><span>🦍</span><span>🍉</span><span>🇯🇵</span>
+                </div>
+
+                <p class="ai-instruction" data-i18n="passphrase.instruction">
+                    You are about to pick four words: a place, an animal, a fruit
+                    and a country. Choose whatever sticks in your mind.
+                </p>
+
+                <button type="button" id="begin-button" class="ai-button" data-i18n="passphrase.begin">
+                    Start Building
+                </button>
+
+            </div>
 
         </section>
 
@@ -252,9 +294,11 @@
 
     <script src="../languages/en.js"></script>
 <script src="../languages/zh-CN.js"></script>
+<script src="../languages/zh-TW.js"></script>
 <script src="../languages/vi.js"></script>
 <script src="../js/i18n.js"></script>
 <script src="../js/passphrase-maker.js"></script>
+<script src="../js/passphrase-intro.js"></script>
 
 </body>
 

@@ -248,7 +248,7 @@ window.ThinkSecureLocales["zh-CN"]={
   "passphrase.word.NewZealand": "新西兰",
   "sticker.pageTitle": "贴纸工作室 | ThinkSecure",
   "sticker.emptyTitle": "请先创建密码短语",
-  "sticker.emptyBody": "贴纸工作室会把密码短语中的四个单词制作成贴纸。请先返回选择单词，再来制作贴纸。",
+  "sticker.emptyBody": "贴纸工作室会把密码短语中的四个单词制作成贴纸。每张贴纸都需要一个新生成的密码短语，请先返回选择四个单词，再来制作贴纸。",
   "sticker.goMaker": "前往密码短语生成器",
   "sticker.intro": "这里是你选择的四个单词。选择贴纸样式，然后下载 PNG 图片。",
   "sticker.words": "你选择的词语",

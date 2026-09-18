@@ -402,13 +402,43 @@ function showResult() {
     });
 
 
-    // Hand the choices to the Sticker Studio
+    storePassphrase();
+
+}
+
+
+/*
+    Hand the choices to the Sticker Studio and the Password Checker.
+
+    The Sticker Studio clears this as soon as it reads it, so a passphrase
+    only ever exists for as long as its result screen is in front of you.
+*/
+function storePassphrase() {
+
     sessionStorage.setItem(PHRASE_STORAGE_NAME, JSON.stringify({
-        phrase: phrase,
+        phrase: buildPassphrase(),
         words: chosenWords
     }));
 
 }
+
+
+/*
+    Coming back to a result screen that is still on display, for example
+    with the browser back button, puts the passphrase back so the buttons
+    on it keep working.
+*/
+window.addEventListener("pageshow", function () {
+
+    const onResult = !resultSection.classList.contains("hidden");
+
+    if (onResult && chosenWords.length === categories.length) {
+
+        storePassphrase();
+
+    }
+
+});
 
 
 /*
