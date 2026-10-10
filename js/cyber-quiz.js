@@ -2372,6 +2372,10 @@ function renderScenario(
     question
 ) {
 
+    // Visual-only: let CSS distinguish the devices by scenario type.
+    // No translation strings or quiz logic are modified.
+    scenarioVisual.dataset.scenarioType = question.type;
+
     scenarioVisual.innerHTML =
         "";
 
@@ -2491,2127 +2495,322 @@ function renderScenario(
    PHONE MESSAGE
 ============================================================ */
 
-function renderPhoneMessage(
-    question
-) {
-
-    const phone =
-        document.createElement(
-            "div"
-        );
-
-
-    phone.className =
-        "phone";
-
-
-    phone.innerHTML = `
-
-        <div class="phone-screen">
-
-            <div class="dynamic-island"></div>
-
-
-            <div class="phone-status light">
-
-                <span>
-                    9:41
-                </span>
-
-
-                <div class="phone-status-right">
-
-                    <span>
-                        ▮▮▮
-                    </span>
-
-                    <span>
-                        ◔
-                    </span>
-
-                    <span class="battery">
-
-                        <span></span>
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="lock-screen">
-
-                <div class="lock-date">
-
-                    Monday, 24 August
-
-                </div>
-
-
-                <div class="lock-time">
-
-                    9:41
-
-                </div>
-
-
-                <button
-                    class="real-notification"
-                    type="button"
-                >
-
-                    <div class="notification-topline">
-
-                        <div class="notification-app">
-
-                            <span class="message-app-icon">
-
-                                ●
-
-                            </span>
-
-                            ${escapeHTML(
-                                question.visual.app
-                            )}
-
-                        </div>
-
-
-                        <span class="notification-time">
-
-                            now
-
-                        </span>
-
-                    </div>
-
-
-                    <strong>
-
-                        ${escapeHTML(
-                            question.visual.sender
-                        )}
-
-                    </strong>
-
-
-                    <p>
-
-                        ${escapeHTML(
-                            question.visual.preview
-                        )}
-
-                    </p>
-
-                </button>
-
-
-                <div class="lock-actions">
-
-                    <span class="lock-round-button">
-                        ◐
-                    </span>
-
-                    <span class="lock-round-button">
-                        ◎
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="home-indicator"
-                style="color:#fff"
-            ></div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        phone
-    );
-
-
-    phone
-        .querySelector(
-            ".real-notification"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                renderMessagesApp(
-
-                    phone.querySelector(
-                        ".phone-screen"
-                    ),
-
-                    question
-
-                );
-
-
-                unlockDecision(
-                    "Read the conversation carefully. If a link appears, you can safely inspect it before answering."
-                );
-
-            }
-        );
-
+/* ============================================================
+   IMMERSIVE SCENARIO INTERFACES
+   Fictional, interactive simulations. Existing question data,
+   answer selection, scoring and site i18n integration stay intact.
+============================================================ */
+
+function tsButton(label, cls = "ts-cta") {
+    return `<button type="button" class="${cls} ts-inspect">${escapeHTML(label)} <span aria-hidden="true">↗</span></button>`;
+}
+
+function tsBrowser(title, address, theme, contents) {
+    return `<div class="ts-browser ts-${theme}">
+        <div class="ts-browser-tabbar"><span class="ts-lights"><i></i><i></i><i></i></span>
+          <span class="ts-tab-title">${escapeHTML(title)}</span><span class="ts-newtab">＋</span></div>
+        <div class="ts-browser-toolbar"><span>‹</span><span>›</span><span>↻</span>
+          <div class="ts-address"><span class="ts-address-indicator">◈</span>${escapeHTML(address)}</div>
+          <span>⋮</span></div>
+        <div class="ts-browser-content">${contents}</div>
+    </div>`;
+}
+
+function tsLaptop(contents) {
+    return `<div class="ts-laptop"><div class="ts-laptop-screen"><div class="ts-camera"></div>${contents}</div>
+       <div class="ts-laptop-hinge"></div><div class="ts-laptop-base"><span></span></div></div>`;
+}
+
+function tsMount(markup, handler) {
+    scenarioVisual.innerHTML = `<div class="ts-experience">${markup}</div>`;
+    scenarioVisual.querySelectorAll(".ts-inspect").forEach(button => {
+        button.addEventListener("click", () => {
+            if (handler) handler(button);
+        });
+    });
+}
+
+function tsShowInspection(question, instruction) {
+    if (question.inspection) openSimulation(question);
+    unlockDecision(instruction || question.instruction);
+}
+
+function tsPhone(inner, variant = "light") {
+    return `<div class="ts-phone ts-phone-${variant}">
+       <div class="ts-phone-inner"><div class="ts-island"></div>
+       <div class="ts-phone-status"><span>9:41</span><span>●●●  ▰</span></div>
+       ${inner}<div class="ts-home-pill"></div></div></div>`;
 }
 
 
-
-/* ============================================================
-   MESSAGES APP
-============================================================ */
-
-function renderMessagesApp(
-    screen,
-    question
-) {
-
-    screen.innerHTML = `
-
-        <div class="messages-app">
-
-            <div class="dynamic-island"></div>
-
-
-            <div class="phone-status dark">
-
-                <span>
-                    9:41
-                </span>
-
-
-                <div class="phone-status-right">
-
-                    <span>
-                        ▮▮▮
-                    </span>
-
-                    <span>
-                        ◔
-                    </span>
-
-                    <span class="battery">
-
-                        <span></span>
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="messages-header">
-
-                <div class="messages-back">
-
-                    ‹ Messages
-
-                </div>
-
-
-                <div class="contact-block">
-
-                    <div class="contact-avatar">
-
-                        ◉
-
-                    </div>
-
-
-                    <div class="contact-name">
-
-                        ${escapeHTML(
-                            question.visual.sender
-                        )}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="messages-body">
-
-                <div class="message-date">
-
-                    Today 9:41 AM
-
-                </div>
-
-
-                <div id="message-list"></div>
-
-            </div>
-
-
-            <div class="message-input-bar">
-
-                <div class="message-plus">
-
-                    +
-
-                </div>
-
-
-                <div class="message-input-fake">
-
-                    Text Message
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="home-indicator"
-                style="color:#111"
-            ></div>
-
-        </div>
-
-    `;
-
-
-    const list =
-        screen.querySelector(
-            "#message-list"
-        );
-
-
-    question.visual.messages.forEach(
-        function (message) {
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.className =
-                "message-row received";
-
-
-            const bubble =
-                document.createElement(
-                    "div"
-                );
-
-
-            bubble.className =
-                "message-bubble";
-
-
-            if (
-                message.link &&
-                question.inspection
-            ) {
-
-                const text =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                text.textContent =
-                    message.text + " ";
-
-
-                const link =
-                    document.createElement(
-                        "button"
-                    );
-
-
-                link.type =
-                    "button";
-
-
-                link.className =
-                    "message-link";
-
-
-                link.textContent =
-                    message.link;
-
-
-                link.addEventListener(
-                    "click",
-                    function () {
-
-                        openSimulation(
-                            question
-                        );
-
-                    }
-                );
-
-
-                bubble.append(
-                    text,
-                    link
-                );
-
-            }
-
-            else {
-
-                bubble.textContent =
-                    message.text;
-
-            }
-
-
-            row.appendChild(
-                bubble
-            );
-
-
-            list.appendChild(
-                row
-            );
-
+/*
+   Asset URL resolved from the JS script location instead of guessing
+   where the HTML page lives. Override window.THINKSECURE_QUIZ_ASSET_BASE
+   before this script if your site uses a different folder structure.
+*/
+const tsQuizScriptUrl = document.currentScript && document.currentScript.src;
+const tsQuizAssetBase = typeof window.THINKSECURE_QUIZ_ASSET_BASE === "string"
+    ? window.THINKSECURE_QUIZ_ASSET_BASE
+    : tsQuizScriptUrl
+        ? new URL("../Images/", tsQuizScriptUrl).href
+        : "../Images/";
+
+function tsScenarioAsset(question) {
+    const base = tsQuizAssetBase;
+
+    if (question.type === "marketplace") {
+        if (/NextGen Console/i.test(question.visual.product)) {
+            return {
+                src: base + "nextgen-console.jpg.png",
+                alt: "Modern black gaming console with controller"
+            };
         }
-    );
 
-}
-
-
-
-/* ============================================================
-   PHONE CALL
-============================================================ */
-
-function renderPhoneCall(
-    question
-) {
-
-    const phone =
-        document.createElement(
-            "div"
-        );
-
-
-    phone.className =
-        "phone";
-
-
-    phone.innerHTML = `
-
-        <div class="phone-screen">
-
-            <div class="dynamic-island"></div>
-
-
-            <div class="phone-status light">
-
-                <span>
-                    9:41
-                </span>
-
-
-                <div class="phone-status-right">
-
-                    <span>
-                        ▮▮▮
-                    </span>
-
-                    <span>
-                        ◔
-                    </span>
-
-                    <span class="battery">
-
-                        <span></span>
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="call-screen">
-
-
-                <div class="call-avatar">
-
-                    ☎
-
-                </div>
-
-
-                <div class="call-name">
-
-                    ${escapeHTML(
-                        question.visual.sender
-                    )}
-
-                </div>
-
-
-                <div class="call-number">
-
-                    ${escapeHTML(
-                        question.visual.number
-                    )}
-
-                </div>
-
-
-                <div class="call-actions">
-
-
-                    <button
-                        class="call-action decline"
-                        type="button"
-                    >
-
-                        <span class="call-action-circle">
-
-                            ×
-
-                        </span>
-
-                        <span>
-                            Decline
-                        </span>
-
-                    </button>
-
-
-                    <button
-                        class="call-action answer"
-                        type="button"
-                    >
-
-                        <span class="call-action-circle">
-
-                            ☎
-
-                        </span>
-
-                        <span>
-                            Answer
-                        </span>
-
-                    </button>
-
-                </div>
-
-
-                <div id="call-transcript-slot"></div>
-
-            </div>
-
-
-            <div
-                class="home-indicator"
-                style="color:#fff"
-            ></div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        phone
-    );
-
-
-    const answer =
-        phone.querySelector(
-            ".call-action.answer"
-        );
-
-
-    const decline =
-        phone.querySelector(
-            ".call-action.decline"
-        );
-
-
-    const slot =
-        phone.querySelector(
-            "#call-transcript-slot"
-        );
-
-
-    answer.addEventListener(
-        "click",
-        function () {
-
-            slot.innerHTML = `
-
-                <div class="call-transcript">
-
-                    <strong>
-                        Caller:
-                    </strong>
-
-                    ${escapeHTML(
-                        question.visual.transcript
-                    )}
-
-                </div>
-
-            `;
-
-
-            unlockDecision(
-                "You answered the simulated call. Read what the caller says, then choose how you would respond."
-            );
-
+        if (/Adventure Quest/i.test(question.visual.product)) {
+            return {
+                src: base + "adventure-quest-cover.jpg.png",
+                alt: "Adventure Quest video game cover art"
+            };
         }
-    );
-
-
-    decline.addEventListener(
-        "click",
-        function () {
-
-            slot.innerHTML = `
-
-                <div class="call-transcript">
-
-                    You declined the simulated call.
-                    You can still decide what the safest
-                    next step would be.
-
-                </div>
-
-            `;
-
-
-            unlockDecision(
-                "You declined the call. Now choose what you would do next."
-            );
-
-        }
-    );
-
-}
-
-
-
-/* ============================================================
-   LAPTOP CREATOR
-============================================================ */
-
-function createLaptop(
-    tabTitle,
-    url
-) {
-
-    const laptop =
-        document.createElement(
-            "div"
-        );
-
-
-    laptop.className =
-        "laptop";
-
-
-    laptop.innerHTML = `
-
-        <div class="laptop-lid">
-
-
-            <div class="laptop-camera"></div>
-
-
-            <div class="browser-chrome">
-
-
-                <div class="browser-tab-row">
-
-
-                    <div class="browser-dots">
-
-                        <span class="browser-dot red"></span>
-
-                        <span class="browser-dot yellow"></span>
-
-                        <span class="browser-dot green"></span>
-
-                    </div>
-
-
-                    <div class="browser-tab">
-
-                        ${escapeHTML(
-                            tabTitle
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <div class="browser-toolbar">
-
-                    <span class="browser-nav-button">
-                        ←
-                    </span>
-
-                    <span class="browser-nav-button">
-                        →
-                    </span>
-
-                    <span class="browser-nav-button">
-                        ↻
-                    </span>
-
-
-                    <div class="address-bar">
-
-                        🔒
-                        ${escapeHTML(
-                            url
-                        )}
-
-                    </div>
-
-
-                    <span class="browser-nav-button">
-                        ⋮
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="browser-body"></div>
-
-        </div>
-
-
-        <div class="laptop-base"></div>
-
-    `;
-
-
-    return laptop;
-
-}
-
-
-
-/* ============================================================
-   MARKETPLACE
-============================================================ */
-
-function renderMarketplace(
-    question
-) {
-
-    const laptop =
-        createLaptop(
-            question.visual.product,
-            question.visual.url
-        );
-
-
-    const body =
-        laptop.querySelector(
-            ".browser-body"
-        );
-
-
-    body.innerHTML = `
-
-        <div class="store-nav">
-
-            <div class="store-brand">
-
-                ${escapeHTML(
-                    question.visual.store
-                )}
-
-            </div>
-
-
-            <div class="store-actions">
-
-                Search
-                &nbsp;&nbsp;
-                Account
-                &nbsp;&nbsp;
-                Cart
-
-            </div>
-
-        </div>
-
-
-        <div class="store-content">
-
-
-            <div class="product-image">
-
-                ${question.visual.icon}
-
-            </div>
-
-
-            <div class="product-copy">
-
-
-                <div class="product-eyebrow">
-
-                    Online listing
-
-                </div>
-
-
-                <h3>
-
-                    ${escapeHTML(
-                        question.visual.product
-                    )}
-
-                </h3>
-
-
-                <div class="rating-line">
-
-                    ${escapeHTML(
-                        question.visual.rating
-                    )}
-
-                </div>
-
-
-                <div class="price-line">
-
-                    <span class="product-price">
-
-                        ${escapeHTML(
-                            question.visual.price
-                        )}
-
-                    </span>
-
-
-                    <span class="old-price">
-
-                        ${escapeHTML(
-                            question.visual.oldPrice
-                        )}
-
-                    </span>
-
-                </div>
-
-
-                <p>
-
-                    <strong>
-                        Seller:
-                    </strong>
-
-                    ${escapeHTML(
-                        question.visual.seller
-                    )}
-
-                </p>
-
-
-                <p class="product-note">
-
-                    ${escapeHTML(
-                        question.visual.note
-                    )}
-
-                </p>
-
-
-                <button
-                    class="real-button blue listing-action"
-                    type="button"
-                >
-
-                    ${escapeHTML(
-                        question.visual.action
-                    )}
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        laptop
-    );
-
-
-    body
-        .querySelector(
-            ".listing-action"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the listing details. Inspect the checkout information, then choose what you would do."
-                );
-
-            }
-        );
-
-}
-
-
-
-/* ============================================================
-   EMAIL
-============================================================ */
-
-function renderEmail(
-    question
-) {
-
-    const laptop =
-        createLaptop(
-            "Mail",
-            "mail.example/inbox"
-        );
-
-
-    const body =
-        laptop.querySelector(
-            ".browser-body"
-        );
-
-
-    body.innerHTML = `
-
-        <div class="mail-app">
-
-
-            <aside class="mail-sidebar">
-
-
-                <div class="mail-logo">
-                    Mail
-                </div>
-
-
-                <button
-                    class="mail-compose"
-                    type="button"
-                    disabled
-                >
-                    Compose
-                </button>
-
-
-                <div class="mail-folder active">
-                    Inbox
-                </div>
-
-                <div class="mail-folder">
-                    Starred
-                </div>
-
-                <div class="mail-folder">
-                    Sent
-                </div>
-
-                <div class="mail-folder">
-                    Drafts
-                </div>
-
-                <div class="mail-folder">
-                    Trash
-                </div>
-
-            </aside>
-
-
-            <section class="mail-main">
-
-
-                <div class="mail-toolbar">
-
-                    <div class="mail-search">
-
-                        Search mail
-
-                    </div>
-
-                    <span>
-                        ⚙
-                    </span>
-
-                </div>
-
-
-                <button
-                    class="mail-row unread"
-                    type="button"
-                >
-
-                    <span>
-
-                        ${escapeHTML(
-                            question.visual.sender
-                        )}
-
-                    </span>
-
-
-                    <span class="mail-subject">
-
-                        ${escapeHTML(
-                            question.visual.subject
-                        )}
-
-                        —
-
-                        ${escapeHTML(
-                            question.visual.preview
-                        )}
-
-                    </span>
-
-
-                    <span class="mail-time">
-
-                        ${escapeHTML(
-                            question.visual.time
-                        )}
-
-                    </span>
-
-                </button>
-
-
-                <div
-                    class="mail-row"
-                    aria-hidden="true"
-                >
-
-                    <span>
-                        University News
-                    </span>
-
-                    <span class="mail-subject">
-                        Weekly campus update
-                    </span>
-
-                    <span class="mail-time">
-                        8:12
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="mail-row"
-                    aria-hidden="true"
-                >
-
-                    <span>
-                        Streaming Service
-                    </span>
-
-                    <span class="mail-subject">
-                        Your monthly recommendations
-                    </span>
-
-                    <span class="mail-time">
-                        Yesterday
-                    </span>
-
-                </div>
-
-            </section>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        laptop
-    );
-
-
-    const main =
-        body.querySelector(
-            ".mail-main"
-        );
-
-
-    body
-        .querySelector(
-            "button.mail-row"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                renderOpenedEmail(
-                    main,
-                    question
-                );
-
-
-                unlockDecision(
-
-                    question.inspection
-
-                        ?
-
-                        "You opened the email. You can safely inspect its button before making your decision."
-
-                        :
-
-                        "You opened the email. Read it carefully, then choose what you would do."
-
-                );
-
-            }
-        );
-
-}
-
-
-
-/* ============================================================
-   OPEN EMAIL
-============================================================ */
-
-function renderOpenedEmail(
-    main,
-    question
-) {
-
-    main.innerHTML = `
-
-        <div class="mail-toolbar">
-
-            <span>
-                ← Back to inbox
-            </span>
-
-            <span>
-                Archive
-                &nbsp;
-                Delete
-                &nbsp;
-                ⋮
-            </span>
-
-        </div>
-
-
-        <div class="open-email">
-
-
-            <h3>
-
-                ${escapeHTML(
-                    question.visual.subject
-                )}
-
-            </h3>
-
-
-            <div class="email-meta">
-
-                <strong>
-
-                    ${escapeHTML(
-                        question.visual.sender
-                    )}
-
-                </strong>
-
-                <br>
-
-
-                ${escapeHTML(
-                    question.visual.address
-                )}
-
-                <br>
-
-                to you
-
-            </div>
-
-
-            <div class="email-body-copy">
-
-                <p>
-
-                    ${escapeHTML(
-                        question.visual.body
-                    )}
-
-                </p>
-
-
-                ${
-                    question.visual.linkText
-
-                        ?
-
-                        `
-
-                        <button
-                            class="email-link-button"
-                            type="button"
-                        >
-
-                            ${escapeHTML(
-                                question.visual.linkText
-                            )}
-
-                        </button>
-
-                        `
-
-                        :
-
-                        ""
-                }
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    if (
-        question.visual.linkText &&
-        question.inspection
-    ) {
-
-        main
-            .querySelector(
-                ".email-link-button"
-            )
-            .addEventListener(
-                "click",
-                function () {
-
-                    openSimulation(
-                        question
-                    );
-
-                }
-            );
-
     }
 
+    if (question.type === "gaming-store") {
+        return {
+            src: base + "galaxy-racers-cover.jpg.png",
+            alt: "Galaxy Racers 4 game cover art"
+        };
+    }
+
+    if (question.type === "investment") {
+        return {
+            src: base + "elite-growth-investments-banner.jpg.png",
+            alt: "Investment advertisement banner"
+        };
+    }
+
+    return null;
 }
 
-
-
-/* ============================================================
-   DESKTOP COMPUTER
-============================================================ */
-
-function renderDesktop(
-    question
-) {
-
-    const monitor =
-        document.createElement(
-            "div"
-        );
-
-
-    monitor.className =
-        "desktop-monitor";
-
-
-    monitor.innerHTML = `
-
-        <div class="monitor-frame">
-
-
-            <div class="desktop">
-
-
-                <div class="desktop-icons">
-
-                    <div class="desktop-icon-item">
-
-                        <span>
-                            🗂
-                        </span>
-
-                        Files
-
-                    </div>
-
-
-                    <div class="desktop-icon-item">
-
-                        <span>
-                            🌐
-                        </span>
-
-                        Browser
-
-                    </div>
-
-
-                    <div class="desktop-icon-item">
-
-                        <span>
-                            🗑
-                        </span>
-
-                        Recycle Bin
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="os-window">
-
-
-                    <div class="os-window-titlebar">
-
-                        <span>
-
-                            ${escapeHTML(
-                                question.visual.heading
-                            )}
-
-                        </span>
-
-
-                        <span class="os-window-controls">
-
-                            — □ ×
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="os-window-body">
-
-
-                        <div class="warning-title">
-
-                            <span class="warning-symbol">
-                                !
-                            </span>
-
-                            <span>
-                                Action required
-                            </span>
-
-                        </div>
-
-
-                        <p>
-
-                            ${escapeHTML(
-                                question.visual.message
-                            )}
-
-                        </p>
-
-
-                        <p>
-
-                            <strong>
-
-                                ${escapeHTML(
-                                    question.visual.phone
-                                )}
-
-                            </strong>
-
-                        </p>
-
-
-                        <button
-                            class="real-button blue desktop-action"
-                            type="button"
-                        >
-
-                            ${escapeHTML(
-                                question.visual.action
-                            )}
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="desktop-taskbar">
-
-
-                    <div class="taskbar-left">
-
-                        <span>
-                            ⊞
-                        </span>
-
-                        <span>
-                            🔎
-                        </span>
-
-                        <span>
-                            📁
-                        </span>
-
-                        <span>
-                            🌐
-                        </span>
-
-                    </div>
-
-
-                    <div class="taskbar-right">
-
-                        ENG
-                        &nbsp;
-                        9:41 AM
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="monitor-stand"></div>
-
-        <div class="monitor-base"></div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        monitor
+function tsFigure(asset, cls, fallbackText = "") {
+    if (!asset) {
+        return `<div class="${cls} ts-asset-fallback">${escapeHTML(fallbackText)}</div>`;
+    }
+
+    return `<img class="${cls}" loading="eager" decoding="async"
+         src="${asset.src}" alt="${escapeHTML(asset.alt)}"
+         onerror="this.onerror=null; this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;ts-photo-error&quot;>Image not found. Check the root Images/ folder and exact .jpg.png filename.</div>'); console.error('ThinkSecure quiz image missing:', this.src);">`;
+}
+
+function renderPhoneMessage(question) {
+    const v = question.visual;
+    const preview = `<div class="ts-lock"><div class="ts-lock-date">MONDAY · 24 AUGUST</div>
+        <div class="ts-lock-clock">9:41</div><div class="ts-lock-spark"></div>
+        <button type="button" class="ts-notification ts-inspect"><div class="ts-notification-top"><span class="ts-message-app-icon">●</span>
+        <b>${escapeHTML(v.app)}</b><small>now</small></div><strong>${escapeHTML(v.sender)}</strong>
+        <p>${escapeHTML(v.preview)}</p></button><div class="ts-lock-bottom"><span>◐</span><span>◎</span></div></div>`;
+    tsMount(tsPhone(preview, "lock"), () => {
+        const bubbles = (v.messages || []).map(message => `<div class="ts-bubble">
+             ${escapeHTML(message.text)}${message.link && question.inspection ? `<button class="ts-message-link ts-inspect" type="button">${escapeHTML(message.link)}</button>` : ""}</div>`).join("");
+        const messages = `<div class="ts-chat"><div class="ts-chat-nav"><span>‹</span><div class="ts-chat-contact"><div class="ts-chat-avatar">${escapeHTML((v.sender || "?").charAt(0))}</div>
+            <b>${escapeHTML(v.sender)}</b><small>›</small></div><span>◉</span></div><div class="ts-chat-date">Today · 9:41 AM</div>
+            <div class="ts-chat-thread">${bubbles}</div><div class="ts-chat-compose"><span>＋</span><div>Message</div><span>◉</span></div></div>`;
+        const inner = scenarioVisual.querySelector('.ts-phone-inner');
+        inner.querySelector('.ts-lock').remove();
+        inner.insertAdjacentHTML('beforeend', messages);
+        inner.querySelectorAll('.ts-message-link').forEach(b => b.addEventListener('click', () => tsShowInspection(question)));
+        unlockDecision("Read the conversation carefully, then choose what you would do.");
+    });
+}
+
+function renderPhoneCall(question) {
+    const v = question.visual;
+    const call = `<div class="ts-call"><div class="ts-call-overline">incoming call</div>
+       <div class="ts-call-avatar">☎</div><h3>${escapeHTML(v.sender)}</h3><p>${escapeHTML(v.number)}</p>
+       <div class="ts-call-tools"><span>◻<small>remind me</small></span><span>◉<small>message</small></span></div>
+       <div class="ts-call-actions"><button type="button" class="ts-call-decline ts-inspect" data-call="decline"><b>✕</b><small>Decline</small></button>
+       <button type="button" class="ts-call-answer ts-inspect" data-call="answer"><b>☎</b><small>Answer</small></button></div>
+       <div class="ts-call-transcript" aria-live="polite"></div></div>`;
+    tsMount(tsPhone(call,"call"), button => {
+        const answer = button.dataset.call === 'answer';
+        const slot = scenarioVisual.querySelector('.ts-call-transcript');
+        slot.innerHTML = answer ? `<b>Caller:</b> ${escapeHTML(v.transcript)}` : 'Call declined. You can still choose the safest next action.';
+        scenarioVisual.querySelector('.ts-call-actions').classList.add('ts-call-ended');
+        unlockDecision(answer ? "Read what the simulated caller says, then choose your response." : "You declined the call. Choose what you would do next.");
+    });
+}
+
+function renderMarketplace(question) {
+    const v = question.visual;
+    const asset = tsScenarioAsset(question);
+
+    const content = `<div class="ts-shop-shell">
+      <div class="ts-shop-nav"><div class="ts-shop-brand"><div class="ts-shop-mark">m<span>●</span></div><strong>${escapeHTML(v.store)}</strong></div>
+        <div class="ts-shop-search">⌕ &nbsp; Search products, brands and more</div>
+        <div class="ts-shop-actions"><span>Orders</span><span>Wishlist</span><span class="ts-shop-cart">🛒</span></div></div>
+      <div class="ts-shop-categories"><span>Today's deals</span><span>Electronics</span><span>Gaming</span><span>Home</span><span>Support</span></div>
+      <div class="ts-shop-breadcrumb">Home / Electronics / Gaming / ${escapeHTML(v.product)}</div>
+      <div class="ts-shop-product">
+        <section class="ts-shop-gallery">
+          <div class="ts-shop-main-image">${tsFigure(asset, 'ts-product-photo', v.icon || v.product)}</div>
+          <div class="ts-shop-thumb-row">
+            <button type="button" class="ts-shop-thumb active">Main image</button>
+            <button type="button" class="ts-shop-thumb">Side view</button>
+            <button type="button" class="ts-shop-thumb">In the box</button>
+          </div>
+        </section>
+        <section class="ts-shop-copy">
+          <div class="ts-product-meta">${escapeHTML(v.store)} · Electronics · Featured deal</div>
+          <h3>${escapeHTML(v.product)}</h3>
+          <div class="ts-product-stars">★★★★★ <span>${escapeHTML(v.rating)}</span></div>
+          <p class="ts-product-summary">Premium release with protected checkout, tracked delivery, and seller support information displayed below.</p>
+          <div class="ts-feature-list">
+            <span>✓ Fast dispatch</span><span>✓ Buyer protection</span><span>✓ Secure payment</span>
+          </div>
+          <div class="ts-buy-box">
+            <div class="ts-product-price">${escapeHTML(v.price)} <s>${escapeHTML(v.oldPrice)}</s></div>
+            <div class="ts-stock-indicator"><i></i> Available now</div>
+            <div class="ts-seller-card"><small>Sold by</small><b>${escapeHTML(v.seller)}</b><p>${escapeHTML(v.note)}</p></div>
+            <div class="ts-delivery-grid"><div><small>Delivery</small><b>Tracked shipping</b></div><div><small>Returns</small><b>30-day policy</b></div></div>
+            ${tsButton(v.action, 'ts-cta ts-inspect ts-shop-cta')}
+            <div class="ts-checkout-icons">Protected checkout · Order tracking · Support centre</div>
+          </div>
+        </section>
+      </div></div>`;
+
+    tsMount(tsLaptop(tsBrowser(v.product, v.url, 'shop', content)), () =>
+        tsShowInspection(question, 'Inspect the checkout details, then choose your response.')
     );
 
-
-    monitor
-        .querySelector(
-            ".desktop-action"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the support instructions. Read what they are asking you to do, then choose your response."
-                );
-
-            }
-        );
-
+    const gallery = scenarioVisual.querySelector('.ts-shop-gallery');
+    const photo = gallery && gallery.querySelector('.ts-product-photo');
+    if (gallery && photo) {
+        const tabs = [...gallery.querySelectorAll('.ts-shop-thumb')];
+        tabs[0].textContent = 'Full image';
+        tabs[1].textContent = 'Close-up';
+        tabs[2].textContent = 'Original size';
+        tabs.forEach((tab, index) => tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.toggle('active', t === tab));
+            photo.classList.toggle('ts-photo-closeup', index === 1);
+            photo.classList.toggle('ts-photo-contain', index === 2);
+        }));
+    }
 }
 
 
-
-/* ============================================================
-   GAMING STORE
-============================================================ */
-
-function renderGamingStore(
-    question
-) {
-
-    const frame =
-        document.createElement(
-            "div"
-        );
-
-
-    frame.className =
-        "console-frame";
-
-
-    frame.innerHTML = `
-
-        <div class="console-ui">
-
-
-            <div class="console-top">
-
-                <div class="console-brand">
-
-                    GameStation Store
-
-                </div>
-
-
-                <div class="console-user">
-
-                    Player01
-                    ●
-                    Online
-
-                </div>
-
-            </div>
-
-
-            <div class="console-nav">
-
-                <span>
-                    Home
-                </span>
-
-                <span class="active">
-                    Store
-                </span>
-
-                <span>
-                    Library
-                </span>
-
-                <span>
-                    Friends
-                </span>
-
-            </div>
-
-
-            <div class="console-card">
-
-
-                <div class="game-art">
-
-                    ${question.visual.icon}
-
-                </div>
-
-
-                <div>
-
-
-                    <div class="product-eyebrow">
-
-                        Digital game
-
-                    </div>
-
-
-                    <h3>
-
-                        ${escapeHTML(
-                            question.visual.title
-                        )}
-
-                    </h3>
-
-
-                    <p class="console-subtle">
-
-                        ${escapeHTML(
-                            question.visual.publisher
-                        )}
-
-                    </p>
-
-
-                    <div class="console-price">
-
-                        ${escapeHTML(
-                            question.visual.price
-                        )}
-
-                        <span class="old-price">
-
-                            ${escapeHTML(
-                                question.visual.oldPrice
-                            )}
-
-                        </span>
-
-                    </div>
-
-
-                    <p class="console-subtle">
-
-                        ${escapeHTML(
-                            question.visual.note
-                        )}
-
-                    </p>
-
-
-                    <button
-                        class="real-button light console-action"
-                        type="button"
-                    >
-
-                        ${escapeHTML(
-                            question.visual.action
-                        )}
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        frame
+function renderEmail(question) {
+    const v = question.visual;
+    const content = `<div class="ts-mail"><div class="ts-mail-top"><div class="ts-mail-logo"><span>✉</span> Postbox</div>
+       <div class="ts-mail-search">⌕ &nbsp; Search mail</div><div class="ts-mail-profile">I</div></div>
+       <div class="ts-mail-grid"><aside class="ts-mail-side"><div class="ts-mail-compose">✎ &nbsp; Compose</div>
+       <div class="ts-mail-folder active">▣ &nbsp; Inbox <small>1</small></div><div class="ts-mail-folder">☆ &nbsp; Starred</div>
+       <div class="ts-mail-folder">◷ &nbsp; Snoozed</div><div class="ts-mail-folder">▤ &nbsp; Sent</div>
+       <div class="ts-mail-folder">▱ &nbsp; Drafts</div><div class="ts-mail-divider"></div><small>LABELS</small>
+       <div class="ts-mail-folder">● &nbsp; Important</div></aside>
+       <main class="ts-mail-list"><div class="ts-mail-list-tools">☐ &nbsp; ⟳ &nbsp; ⋮ <span>1–3 of 3</span></div>
+       <button type="button" class="ts-mail-row ts-inspect"><span class="ts-mail-check">□ ☆</span>
+       <b>${escapeHTML(v.sender)}</b><span class="ts-mail-subject"><b>${escapeHTML(v.subject)}</b> — ${escapeHTML(v.preview)}</span>
+       <time>${escapeHTML(v.time)}</time></button>
+       <div class="ts-mail-row ts-mail-muted"><span>□ ☆</span><b>University updates</b><span>Welcome to this week's student bulletin</span><time>8:12</time></div>
+       <div class="ts-mail-row ts-mail-muted"><span>□ ☆</span><b>Streaming</b><span>Recommended for you this month</span><time>Yesterday</time></div>
+       <div class="ts-mail-placeholder"><span>✉</span><small>Choose a message to read</small></div></main></div></div>`;
+    tsMount(tsLaptop(tsBrowser('Inbox — Postbox','mail.example/inbox','mail',content)), () => {
+        const main = scenarioVisual.querySelector('.ts-mail-list');
+        main.innerHTML = `<div class="ts-mail-list-tools"><span>← &nbsp; ▣ &nbsp; ◷ &nbsp; ⋮</span><span>1 of 3</span></div>
+        <article class="ts-open-mail"><h3>${escapeHTML(v.subject)}</h3><div class="ts-open-mail-sender"><div class="ts-open-mail-avatar">${escapeHTML(v.sender.charAt(0))}</div>
+        <div><strong>${escapeHTML(v.sender)}</strong><small>&lt;${escapeHTML(v.address)}&gt; · to me</small></div><time>${escapeHTML(v.time)}</time></div>
+        <div class="ts-open-mail-body"><p>${escapeHTML(v.body)}</p>
+        ${v.linkText ? `<button class="ts-mail-link ts-inspect" type="button">${escapeHTML(v.linkText)} ↗</button>` : ''}
+        <div class="ts-mail-signoff">— ${escapeHTML(v.sender)}</div></div></article>`;
+        main.querySelectorAll('.ts-mail-link').forEach(b => b.addEventListener('click',() => tsShowInspection(question)));
+        unlockDecision(question.inspection ? 'You opened the email. You may safely inspect its simulated link before deciding.' : 'Read the email and decide what you would do.');
+    });
+}
+
+function renderDesktop(question) {
+    const v = question.visual;
+    const content = `<div class="ts-os-wallpaper"><div class="ts-os-icons"><span>▣<small>Files</small></span><span>◉<small>Browser</small></span>
+    <span>▤<small>Recycle Bin</small></span></div><div class="ts-os-window"><div class="ts-os-top"><span>⚙ &nbsp; System notification</span><span>— &nbsp; □ &nbsp; ×</span></div>
+    <div class="ts-os-body"><div class="ts-os-shield">!</div><small class="ts-os-risk">SYSTEM ATTENTION REQUIRED</small>
+    <h3>${escapeHTML(v.heading)}</h3><p>${escapeHTML(v.message)}</p>
+    <div class="ts-os-contact">Technical support &nbsp; <b>${escapeHTML(v.phone)}</b></div>
+    ${tsButton(v.action)}</div></div><div class="ts-os-taskbar"><span>⊞</span><span>⌕</span><span>▣</span><span>◈</span><small>9:41 AM &nbsp; ◉</small></div></div>`;
+    tsMount(`<div class="ts-monitor"><div class="ts-monitor-screen">${content}</div><div class="ts-monitor-neck"></div><div class="ts-monitor-foot"></div></div>`, () => tsShowInspection(question,'Inspect the simulated support instructions, then choose your response.'));
+}
+
+function renderGamingStore(question) {
+    const v = question.visual;
+    const asset = tsScenarioAsset(question);
+
+    const content = `<div class="ts-game-shell">
+       <div class="ts-game-top"><div class="ts-game-brand">◈ <b>GAMEROOM</b></div>
+       <div class="ts-game-toplinks">Store · Library · Deals · <b>Player01</b></div></div>
+       <div class="ts-game-nav"><span>Discover</span><span class="active">Store</span><span>Library</span><span>Community</span></div>
+       <div class="ts-game-hero">
+         <div class="ts-game-hero-art">${tsFigure(asset, 'ts-game-cover', v.title)}<span class="ts-game-art-label">FEATURED RELEASE</span></div>
+         <div class="ts-game-hero-copy"><span class="ts-game-pill">WEEKEND DEAL</span><small>NOW FEATURED</small>
+           <h3>${escapeHTML(v.title)}</h3><p>by ${escapeHTML(v.publisher)}</p>
+           <div class="ts-game-price">${escapeHTML(v.price)} <s>${escapeHTML(v.oldPrice)}</s></div>
+           <p class="ts-game-note">${escapeHTML(v.note)}</p>
+           <div class="ts-game-feature-list"><span>Digital download</span><span>Instant delivery</span><span>Official store checkout</span></div>
+           ${tsButton(v.action, 'ts-game-action ts-inspect')}
+         </div>
+       </div>
+       <div class="ts-game-strip"><span>Top seller</span><span>Racing</span><span>Multiplayer</span><span>Wishlist</span></div>
+    </div>`;
+
+    tsMount(`<div class="ts-console">${content}</div>`, () =>
+        tsShowInspection(question, 'Review how the purchase works before making your decision.')
     );
-
-
-    frame
-        .querySelector(
-            ".console-action"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the game listing. Inspect how the purchase works, then choose what you would do."
-                );
-
-            }
-        );
-
 }
 
 
+function renderGamingMessage(question) {
+    const v=question.visual;
+    const content = `<div class="ts-game-shell"><div class="ts-game-top"><div class="ts-game-brand">◈ <b>GAMEROOM</b></div>
+       <div class="ts-game-toplinks">◉ &nbsp; Player01</div></div><div class="ts-game-nav"><span>Home</span><span>Store</span><span class="active">Messages</span><span>Friends</span></div>
+       <div class="ts-game-chat"><aside class="ts-game-chat-side"><h4>Messages</h4><div class="ts-game-chat-player"><span>${escapeHTML(v.avatar)}</span>
+       <div><b>${escapeHTML(v.player)}</b><small>New message</small></div><i></i></div><div class="ts-game-chat-placeholder">◉ &nbsp; Friends online <b>12</b></div></aside>
+       <div class="ts-game-chat-main"><div class="ts-game-chat-header"><span>${escapeHTML(v.avatar)}</span><b>${escapeHTML(v.player)}</b><small>Online now ●</small></div>
+       <div class="ts-game-chat-conversation"><small>Today · 9:41 AM</small>
+       <div class="ts-game-chat-bubble">${escapeHTML(v.message)}
+       <button type="button" class="ts-game-link ts-inspect">${escapeHTML(v.link)} ↗</button></div></div>
+       <div class="ts-game-chat-input">＋ &nbsp; Message ${escapeHTML(v.player)}</div></div></div></div>`;
+    tsMount(`<div class="ts-console">${content}</div>`,()=>tsShowInspection(question,'Examine the linked simulated site, then choose how you would respond.'));
+}
 
-/* ============================================================
-   GAMING MESSAGE
-============================================================ */
+function renderJobSite(question) {
+    const v=question.visual;
+    const content = `<div class="ts-jobs-top"><div class="ts-jobs-logo">◈ <b>${escapeHTML(v.site)}</b></div>
+       <div class="ts-jobs-nav">Find jobs &nbsp; Companies &nbsp; Career advice</div><span class="ts-jobs-profile">Sign in</span></div>
+       <div class="ts-jobs-search"><div>⌕ &nbsp; Job title or keyword</div><div>⌾ &nbsp; Anywhere in Australia</div><span>Search</span></div>
+       <div class="ts-jobs-body"><aside class="ts-jobs-filters"><h4>Filters</h4><span>Job type</span><div>☑ Remote</div><span>Salary range</span>
+       <div>□ Full-time</div><div>□ Part-time</div><span>Location</span><div>☑ Australia</div></aside>
+       <article class="ts-jobs-card"><div class="ts-jobs-company-logo">B</div><div class="ts-jobs-badges"><span>REMOTE</span><span>NEW</span></div>
+       <h3>${escapeHTML(v.role)}</h3><p>${escapeHTML(v.company)} · Australia</p>
+       <div class="ts-jobs-salary">${escapeHTML(v.pay)}</div><div class="ts-jobs-feature">✦ Flexible hours</div>
+       <p class="ts-jobs-description">${escapeHTML(v.description)}</p>${tsButton(v.action)}
+       <div class="ts-jobs-footer">Posted today &nbsp; · &nbsp; Quick application</div></article></div>`;
+    tsMount(tsLaptop(tsBrowser('Find jobs', 'quickcareers.example/jobs','jobs',content)),()=>tsShowInspection(question,'Inspect the job application and payment requirements, then decide.'));
+}
 
-function renderGamingMessage(
-    question
-) {
+function renderInvestmentAd(question) {
+    const v = question.visual;
+    const asset = tsScenarioAsset(question);
 
-    const frame =
-        document.createElement(
-            "div"
-        );
+    const content = `<div class="ts-social-nav"><strong><span>social</span>circle</strong><div>⌕ Search posts</div><span>⌂ · Messages · Profile</span></div>
+       <div class="ts-social-body"><aside class="ts-social-left"><div>⌂ Feed</div><div>◈ Discover</div><div>▣ Saved</div><div>◉ Profile</div></aside>
+       <div class="ts-social-feed"><div class="ts-social-author"><div class="ts-social-avatar">EG</div>
+       <div><b>${escapeHTML(v.profile)}</b><small>Sponsored · Just now · Public</small></div><span>•••</span></div>
+       <div class="ts-social-banner">${tsFigure(asset, 'ts-social-banner-image', v.profile)}<div class="ts-social-banner-overlay"><div class="ts-social-graph"><span>+34.8% ↗</span><small>Portfolio growth</small></div><div class="ts-social-slogan">BUILD YOUR<br>FUTURE</div></div></div>
+       <div class="ts-social-postcopy"><h3>${escapeHTML(v.headline)}</h3><p>${escapeHTML(v.description)}</p><div class="ts-social-badges"><span>Low risk</span><span>Expert support</span><span>Start today</span></div>${tsButton(v.action)}</div>
+       <div class="ts-social-engagement">♡ 1.2K · Comments 84 · Share</div></div>
+       <aside class="ts-social-right"><b>Trending</b><p>Finance</p><p>Technology</p><p>Markets</p></aside></div>`;
 
-
-    frame.className =
-        "console-frame";
-
-
-    frame.innerHTML = `
-
-        <div class="console-ui">
-
-
-            <div class="console-top">
-
-                <div class="console-brand">
-
-                    GameStation
-
-                </div>
-
-
-                <div class="console-user">
-
-                    Player01
-                    ●
-                    Online
-
-                </div>
-
-            </div>
-
-
-            <div class="console-nav">
-
-                <span>
-                    Home
-                </span>
-
-                <span>
-                    Store
-                </span>
-
-                <span class="active">
-                    Messages
-                </span>
-
-                <span>
-                    Friends
-                </span>
-
-            </div>
-
-
-            <div class="console-message-card">
-
-
-                <div class="player-row">
-
-                    <div class="player-avatar">
-
-                        ${question.visual.avatar}
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-
-                            ${escapeHTML(
-                                question.visual.player
-                            )}
-
-                        </strong>
-
-                        <br>
-
-
-                        <span class="console-subtle">
-
-                            Sent just now
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <p class="console-message">
-
-                    ${escapeHTML(
-                        question.visual.message
-                    )}
-
-                </p>
-
-
-                <button
-                    class="console-link"
-                    type="button"
-                >
-
-                    ${escapeHTML(
-                        question.visual.link
-                    )}
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        frame
+    tsMount(tsLaptop(tsBrowser('Social Circle', 'social.example/home', 'social', content)), () =>
+        tsShowInspection(question, 'Inspect the investment claims and support instructions, then decide.')
     );
-
-
-    frame
-        .querySelector(
-            ".console-link"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the player's link in the simulation. Inspect what the page asks for, then choose your response."
-                );
-
-            }
-        );
-
 }
 
-
-
-/* ============================================================
-   JOB WEBSITE
-============================================================ */
-
-function renderJobSite(
-    question
-) {
-
-    const laptop =
-        createLaptop(
-            question.visual.role,
-            "quickcareers.example/jobs"
-        );
-
-
-    const body =
-        laptop.querySelector(
-            ".browser-body"
-        );
-
-
-    body.innerHTML = `
-
-        <div class="web-header">
-
-            <div class="web-logo">
-
-                ${escapeHTML(
-                    question.visual.site
-                )}
-
-            </div>
-
-
-            <div class="web-header-right">
-
-                Jobs
-                &nbsp;
-                Companies
-                &nbsp;
-                Sign in
-
-            </div>
-
-        </div>
-
-
-        <div class="job-page">
-
-
-            <div class="job-card">
-
-
-                <div class="product-eyebrow">
-
-                    Remote opportunity
-
-                </div>
-
-
-                <h3>
-
-                    ${escapeHTML(
-                        question.visual.role
-                    )}
-
-                </h3>
-
-
-                <p>
-
-                    <strong>
-
-                        ${escapeHTML(
-                            question.visual.company
-                        )}
-
-                    </strong>
-
-                </p>
-
-
-                <div class="job-pay">
-
-                    ${escapeHTML(
-                        question.visual.pay
-                    )}
-
-                </div>
-
-
-                <p class="job-meta">
-
-                    ${escapeHTML(
-                        question.visual.description
-                    )}
-
-                </p>
-
-
-                <button
-                    class="real-button blue job-action"
-                    type="button"
-                >
-
-                    ${escapeHTML(
-                        question.visual.action
-                    )}
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        laptop
-    );
-
-
-    body
-        .querySelector(
-            ".job-action"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the application. Inspect what the employer asks you to provide or pay, then choose your response."
-                );
-
-            }
-        );
-
-}
-
-
-
-/* ============================================================
-   INVESTMENT ADVERTISEMENT
-============================================================ */
-
-function renderInvestmentAd(
-    question
-) {
-
-    const laptop =
-        createLaptop(
-            "Social Feed",
-            "social.example/home"
-        );
-
-
-    const body =
-        laptop.querySelector(
-            ".browser-body"
-        );
-
-
-    body.innerHTML = `
-
-        <div class="web-header">
-
-            <div class="web-logo">
-
-                Social
-
-            </div>
-
-
-            <div class="web-header-right">
-
-                Home
-                &nbsp;
-                Messages
-                &nbsp;
-                Profile
-
-            </div>
-
-        </div>
-
-
-        <div class="social-page">
-
-
-            <div class="social-feed">
-
-
-                <article class="social-post">
-
-
-                    <div class="social-post-top">
-
-
-                        <div class="social-profile">
-
-                            <div class="social-avatar">
-
-                                EG
-
-                            </div>
-
-
-                            <div>
-
-                                <strong>
-
-                                    ${escapeHTML(
-                                        question.visual.profile
-                                    )}
-
-                                </strong>
-
-                                <br>
-
-
-                                <span class="console-subtle">
-
-                                    Sponsored
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <span>
-                            •••
-                        </span>
-
-                    </div>
-
-
-                    <div class="social-ad-card">
-
-
-                        <div class="product-eyebrow">
-
-                            Investment opportunity
-
-                        </div>
-
-
-                        <h3>
-
-                            ${escapeHTML(
-                                question.visual.headline
-                            )}
-
-                        </h3>
-
-
-                        <p class="job-meta">
-
-                            ${escapeHTML(
-                                question.visual.description
-                            )}
-
-                        </p>
-
-
-                        <button
-                            class="real-button blue investment-action"
-                            type="button"
-                        >
-
-                            ${escapeHTML(
-                                question.visual.action
-                            )}
-
-                        </button>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    scenarioVisual.appendChild(
-        laptop
-    );
-
-
-    body
-        .querySelector(
-            ".investment-action"
-        )
-        .addEventListener(
-            "click",
-            function () {
-
-                openSimulation(
-                    question
-                );
-
-
-                unlockDecision(
-                    "You opened the investment advertisement. Inspect the promises and support instructions, then choose your response."
-                );
-
-            }
-        );
-
-}
-
-
-
-/* ============================================================
-   OPEN SIMULATED LINK
-============================================================ */
 
 function openSimulation(
     question
@@ -4711,7 +2910,7 @@ function buildSimulationPage(
 
     return `
 
-        <div class="sim-browser">
+        <div class="sim-browser ts-sim-${escapeHTML(inspection.kind)}">
 
 
             <div class="browser-chrome">
@@ -4777,6 +2976,11 @@ function buildSimulationPage(
 
             <div class="sim-page">
 
+                <div class="ts-sim-identity">
+                    <span class="ts-sim-brand-icon">◈</span>
+                    <span>${escapeHTML(inspection.title)}</span>
+                    <small>Training website preview</small>
+                </div>
 
                 <div class="sim-card">
 
