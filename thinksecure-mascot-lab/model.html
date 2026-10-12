@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ThinkSecure Mascot Model Review</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 44'%3E%3Cpath d='M20 2c5 3.4 10 4.6 16 4.6v14.6C36 32 29 39 20 42 11 39 4 32 4 21.2V6.6C10 6.6 15 5.4 20 2z' fill='%231F2B8F'/%3E%3Cpath d='M20 2c5 3.4 10 4.6 16 4.6v14.6C36 32 29 39 20 42z' fill='%237A4DFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="model.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 44" aria-hidden="true">
+        <path d="M20 2c5 3.4 10 4.6 16 4.6v14.6C36 32 29 39 20 42 11 39 4 32 4 21.2V6.6C10 6.6 15 5.4 20 2z" fill="#1F2B8F"/>
+        <path d="M20 2c5 3.4 10 4.6 16 4.6v14.6C36 32 29 39 20 42z" fill="#7A4DFF"/>
+        <rect x="13.5" y="19" width="13" height="10.5" rx="2.4" fill="#fff"/>
+        <path d="M16 19v-3a4 4 0 0 1 8 0v3" stroke="#fff" stroke-width="2.4" fill="none"/>
+      </svg>
+      <div>
+        <h1>ThinkSecure Mascot · Character Model v2</h1>
+        <p>Design-correction pass · static model for approval (animation paused)</p>
+      </div>
+    </div>
+    <div class="status">
+      <span class="chip chip-wait"><b>Status</b>awaiting approval</span>
+      <a class="chip chip-link" href="index.html">Motion lab (v1 rig) →</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="model-stage" id="modelStage">
+      <svg id="mascot_v2" class="model-svg" viewBox="0 0 600 700" role="img" aria-labelledby="v2Title">
+        <title id="v2Title">ThinkSecure security robot — character model v2, neutral pose</title>
+        <defs>
+          <linearGradient id="v2ScreenGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1B2470"/>
+            <stop offset=".6" stop-color="#0E1448"/>
+            <stop offset="1" stop-color="#080B30"/>
+          </linearGradient>
+          <radialGradient id="v2ScreenGlow" cx="50%" cy="100%" r="75%">
+            <stop offset="0" stop-color="#6A55FF" stop-opacity=".6"/>
+            <stop offset="1" stop-color="#6A55FF" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="v2Tint" cx="50%" cy="85%" r="85%">
+            <stop offset="0" stop-color="#FFB23E" stop-opacity=".7"/>
+            <stop offset=".6" stop-color="#E0559A" stop-opacity=".22"/>
+            <stop offset="1" stop-color="#E0559A" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="v2EyeGrad" cx="45%" cy="34%" r="72%">
+            <stop offset="0" stop-color="#F6FEFF"/>
+            <stop offset=".45" stop-color="#B6F3FF"/>
+            <stop offset="1" stop-color="#58C6FF"/>
+          </radialGradient>
+          <linearGradient id="v2MouthGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D6F9FF"/>
+            <stop offset="1" stop-color="#62B9FF"/>
+          </linearGradient>
+          <filter id="v2Glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="v2Blur4" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>
+
+          <!-- part shapes (each is used for fill, two-tone shading clip and a thin edge) -->
+          <rect id="v2sHead" x="135" y="124" width="330" height="236" rx="118" ry="100"/>
+          <clipPath id="v2cHead"><use href="#v2sHead"/></clipPath>
+          <rect id="v2sScreen" x="155" y="196" width="290" height="152" rx="72" ry="64"/>
+          <clipPath id="v2cScreen"><use href="#v2sScreen"/></clipPath>
+          <path id="v2sCrown" d="M150 180C122 168 112 136 122 110C136 72 192 42 280 34C368 28 446 48 476 86C498 114 494 152 474 170C466 178 460 181 452 182Z"/>
+          <clipPath id="v2cCrown"><use href="#v2sCrown"/></clipPath>
+          <path id="v2sBand" d="M146 174C186 151 414 151 454 174C461 183 461 198 454 207C414 188 186 188 146 207C139 198 139 183 146 174Z"/>
+          <path id="v2sBadge" d="M290 70C302 78 314 80 325 80L325 105C325 127 310 140 290 147C270 140 255 127 255 105L255 80C266 80 278 78 290 70Z"/>
+          <path id="v2sChest" d="M300 338C364 338 412 360 415 414C418 466 386 494 300 496C214 494 182 466 185 414C188 360 236 338 300 338Z"/>
+          <clipPath id="v2cChest"><use href="#v2sChest"/></clipPath>
+          <path id="v2sShield" d="M300 382C314 391 327 394 338 394L338 422C338 447 322 462 300 470C278 462 262 447 262 422L262 394C273 394 286 391 300 382Z"/>
+          <clipPath id="v2cShield"><use href="#v2sShield"/></clipPath>
+          <path id="v2sPelvis" d="M216 468C246 480 354 480 384 468C391 482 390 498 384 506C370 514 348 510 334 514C318 518 311 526 300 526C289 526 282 518 266 514C252 510 230 514 216 506C210 498 209 482 216 468Z"/>
+          <clipPath id="v2cPelvis"><use href="#v2sPelvis"/></clipPath>
+          <path id="v2sPad" d="M-51-6C-51-33-31-51-4-51C23-51 43-33 43-6C43 18 30 34 4 37L-12 37C-38 34-51 18-51-6Z"/>
+          <clipPath id="v2cPad"><use href="#v2sPad"/></clipPath>
+          <path id="v2sFore" d="M-28 22C-28 16-16 12 0 12C16 12 28 16 28 22L33 50C34 60 18 64 0 64C-18 64-34 60-33 50Z"/>
+          <clipPath id="v2cFore"><use href="#v2sFore"/></clipPath>
+          <path id="v2sGlove" d="M-31 2C-42 14-46 40-39 60C-32 78-12 86 6 84C26 82 37 68 37 47C37 27 31 11 23 3C11-3-19-3-31 2Z"/>
+          <clipPath id="v2cGlove"><use href="#v2sGlove"/></clipPath>
+          <path id="v2sThigh" d="M-30 12C-30 3-19 0 0 0C19 0 30 3 30 12L30 52C30 59 19 62 0 62C-19 62-30 59-30 52Z"/>
+          <clipPath id="v2cThigh"><use href="#v2sThigh"/></clipPath>
+          <path id="v2sShin" d="M-28 8C-28 4-17 2 0 2C17 2 28 4 28 8L33 46C34 54 21 58 0 58C-21 58-34 54-33 46Z"/>
+          <clipPath id="v2cShin"><use href="#v2sShin"/></clipPath>
+          <path id="v2sBoot" d="M-36 0C-60 4-75 17-76 34C-77 47-68 54-52 54L30 54C44 54 50 47 48 34C46 17 38 4 30 0Z"/>
+          <clipPath id="v2cBoot"><use href="#v2sBoot"/></clipPath>
+          <clipPath id="v2Lid_L"><path d="M-70-70H70V70H-70Z"/></clipPath>
+          <clipPath id="v2Lid_R"><path d="M-70-70H70V70H-70Z"/></clipPath>
+
+          <!-- screen-face graphics: luminous UI shapes, no pupils (centred on 0,0) -->
+          <g id="v2EyeOval"><ellipse rx="22" ry="30" fill="url(#v2EyeGrad)"/><ellipse cx="-7" cy="-12" rx="4.5" ry="6.5" fill="#fff" opacity=".38"/></g>
+          <path id="v2EyeCrescent" d="M-26 9C-21-20 21-20 26 9C22 9 19 8 17 5C12-6-12-6-17 5C-19 8-22 9-26 9Z" fill="url(#v2EyeGrad)"/>
+          <path id="v2EyeStar" d="M0-31C3-11 10-4 29 0C10 4 3 11 0 31C-3 11-10 4-29 0C-10-4-3-11 0-31Z" fill="url(#v2EyeGrad)"/>
+          <circle id="v2EyeRound" r="27" fill="url(#v2EyeGrad)"/>
+          <rect id="v2EyeLine" x="-23" y="-5.5" width="46" height="11" rx="5.5" fill="#B6F3FF"/>
+          <path id="v2mSmile" d="M-17-4Q0 13 17-4" fill="none" stroke="#B9F3FF" stroke-width="7.5" stroke-linecap="round"/>
+          <g id="v2mOpen"><path d="M-21-7Q0-11 21-7Q19 18 0 21Q-19 18-21-7Z" fill="url(#v2MouthGrad)"/><path d="M-12 11Q0 4 12 11Q0 19-12 11Z" fill="#2F7DE8" opacity=".5"/></g>
+          <g id="v2mGrin"><path d="M-30-10Q0-14 30-10Q27 25 0 28Q-27 25-30-10Z" fill="url(#v2MouthGrad)"/><path d="M-16 16Q0 6 16 16Q0 27-16 16Z" fill="#2F7DE8" opacity=".5"/></g>
+          <g id="v2mO"><ellipse rx="11" ry="13" fill="url(#v2MouthGrad)"/><ellipse cy="1.5" rx="6" ry="7.5" fill="#0E1448"/></g>
+          <path id="v2mFlat" d="M-15 0L15 0" stroke="#B9F3FF" stroke-width="7.5" stroke-linecap="round"/>
+          <path id="v2mFrown" d="M-15 7Q0-8 15 7" fill="none" stroke="#B9F3FF" stroke-width="7.5" stroke-linecap="round"/>
+          <path id="v2mWobble" d="M-18 2Q-12-5-6 1Q0 7 6 1Q12-5 18 1" fill="none" stroke="#B9F3FF" stroke-width="6.5" stroke-linecap="round"/>
+          <path id="v2mSmirk" d="M-14 3Q3 12 18-6" fill="none" stroke="#B9F3FF" stroke-width="7.5" stroke-linecap="round"/>
+          <g id="v2mDots"><circle cx="-16" r="5" fill="#B9F3FF"/><circle r="5" fill="#B9F3FF"/><circle cx="16" r="5" fill="#B9F3FF"/></g>
+          <path id="v2Cheek" d="M-8 6L-2-5M2 6L8-5" stroke="#6FD3FF" stroke-width="3.4" stroke-linecap="round"/>
+          <path id="v2Spark" d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10Z" fill="#E9FCFF"/>
+
+          <!-- relaxed glove (wrist at 0,0, extends along +y; thumb on the inner side) -->
+          <g id="v2GloveRelaxed">
+            <use href="#v2sGlove" fill="#1C2479"/>
+            <g clip-path="url(#v2cGlove)">
+              <use href="#v2sGlove" fill="#28349F" transform="translate(-6 -8)"/>
+              <ellipse cx="-24" cy="32" rx="8" ry="20" fill="#3D4CCB"/>
+            </g>
+            <path d="M-22 57C-22 67-19 75-15 80M-6 61C-6 71-5 78-3 83M10 59C11 68 12 75 14 80" stroke="#141A5C" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".55"/>
+            <path d="M22 17C37 12 50 23 48 39C46 51 34 56 25 48Z" fill="#28349F"/>
+            <path d="M24 21C30 29 30 40 26 47" stroke="#141A5C" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".5"/>
+            <ellipse cx="35" cy="25" rx="7" ry="4" fill="#3D4CCB"/>
+            <ellipse cx="0" cy="3" rx="31" ry="9" fill="#3341BB"/>
+            <ellipse cx="-2" cy="1.5" rx="26" ry="5" fill="#4B5BD8" opacity=".55"/>
+          </g>
+        </defs>
+
+        <!-- ground -->
+        <ellipse id="ground_shadow" cx="300" cy="659" rx="166" ry="16" fill="#1B2266" opacity=".12"/>
+        <ellipse class="contact" cx="235" cy="658" rx="64" ry="7" fill="#1B2266" opacity=".16"/>
+        <ellipse class="contact" cx="365" cy="658" rx="64" ry="7" fill="#1B2266" opacity=".16"/>
+
+        <g id="mascot_art">
+        <g id="mascot_root" data-bone data-pivot="300,658" data-kind="squash">
+          <g id="hip" data-bone data-pivot="300,498" data-kind="core" transform="translate(0 1)">
+
+            <!-- ===== legs (behind pelvis) ===== -->
+            <g id="leg_L" data-bone data-pivot="250,500" data-kind="ik">
+              <g transform="translate(250 500)">
+                <g id="thigh_L" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(8)">
+                  <circle r="22" fill="#1C2479"/>
+                  <use href="#v2sThigh" fill="#DEE3F7"/>
+                  <g clip-path="url(#v2cThigh)">
+                    <use href="#v2sThigh" fill="#F9FAFF" transform="translate(-6 -8)"/>
+                    <ellipse cx="-14" cy="30" rx="7" ry="16" fill="#fff"/>
+                  </g>
+                  <use href="#v2sThigh" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                  <g transform="translate(0 54)">
+                    <g id="shin_L" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(-16)">
+                      <use href="#v2sShin" fill="#DEE3F7"/>
+                      <g clip-path="url(#v2cShin)">
+                        <use href="#v2sShin" fill="#F9FAFF" transform="translate(-6 -8)"/>
+                        <ellipse cx="-14" cy="28" rx="6" ry="12" fill="#fff"/>
+                        <rect x="-40" y="36" width="80" height="11" fill="#7B4DFF"/>
+                        <rect x="-40" y="36" width="80" height="3" fill="#A98DFF"/>
+                      </g>
+                      <use href="#v2sShin" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                      <ellipse cx="0" cy="0" rx="28" ry="19" fill="#1C2479"/>
+                      <ellipse cx="-2" cy="-3" rx="25" ry="15" fill="#28349F"/>
+                      <ellipse cx="-10" cy="-8" rx="10" ry="5" fill="#3D4CCB"/>
+                      <g transform="translate(0 50)">
+                        <g id="foot_L" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(8)">
+                          <use href="#v2sBoot" fill="#1C2479"/>
+                          <g clip-path="url(#v2cBoot)">
+                            <use href="#v2sBoot" fill="#28349F" transform="translate(-6 -9)"/>
+                            <g id="toe_L" data-bone data-pivot="-16,30" data-kind="ik">
+                              <ellipse cx="-26" cy="22" rx="30" ry="12" fill="#3644C4"/>
+                              <ellipse cx="-34" cy="16" rx="12" ry="4.5" fill="#fff" opacity=".28"/>
+                            </g>
+                            <rect x="-80" y="45" width="140" height="12" fill="#3746C6"/>
+                            <rect x="-80" y="44" width="140" height="2" fill="#141A5C" opacity=".45"/>
+                          </g>
+                          <rect x="-35" y="-9" width="70" height="15" rx="7.5" fill="#2E3BB3"/>
+                          <rect x="-29" y="-8" width="56" height="4" rx="2" fill="#5262DF"/>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g id="leg_R" data-bone data-pivot="350,500" data-kind="ik">
+              <g transform="matrix(-1 0 0 1 600 0)">
+                <g transform="translate(250 500)">
+                  <g id="thigh_R" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(5)">
+                    <circle r="22" fill="#1C2479"/>
+                    <use href="#v2sThigh" fill="#DEE3F7"/>
+                    <g clip-path="url(#v2cThigh)">
+                      <use href="#v2sThigh" fill="#F9FAFF" transform="translate(-6 -8)"/>
+                      <ellipse cx="-14" cy="30" rx="7" ry="16" fill="#fff"/>
+                    </g>
+                    <use href="#v2sThigh" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                    <g transform="translate(0 54)">
+                      <g id="shin_R" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(-10)">
+                        <use href="#v2sShin" fill="#DEE3F7"/>
+                        <g clip-path="url(#v2cShin)">
+                          <use href="#v2sShin" fill="#F9FAFF" transform="translate(-6 -8)"/>
+                          <ellipse cx="-14" cy="28" rx="6" ry="12" fill="#fff"/>
+                          <rect x="-40" y="36" width="80" height="11" fill="#7B4DFF"/>
+                          <rect x="-40" y="36" width="80" height="3" fill="#A98DFF"/>
+                        </g>
+                        <use href="#v2sShin" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                        <ellipse cx="0" cy="0" rx="28" ry="19" fill="#1C2479"/>
+                        <ellipse cx="-2" cy="-3" rx="25" ry="15" fill="#28349F"/>
+                        <ellipse cx="-10" cy="-8" rx="10" ry="5" fill="#3D4CCB"/>
+                        <g transform="translate(0 50)">
+                          <g id="foot_R" data-bone data-pivot="0,0" data-kind="ik" transform="rotate(5)">
+                            <use href="#v2sBoot" fill="#1C2479"/>
+                            <g clip-path="url(#v2cBoot)">
+                              <use href="#v2sBoot" fill="#28349F" transform="translate(-6 -9)"/>
+                              <g id="toe_R" data-bone data-pivot="-16,30" data-kind="ik">
+                                <ellipse cx="-26" cy="22" rx="30" ry="12" fill="#3644C4"/>
+                                <ellipse cx="-34" cy="16" rx="12" ry="4.5" fill="#fff" opacity=".28"/>
+                              </g>
+                              <rect x="-80" y="45" width="140" height="12" fill="#3746C6"/>
+                              <rect x="-80" y="44" width="140" height="2" fill="#141A5C" opacity=".45"/>
+                            </g>
+                            <rect x="-35" y="-9" width="70" height="15" rx="7.5" fill="#2E3BB3"/>
+                            <rect x="-29" y="-8" width="56" height="4" rx="2" fill="#5262DF"/>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+
+            <!-- ===== pelvis ===== -->
+            <g id="pelvis" data-bone data-pivot="300,498" data-kind="core">
+              <use href="#v2sPelvis" fill="#1C2479"/>
+              <g clip-path="url(#v2cPelvis)">
+                <use href="#v2sPelvis" fill="#28349F" transform="translate(-6 -9)"/>
+                <ellipse cx="260" cy="484" rx="34" ry="8" fill="#3D4CCB"/>
+              </g>
+            </g>
+
+            <!-- ===== spine / chest ===== -->
+            <g id="spine" data-bone data-pivot="300,500" data-kind="squash">
+              <g id="chest" data-bone data-pivot="300,416" data-kind="squash">
+                <use href="#v2sChest" fill="#DEE3F7"/>
+                <g clip-path="url(#v2cChest)">
+                  <use href="#v2sChest" fill="#F9FAFF" transform="translate(-10 -14)"/>
+                  <ellipse cx="300" cy="342" rx="120" ry="22" fill="#BFC7EA" opacity=".85"/>
+                  <ellipse cx="222" cy="420" rx="15" ry="38" fill="#fff"/>
+                  <path d="M188 448C203 482 248 494 300 494C352 494 397 482 412 448" stroke="#7B4DFF" stroke-width="5" fill="none"/>
+                  <path d="M209 394C204 430 213 460 238 477M391 394C396 430 387 460 362 477" stroke="#7B4DFF" stroke-width="4" stroke-linecap="round" fill="none"/>
+                </g>
+                <use href="#v2sChest" fill="none" stroke="#C4CBEB" stroke-width="1.6"/>
+
+                <g id="chest_badge" data-bone data-pivot="300,426" data-kind="core">
+                  <ellipse id="badge_glow" cx="300" cy="426" rx="52" ry="56" fill="#A98BFF" filter="url(#v2Blur4)" opacity="0"/>
+                  <use href="#v2sShield" fill="#C3CAEB" transform="translate(2 5)"/>
+                  <use href="#v2sShield" fill="#F9FAFF" stroke="#F9FAFF" stroke-width="9" stroke-linejoin="round"/>
+                  <g clip-path="url(#v2cShield)">
+                    <rect x="256" y="378" width="44" height="100" fill="#28349F"/>
+                    <rect x="300" y="378" width="44" height="100" fill="#7B4DFF"/>
+                    <ellipse cx="300" cy="478" rx="56" ry="22" fill="#0B0F3A" opacity=".18"/>
+                    <path d="M266 400C276 398 288 394 298 388" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".35"/>
+                  </g>
+                  <path d="M290 427V421C290 409 310 409 310 421V427" stroke="#fff" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                  <rect x="282" y="425" width="36" height="28" rx="6.5" fill="#fff"/>
+                  <circle cx="300" cy="436" r="4.2" fill="#28349F"/>
+                  <rect x="298.3" y="437" width="3.4" height="9" rx="1.7" fill="#28349F"/>
+                </g>
+
+                <!-- ===== left arm (screen-left) ===== -->
+                <g id="arm_L_slot">
+                  <g id="shoulder_L" data-bone data-pivot="190,386" data-kind="core" transform="translate(0 -3)">
+                    <g transform="translate(190 386)">
+                      <g id="upper_arm_L" data-bone data-pivot="0,0" data-kind="core" transform="rotate(9)">
+                        <path d="M-25-10C-25-22-13-28 0-28C13-28 25-22 25-10L25 40C25 48 13 52 0 52C-13 52-25 48-25 40Z" fill="#1C2479"/>
+                        <g transform="translate(0 46)">
+                          <g id="forearm_L" data-bone data-pivot="0,0" data-kind="core" transform="rotate(-7)">
+                            <circle r="26" fill="#28349F"/>
+                            <ellipse cx="-9" cy="-9" rx="11" ry="7" fill="#3D4CCB"/>
+                            <use href="#v2sFore" fill="#DEE3F7"/>
+                            <g clip-path="url(#v2cFore)">
+                              <use href="#v2sFore" fill="#F9FAFF" transform="translate(-6 -7)"/>
+                              <ellipse cx="-15" cy="32" rx="6" ry="11" fill="#fff"/>
+                              <rect x="-40" y="46" width="80" height="11" fill="#7B4DFF"/>
+                              <rect x="-40" y="46" width="80" height="3" fill="#A98DFF"/>
+                            </g>
+                            <use href="#v2sFore" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                            <g transform="translate(0 58)">
+                              <g id="hand_L" data-bone data-pivot="0,0" data-kind="core" transform="rotate(-4)">
+                                <use class="hand-var" data-hand="relaxed" href="#v2GloveRelaxed"/>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                      <g id="shoulder_cap_L" data-bone data-pivot="0,0" data-kind="secondary">
+                        <g class="pad-art" transform="rotate(-4 -4 0)">
+                        <use href="#v2sPad" fill="#DEE3F7"/>
+                        <g clip-path="url(#v2cPad)">
+                          <use href="#v2sPad" fill="#F9FAFF" transform="translate(-3 -11)"/>
+                          <ellipse cx="-20" cy="-36" rx="20" ry="8" transform="rotate(-18 -20 -36)" fill="#fff"/>
+                          <path d="M-56 18C-40 40 32 42 48 16" stroke="#B9C1E8" stroke-width="9" fill="none"/>
+                          <ellipse cx="-4" cy="42" rx="30" ry="10" fill="#1C2479"/>
+                          <ellipse cx="-4" cy="40" rx="30" ry="8" fill="none" stroke="#C9D0EE" stroke-width="2"/>
+                        </g>
+                        <use href="#v2sPad" fill="none" stroke="#C4CBEB" stroke-width="1.6"/>
+                        </g>
+                        <text class="sapol" x="-5" y="-17" transform="rotate(-10 -5 -17)" font-size="17" font-weight="900" fill="#1F2B8F" text-anchor="middle" font-family="Nunito, 'Arial Rounded MT Bold', Arial, sans-serif">SAPOL</text>
+                        <path d="M-29 0L15-6M-25 11L11 6" stroke="#28349F" stroke-width="4.4" stroke-linecap="round"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+
+                <!-- ===== right arm (mirrored copy) ===== -->
+                <g id="arm_R_slot">
+                  <g transform="matrix(-1 0 0 1 600 0)">
+                    <g id="shoulder_R" data-bone data-pivot="190,386" data-kind="core" transform="translate(0 1)">
+                      <g transform="translate(190 386)">
+                        <g id="upper_arm_R" data-bone data-pivot="0,0" data-kind="core" transform="rotate(12)">
+                          <path d="M-25-10C-25-22-13-28 0-28C13-28 25-22 25-10L25 40C25 48 13 52 0 52C-13 52-25 48-25 40Z" fill="#1C2479"/>
+                          <g transform="translate(0 46)">
+                            <g id="forearm_R" data-bone data-pivot="0,0" data-kind="core" transform="rotate(-12)">
+                              <circle r="26" fill="#28349F"/>
+                              <ellipse cx="-9" cy="-9" rx="11" ry="7" fill="#3D4CCB"/>
+                              <use href="#v2sFore" fill="#DEE3F7"/>
+                              <g clip-path="url(#v2cFore)">
+                                <use href="#v2sFore" fill="#F9FAFF" transform="translate(-6 -7)"/>
+                                <ellipse cx="-15" cy="32" rx="6" ry="11" fill="#fff"/>
+                                <rect x="-40" y="46" width="80" height="11" fill="#7B4DFF"/>
+                                <rect x="-40" y="46" width="80" height="3" fill="#A98DFF"/>
+                              </g>
+                              <use href="#v2sFore" fill="none" stroke="#C4CBEB" stroke-width="1.5"/>
+                              <g transform="translate(0 58)">
+                                <g id="hand_R" data-bone data-pivot="0,0" data-kind="core" transform="rotate(8)">
+                                  <use class="hand-var" data-hand="relaxed" href="#v2GloveRelaxed"/>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                        <g id="shoulder_cap_R" data-bone data-pivot="0,0" data-kind="secondary">
+                          <g class="pad-art" transform="rotate(-4 -4 0)">
+                        <use href="#v2sPad" fill="#DEE3F7"/>
+                        <g clip-path="url(#v2cPad)">
+                          <use href="#v2sPad" fill="#F9FAFF" transform="translate(-3 -11)"/>
+                          <ellipse cx="-20" cy="-36" rx="20" ry="8" transform="rotate(-18 -20 -36)" fill="#fff"/>
+                          <path d="M-56 18C-40 40 32 42 48 16" stroke="#B9C1E8" stroke-width="9" fill="none"/>
+                          <ellipse cx="-4" cy="42" rx="30" ry="10" fill="#1C2479"/>
+                          <ellipse cx="-4" cy="40" rx="30" ry="8" fill="none" stroke="#C9D0EE" stroke-width="2"/>
+                        </g>
+                        <use href="#v2sPad" fill="none" stroke="#C4CBEB" stroke-width="1.6"/>
+                        </g>
+                          <g transform="scale(-1 1)">
+                            <text class="sapol" x="5" y="-17" transform="rotate(10 5 -17)" font-size="17" font-weight="900" fill="#1F2B8F" text-anchor="middle" font-family="Nunito, 'Arial Rounded MT Bold', Arial, sans-serif">SAPOL</text>
+                          </g>
+                          <path d="M-29 0L15-6M-25 11L11 6" stroke="#28349F" stroke-width="4.4" stroke-linecap="round"/>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+
+                <!-- ===== neck + head (static frame lifts the head 14u above the chest) ===== -->
+                <g transform="translate(0 -14)">
+                <g id="neck" data-bone data-pivot="300,362" data-kind="core">
+                  <ellipse cx="300" cy="360" rx="52" ry="12" fill="#1C2479"/>
+                  <ellipse cx="300" cy="357" rx="44" ry="6" fill="#7B4DFF" opacity=".85"/>
+
+                  <g id="head" data-bone data-pivot="300,358" data-kind="squash" transform="rotate(-2.5 300 358)">
+                    <g id="head_base">
+                      <use href="#v2sHead" fill="#DEE3F7"/>
+                      <g clip-path="url(#v2cHead)">
+                        <use href="#v2sHead" fill="#F9FAFF" transform="translate(-14 -16)"/>
+                        <ellipse cx="300" cy="207" rx="172" ry="13" fill="#AEB6E2" opacity=".55"/>
+                        <ellipse cx="300" cy="384" rx="176" ry="32" fill="#C3CAEC" opacity=".8"/>
+                      </g>
+                      <path d="M151 306C144 266 148 230 164 206" stroke="#fff" stroke-width="9" stroke-linecap="round" fill="none"/>
+                      <use href="#v2sHead" fill="none" stroke="#C4CBEB" stroke-width="1.8"/>
+                      <rect x="149" y="190" width="302" height="164" rx="78" ry="70" fill="#1A2070"/>
+                      <use href="#v2sScreen" fill="url(#v2ScreenGrad)"/>
+                      <g clip-path="url(#v2cScreen)">
+                        <ellipse cx="300" cy="356" rx="166" ry="48" fill="url(#v2ScreenGlow)"/>
+                        <rect id="screen_tint" x="155" y="196" width="290" height="152" fill="url(#v2Tint)" opacity="0"/>
+                      </g>
+                      <rect x="158" y="199" width="284" height="146" rx="69" ry="61" fill="none" stroke="#7366FF" stroke-width="2" opacity=".5"/>
+                    </g>
+
+                    <g id="face" data-bone data-pivot="300,269" data-kind="face" filter="url(#v2Glow)">
+                      <g id="eye_L" data-bone data-pivot="244,262" data-kind="face">
+                        <g transform="translate(244 262)"><g clip-path="url(#v2Lid_L)">
+                          <use class="eye-style" data-style="oval" href="#v2EyeOval"/>
+                        </g></g>
+                      </g>
+                      <g id="eye_R" data-bone data-pivot="356,262" data-kind="face">
+                        <g transform="translate(356 262)"><g clip-path="url(#v2Lid_R)">
+                          <use class="eye-style" data-style="oval" href="#v2EyeOval"/>
+                        </g></g>
+                      </g>
+                      <g id="cheek_L" opacity=".85"><use href="#v2Cheek" x="205" y="300"/></g>
+                      <g id="cheek_R" opacity=".85"><use href="#v2Cheek" x="395" y="300"/></g>
+                      <g id="mouth" data-bone data-pivot="300,312" data-kind="face">
+                        <g transform="translate(300 312)"><use class="mouth-style" data-mouth="smile" href="#v2mSmile"/></g>
+                      </g>
+                    </g>
+
+                    <g id="screen_glass">
+                      <path d="M186 238C190 219 206 206 230 201" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".14"/>
+                      <path d="M418 300C421 290 422 280 422 270" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".08"/>
+                    </g>
+
+                    <!-- hat: oversized soft beret-cap, crown puffed to the right -->
+                    <g id="hat" data-bone data-pivot="300,180" data-kind="squash">
+                      <g id="hat_art">
+                        <g id="hat_crown" data-bone data-pivot="300,182" data-kind="secondary">
+                          <use href="#v2sCrown" fill="#7B4DFF"/>
+                          <g clip-path="url(#v2cCrown)">
+                            <use href="#v2sCrown" fill="#1C2479" transform="translate(-7 6)"/>
+                            <use href="#v2sCrown" fill="#28349F" transform="translate(-16 -8)"/>
+                            <ellipse cx="214" cy="86" rx="80" ry="34" transform="rotate(-16 214 86)" fill="#3644C2" opacity=".9"/>
+                            <ellipse cx="300" cy="192" rx="200" ry="30" fill="#141A5C" opacity=".5"/>
+                          </g>
+                          <path d="M168 118C176 94 198 74 228 62" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".25"/>
+                          <g id="hat_badge">
+                            <use href="#v2sBadge" fill="#0E1448" opacity=".45" transform="translate(2 4)"/>
+                            <use href="#v2sBadge" fill="#1E2780" stroke="#F9FAFF" stroke-width="5" stroke-linejoin="round"/>
+                            <path d="M290 94L293.47 103.23L303.31 103.67L295.61 109.82L298.23 119.33L290 113.9L281.77 119.33L284.39 109.82L276.69 103.67L286.53 103.23Z" fill="#fff"/>
+                          </g>
+                        </g>
+                        <use href="#v2sBand" fill="#1E2780"/>
+                        <path d="M152 173C192 152 408 152 448 173" stroke="#4352D4" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <path d="M156 203C196 186 404 186 444 203" stroke="#141A5C" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>
+                      </g>
+                    </g>
+
+                    <!-- antenna: rises from behind the right ear pod -->
+                    <g id="antenna" data-bone data-pivot="470,248" data-kind="secondary">
+                      <g transform="translate(470 248) rotate(18)">
+                        <g id="antenna_1" data-bone data-pivot="0,0" data-kind="secondary">
+                          <path d="M0 4L0-48" stroke="#141A5C" stroke-width="10" stroke-linecap="round"/>
+                          <path d="M-1 0L-1-46" stroke="#3341B8" stroke-width="3.5" stroke-linecap="round"/>
+                          <g transform="translate(0 -48) rotate(6)">
+                            <g id="antenna_2" data-bone data-pivot="0,0" data-kind="secondary">
+                              <path d="M0 0L0-34" stroke="#141A5C" stroke-width="9" stroke-linecap="round"/>
+                              <path d="M-1-2L-1-32" stroke="#3341B8" stroke-width="3" stroke-linecap="round"/>
+                              <g transform="translate(0 -34)">
+                                <g id="antenna_tip" data-bone data-pivot="0,-12" data-kind="secondary">
+                                  <ellipse id="antenna_glow" cx="0" cy="-14" rx="18" ry="26" fill="#B48CFF" filter="url(#v2Blur4)" opacity="0"/>
+                                  <rect x="-10" y="-31" width="20" height="35" rx="10" fill="#6A3FF0"/>
+                                  <rect x="-10" y="-31" width="17" height="31" rx="8.5" fill="#8E66FF"/>
+                                  <rect x="-5.5" y="-26" width="5" height="15" rx="2.5" fill="#fff" opacity=".7"/>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+
+                    <!-- ear pods (headphone cups with visible side thickness) -->
+                    <g id="ear_L" data-bone data-pivot="134,266" data-kind="core">
+                      <g id="ear_L_art">
+                        <ellipse cx="124" cy="267" rx="26" ry="39" fill="#141A5C"/>
+                        <ellipse cx="134" cy="266" rx="28" ry="38" fill="#1C2479"/>
+                        <ellipse cx="131" cy="262" rx="24" ry="33" fill="#28349F"/>
+                        <ellipse cx="134" cy="266" rx="18" ry="26" fill="none" stroke="#8B5CFF" stroke-width="8"/>
+                        <ellipse id="ear_glow_L" cx="134" cy="266" rx="19" ry="27" fill="none" stroke="#C3A6FF" stroke-width="12" filter="url(#v2Blur4)" opacity="0"/>
+                        <ellipse cx="134" cy="266" rx="10" ry="16" fill="#151C66"/>
+                        <path d="M119 249C122 241 128 236 135 234" stroke="#fff" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".45"/>
+                      </g>
+                    </g>
+                    <g id="ear_R" data-bone data-pivot="466,266" data-kind="core">
+                      <g id="ear_R_art">
+                        <ellipse cx="476" cy="267" rx="26" ry="39" fill="#141A5C"/>
+                        <ellipse cx="466" cy="266" rx="28" ry="38" fill="#1C2479"/>
+                        <ellipse cx="463" cy="262" rx="24" ry="33" fill="#28349F"/>
+                        <ellipse cx="466" cy="266" rx="18" ry="26" fill="none" stroke="#8B5CFF" stroke-width="8"/>
+                        <ellipse id="ear_glow_R" cx="466" cy="266" rx="19" ry="27" fill="none" stroke="#C3A6FF" stroke-width="12" filter="url(#v2Blur4)" opacity="0"/>
+                        <ellipse cx="466" cy="266" rx="10" ry="16" fill="#151C66"/>
+                        <path d="M451 249C454 241 460 236 467 234" stroke="#fff" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".45"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+        </g>
+
+        <g id="guide_overlay" pointer-events="none"></g>
+        <g id="pivot_overlay" pointer-events="none"></g>
+      </svg>
+    </div>
+
+    <aside class="review-panel">
+      <div class="panel-block">
+        <h2>Review views</h2>
+        <div class="toggles toggles-col">
+          <label class="tog"><input type="checkbox" id="tSil"><span>Silhouette</span></label>
+          <label class="tog"><input type="checkbox" id="tGuides"><span>Proportion guides</span></label>
+          <label class="tog"><input type="checkbox" id="tPivots"><span>Joint pivots (riggability)</span></label>
+          <label class="tog"><input type="checkbox" id="tDark"><span>Dark UI background</span></label>
+        </div>
+      </div>
+      <div class="panel-block">
+        <h2>Measured proportions</h2>
+        <dl class="metrics" id="metrics"></dl>
+      </div>
+      <div class="panel-block">
+        <h2>What changed</h2>
+        <ul class="notes">
+          <li>Wide, short TV head; the screen covers most of the face</li>
+          <li>Oversized soft beret, crown puffed right</li>
+          <li>Short bean torso and almost no neck</li>
+          <li>Chunky SAPOL pads that cap the arms</li>
+          <li>Thick arms, big gloves, short legs, heavy boots</li>
+          <li>Graphic LED face with no pupils</li>
+          <li>Two-tone toy shading with hairline edges instead of outlines</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Screen-face language</h2>
+      <p>Luminous UI shapes on the screen: ovals, crescents, stars and straight-cut squints. No eyeballs, no pupils, no brows.</p>
+    </div>
+    <div class="face-grid" id="faceGrid"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Before → after</h2>
+      <p>All three scaled to the same figure height. The <b>Silhouette</b> toggle applies to v1 and v2.</p>
+    </div>
+    <div class="compare" id="compare">
+      <figure class="cmp cmp-ref">
+        <div class="cmp-stage"><svg class="crop" viewBox="-26 102 453 781" aria-label="Reference front view"><image href="reference/turnaround.webp" width="1448" height="1086"/></svg></div>
+        <figcaption><b>Reference</b> your turnaround, front view</figcaption>
+      </figure>
+      <figure class="cmp">
+        <div class="cmp-stage"><svg class="crop" viewBox="97 -6 406 700" aria-label="Previous draft mascot (v1)"><image href="previous-draft.svg" width="600" height="700"/></svg></div>
+        <figcaption><b>v1 draft</b> lollipop head on a narrow body, thin limbs</figcaption>
+      </figure>
+      <figure class="cmp">
+        <div class="cmp-stage"><svg class="crop" viewBox="91 -33 418 720" aria-label="Corrected mascot (v2)"><use href="#mascot_art"/></svg></div>
+        <figcaption><b>v2 corrected</b> compact, top-heavy, chunky toy</figcaption>
+      </figure>
+    </div>
+    <div class="table-wrap">
+      <table class="cmp-table" id="cmpTable">
+        <thead><tr><th>Measured (same method)</th><th>v1 draft</th><th>v2 corrected</th><th>Reference (approx.)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>UI-size check</h2>
+      <p>Does the silhouette still read at product sizes?</p>
+    </div>
+    <div class="sizes">
+      <figure><svg viewBox="80 20 440 660" style="height:180px"><use href="#mascot_art"/></svg><figcaption>180 px</figcaption></figure>
+      <figure><svg viewBox="80 20 440 660" style="height:96px"><use href="#mascot_art"/></svg><figcaption>96 px</figcaption></figure>
+      <figure><svg viewBox="80 20 440 660" style="height:56px"><use href="#mascot_art"/></svg><figcaption>56 px</figcaption></figure>
+      <figure><svg viewBox="100 10 400 380" style="height:48px"><use href="#mascot_art"/></svg><figcaption>48 px avatar</figcaption></figure>
+    </div>
+  </section>
+</div>
+<script src="model.js"></script>
+</body>
+</html>

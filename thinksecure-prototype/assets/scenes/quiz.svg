@@ -1,0 +1,1209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1672 941"
+   width="100%"
+   height="100%"
+   preserveAspectRatio="xMidYMid meet"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg110"
+   sodipodi:docname="quiz.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview110"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.49606611"
+     inkscape:cx="268.10942"
+     inkscape:cy="518.07611"
+     inkscape:window-width="1326"
+     inkscape:window-height="661"
+     inkscape:window-x="0"
+     inkscape:window-y="29"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g110" />
+  <title
+     id="title">Cyber safety quiz illustration</title>
+  <desc
+     id="desc">A person examines a suspicious phone message with a magnifying glass while a blue mascot protects the phone with a security shield.</desc>
+  <defs
+     id="defs45">
+    <linearGradient
+       id="linearGradient116"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#0b1e43"
+         id="stop114" />
+      <stop
+         offset="0.47586659"
+         stop-color="#0f2a5c"
+         id="stop115" />
+      <stop
+         offset="1"
+         stop-color="#0a1f49"
+         id="stop116" />
+    </linearGradient>
+    <clipPath
+       id="canvas">
+      <rect
+         width="1672"
+         height="941"
+         id="rect1" />
+    </clipPath>
+    <linearGradient
+       id="sky"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#fcebb7"
+         id="stop1" />
+      <stop
+         offset=".55"
+         stop-color="#fbedbd"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#f9e8b7"
+         id="stop3" />
+    </linearGradient>
+    <radialGradient
+       id="sun"
+       cx="42%"
+       cy="35%"
+       r="72%">
+      <stop
+         offset="0"
+         stop-color="#ffca38"
+         id="stop4" />
+      <stop
+         offset=".68"
+         stop-color="#ffc43a"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#fdbd32"
+         id="stop6" />
+    </radialGradient>
+    <linearGradient
+       id="navy"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#0b1f47"
+         id="stop7" />
+      <stop
+         offset=".52"
+         stop-color="#0f2857"
+         id="stop8" />
+      <stop
+         offset="1"
+         stop-color="#102f65"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="phoneNavy"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#0b1e43"
+         id="stop10" />
+      <stop
+         offset=".48"
+         stop-color="#0f2a5c"
+         id="stop11" />
+      <stop
+         offset="1"
+         stop-color="#0a1f49"
+         id="stop12" />
+    </linearGradient>
+    <linearGradient
+       id="screen"
+       x1="0"
+       y1="0"
+       x2=".9"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#fffdf8"
+         id="stop13" />
+      <stop
+         offset=".52"
+         stop-color="#fdf8ef"
+         id="stop14" />
+      <stop
+         offset="1"
+         stop-color="#fffaf1"
+         id="stop15" />
+    </linearGradient>
+    <linearGradient
+       id="red"
+       x1=".15"
+       y1="0"
+       x2=".8"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#ff2425"
+         id="stop16" />
+      <stop
+         offset=".55"
+         stop-color="#ff341d"
+         id="stop17" />
+      <stop
+         offset="1"
+         stop-color="#ff6503"
+         id="stop18" />
+    </linearGradient>
+    <linearGradient
+       id="skin"
+       x1=".2"
+       y1="0"
+       x2=".75"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#ff4800"
+         id="stop19" />
+      <stop
+         offset=".55"
+         stop-color="#ff6503"
+         id="stop20" />
+      <stop
+         offset="1"
+         stop-color="#ff8106"
+         id="stop21" />
+    </linearGradient>
+    <linearGradient
+       id="blue"
+       x1=".1"
+       y1="0"
+       x2=".85"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#075ee9"
+         id="stop22" />
+      <stop
+         offset=".52"
+         stop-color="#006dff"
+         id="stop23" />
+      <stop
+         offset="1"
+         stop-color="#0879ff"
+         id="stop24" />
+    </linearGradient>
+    <linearGradient
+       id="blueDark"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#115ce3"
+         id="stop25" />
+      <stop
+         offset="1"
+         stop-color="#164ed0"
+         id="stop26" />
+    </linearGradient>
+    <linearGradient
+       id="gold"
+       x1=".2"
+       y1="0"
+       x2=".8"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#ffbd16"
+         id="stop27" />
+      <stop
+         offset=".55"
+         stop-color="#ffc52f"
+         id="stop28" />
+      <stop
+         offset="1"
+         stop-color="#ffce48"
+         id="stop29" />
+    </linearGradient>
+    <linearGradient
+       id="neutralCard"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#e8ebee"
+         id="stop30" />
+      <stop
+         offset="1"
+         stop-color="#d9dfe5"
+         id="stop31" />
+    </linearGradient>
+    <linearGradient
+       id="scamCard"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#ffe3e1"
+         id="stop32" />
+      <stop
+         offset="1"
+         stop-color="#f9c7c6"
+         id="stop33" />
+    </linearGradient>
+    <linearGradient
+       id="safeCard"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#d7eafa"
+         id="stop34" />
+      <stop
+         offset="1"
+         stop-color="#b9d8f6"
+         id="stop35" />
+    </linearGradient>
+    <linearGradient
+       id="avatarGrey"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#bbc5d7"
+         id="stop36" />
+      <stop
+         offset="1"
+         stop-color="#8f9bb7"
+         id="stop37" />
+    </linearGradient>
+    <linearGradient
+       id="avatarBlue"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#54adff"
+         id="stop38" />
+      <stop
+         offset="1"
+         stop-color="#2784eb"
+         id="stop39" />
+    </linearGradient>
+    <linearGradient
+       id="green"
+       x1=".15"
+       y1="0"
+       x2=".8"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#11bd72"
+         id="stop40" />
+      <stop
+         offset="1"
+         stop-color="#00a95d"
+         id="stop41" />
+    </linearGradient>
+    <radialGradient
+       id="lens"
+       cx="35%"
+       cy="28%"
+       r="78%">
+      <stop
+         offset="0"
+         stop-color="#fffdfb"
+         id="stop42" />
+      <stop
+         offset=".64"
+         stop-color="#fff4f2"
+         id="stop43" />
+      <stop
+         offset="1"
+         stop-color="#f8d3d0"
+         id="stop44" />
+    </radialGradient>
+    <filter
+       id="softShadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="5"
+         stdDeviation="5"
+         flood-color="#8b6929"
+         flood-opacity=".12" />
+    </filter>
+    <filter
+       id="tinyShadow"
+       x="-0.047794118"
+       y="-0.04296875"
+       width="1.0955882"
+       height="1.0429688">
+      <feDropShadow
+         dx="0"
+         dy="3"
+         stdDeviation="3"
+         flood-color="#071735"
+         flood-opacity=".11" />
+    </filter>
+    <symbol
+       id="avatar"
+       viewBox="0 0 72 72">
+      <circle
+         cx="36"
+         cy="36"
+         r="35"
+         fill="currentColor"
+         id="circle44" />
+      <circle
+         cx="36"
+         cy="27"
+         r="10"
+         fill="#fff"
+         opacity=".92"
+         id="circle45" />
+      <path
+         d="M17 57c2-13 9-20 19-20s17 7 19 20z"
+         fill="#fff"
+         opacity=".92"
+         id="path45" />
+    </symbol>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#red"
+       id="linearGradient111"
+       x1="626.2"
+       y1="346"
+       x2="696.4"
+       y2="454"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#navy"
+       id="linearGradient112"
+       x1="0"
+       y1="313.53086"
+       x2="174.18381"
+       y2="487.71467"
+       gradientTransform="matrix(0.84967713,0,0,1.5575385,0,-119.3364)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#navy"
+       id="linearGradient113"
+       x1="323.47766"
+       y1="364.0322"
+       x2="514.8713"
+       y2="556.9059"
+       gradientTransform="scale(0.92450287,1.0816624)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient116"
+       id="linearGradient114"
+       x1="340.67223"
+       y1="258.9175"
+       x2="440.56505"
+       y2="358.81032"
+       gradientTransform="matrix(2.1222746,0,0,0.47119257,-1.8405234,-2.7607851)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#red"
+       id="linearGradient117"
+       x1="155.5"
+       y1="538"
+       x2="253"
+       y2="688"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-416)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#red"
+       id="linearGradient118"
+       x1="1554.5"
+       y1="355"
+       x2="1691"
+       y2="565"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-7.7148579)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#red"
+       id="linearGradient120"
+       x1="81.611043"
+       y1="315.39605"
+       x2="178.49812"
+       y2="464.45308"
+       gradientTransform="matrix(1.0801234,0,0,0.53209968,-72.342996,121.85856)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     clip-path="url(#canvas)"
+     id="g110"
+     style="display:inline">
+    <rect
+       width="1672"
+       height="941"
+       fill="url(#sky)"
+       id="rect45"
+       x="0"
+       y="0"
+       style="display:inline"
+       inkscape:label="creme background" />
+    <!-- Oversized sun and distant landscape -->
+    <circle
+       cx="318"
+       cy="660"
+       r="585"
+       fill="url(#sun)"
+       id="circle46"
+       style="display:inline"
+       inkscape:label="Sun" />
+    <path
+       d="m 1008,574 c 126,-78 270,-118 421,-111 93,4 174,22 243,48 v 267 h -664 z"
+       fill="#f9d260"
+       id="path46"
+       style="display:inline"
+       inkscape:label="mountain yellow very back" />
+    <path
+       d="m 1456,562 c 72,-39 145,-56 216,-52 v 224 h -216 z"
+       fill="#ffc336"
+       id="path47"
+       style="display:inline"
+       inkscape:label="mountain orange back" />
+    <!-- Clouds -->
+    <path
+       d="m 276,281 c -17,-8 -27,-24 -27,-42 0,-23 18,-42 41,-42 8,0 15,2 21,6 9,-21 33,-35 59,-35 34,0 62,24 70,57 7,-5 15,-7 24,-7 18,0 32,14 32,32 0,14 -9,26 -22,31 z"
+       fill="#ffffff"
+       opacity="0.97"
+       id="path48"
+       style="display:inline"
+       inkscape:label="cloud left" />
+    <path
+       d="m 1176,259 c -15,0 -25,-12 -25,-27 0,-17 14,-29 31,-29 6,0 12,2 17,5 3,-27 25,-46 56,-46 30,0 52,19 55,47 7,-4 14,-6 22,-6 17,0 31,13 31,29 0,15 -12,27 -27,27 z"
+       fill="#ffffff"
+       opacity="0.97"
+       id="path49"
+       style="display:inline"
+       inkscape:label="cloud right" />
+    <!-- House, shrubs and tree -->
+    <path
+       d="M -8.3429968,335.65935 71.657004,289.68069 152.657,335.65935 v 33.33454 H -8.3429968 Z"
+       fill="url(#red)"
+       id="path50"
+       style="display:inline;fill:url(#linearGradient120);stroke-width:0.758114"
+       inkscape:label="triangle left" />
+    <path
+       d="M 0,369 H 148 V 640.298 H 0 Z"
+       fill="url(#navy)"
+       id="path51"
+       style="display:inline;fill:url(#linearGradient112);stroke-width:1.15039" />
+    <g
+       fill="#fff4ca"
+       id="g54"
+       style="display:inline"
+       inkscape:label="apartment windows">
+      <rect
+         x="41"
+         y="414"
+         width="27"
+         height="29"
+         rx="2"
+         id="rect51" />
+      <rect
+         x="87"
+         y="414"
+         width="27"
+         height="29"
+         rx="2"
+         id="rect52" />
+      <rect
+         x="41"
+         y="466"
+         width="27"
+         height="29"
+         rx="2"
+         id="rect53" />
+      <rect
+         x="87"
+         y="466"
+         width="27"
+         height="29"
+         rx="2"
+         id="rect54" />
+    </g>
+    <circle
+       cx="44"
+       cy="613"
+       r="99"
+       fill="#ffc83e"
+       id="circle54"
+       style="display:inline"
+       inkscape:label="bush back yellow" />
+    <circle
+       cx="-208"
+       cy="613"
+       r="75"
+       fill="url(#red)"
+       id="circle55"
+       style="display:inline;fill:url(#linearGradient117)"
+       transform="scale(-1,1)"
+       inkscape:label="bush back red" />
+    <circle
+       cx="144"
+       cy="666"
+       r="73"
+       fill="#ff9811"
+       id="circle56"
+       style="display:inline"
+       inkscape:label="bush back orange" />
+    <circle
+       cx="1545"
+       cy="704"
+       r="89"
+       fill="url(#red)"
+       id="circle57"
+       style="display:inline"
+       inkscape:label="bush back red right" />
+    <circle
+       cx="1654.3524"
+       cy="663.73059"
+       r="84"
+       fill="#ff9811"
+       id="circle58"
+       style="display:inline"
+       inkscape:label="bush back orange right" />
+    <circle
+       cx="1620.2852"
+       cy="460"
+       r="105"
+       fill="url(#red)"
+       id="circle59"
+       style="display:inline;fill:url(#linearGradient118)"
+       inkscape:label="tree bush" />
+    <path
+       d="M 1622,650 V 469 m 0,67 -37,-46 m 37,27 41,-34"
+       fill="none"
+       stroke="url(#navy)"
+       stroke-width="20"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path59"
+       style="display:inline"
+       inkscape:label="tree body" />
+    <!-- Light bulb -->
+    <!-- Phone -->
+    <g
+       id="g82"
+       style="display:inline"
+       inkscape:label="phone">
+      <path
+         d="m 646,106 367,-22 c 42,-2 72,31 75,73 l 27,784 H 548 l 28,-760 c 1,-41 29,-73 70,-75 z"
+         fill="url(#phoneNavy)"
+         id="path65"
+         style="display:inline"
+         inkscape:label="phone frame" />
+      <rect
+         x="1085"
+         y="222"
+         width="13"
+         height="70"
+         rx="5"
+         fill="#0d2858"
+         transform="rotate(-1.6,1091.5,257)"
+         id="rect66"
+         style="display:inline"
+         inkscape:label="phone power button" />
+      <path
+         d="m 661,138 341,-20 c 29,-2 48,20 50,48 l 23,775 H 594 l 15,-751 c 1,-30 22,-50 52,-52 z"
+         fill="url(#screen)"
+         id="path66"
+         style="display:inline"
+         inkscape:label="phone screen" />
+      <path
+         d="m 721.15948,131.23921 212,-12 v 16 c 0,14 -9,21 -24,22 l -161,9 c -16,1 -25,-9 -26,-24 z"
+         fill="url(#phoneNavy)"
+         id="path67"
+         style="display:inline;fill:url(#linearGradient114)"
+         inkscape:label="phone notch" />
+      <g
+         transform="rotate(-1.6,830,520)"
+         id="g81"
+         style="display:inline">
+        <g
+           filter="url(#softShadow)"
+           id="g80">
+          <rect
+             x="648"
+             y="198"
+             width="342"
+             height="112"
+             rx="28"
+             fill="url(#neutralCard)"
+             id="rect67" />
+          <use
+             href="#avatar"
+             x="660"
+             y="221"
+             width="72"
+             height="72"
+             color="#a4aec2"
+             id="use67" />
+          <rect
+             x="751"
+             y="230"
+             width="184"
+             height="19"
+             rx="10"
+             fill="#adb8cc"
+             id="rect68" />
+          <rect
+             x="751"
+             y="261"
+             width="128"
+             height="18"
+             rx="9"
+             fill="#adb8cc"
+             id="rect69" />
+          <rect
+             x="590"
+             y="330"
+             width="423"
+             height="165"
+             rx="28"
+             fill="url(#scamCard)"
+             id="rect70" />
+          <rect
+             x="782"
+             y="361"
+             width="199"
+             height="20"
+             rx="10"
+             fill="#ff372d"
+             id="rect71" />
+          <rect
+             x="782"
+             y="394"
+             width="144"
+             height="19"
+             rx="10"
+             fill="#f5514b"
+             id="rect72" />
+          <g
+             fill="none"
+             stroke="#ef433a"
+             stroke-width="7"
+             stroke-linecap="round"
+             id="g74">
+            <rect
+               x="784"
+               y="441"
+               width="39"
+               height="22"
+               rx="11"
+               transform="rotate(-27,803.5,452)"
+               id="rect73" />
+            <rect
+               x="811"
+               y="428"
+               width="39"
+               height="22"
+               rx="11"
+               transform="rotate(-27,830.5,439)"
+               id="rect74" />
+          </g>
+          <rect
+             x="651"
+             y="516"
+             width="311"
+             height="113"
+             rx="26"
+             fill="url(#neutralCard)"
+             id="rect75" />
+          <use
+             href="#avatar"
+             x="668"
+             y="537"
+             width="72"
+             height="72"
+             color="#a4aec2"
+             id="use75" />
+          <rect
+             x="760"
+             y="548"
+             width="152"
+             height="18"
+             rx="9"
+             fill="#acb7ca"
+             id="rect76" />
+          <rect
+             x="760"
+             y="579"
+             width="108"
+             height="17"
+             rx="9"
+             fill="#acb7ca"
+             id="rect77" />
+          <rect
+             x="638"
+             y="653"
+             width="282"
+             height="113"
+             rx="27"
+             fill="url(#safeCard)"
+             id="rect78" />
+          <use
+             href="#avatar"
+             x="655"
+             y="674"
+             width="72"
+             height="72"
+             color="#3496ef"
+             id="use78" />
+          <rect
+             x="746"
+             y="683"
+             width="144"
+             height="19"
+             rx="10"
+             fill="#54a2ef"
+             id="rect79" />
+          <rect
+             x="746"
+             y="714"
+             width="99"
+             height="18"
+             rx="9"
+             fill="#54a2ef"
+             id="rect80" />
+        </g>
+      </g>
+    </g>
+    <!-- Success indicator -->
+    <!-- Warning -->
+    <g
+       filter="url(#tinyShadow)"
+       id="g89"
+       style="display:inline">
+      <path
+         d="m 1036,326 c 9,0 15,4 20,13 l 52,91 c 8,14 -2,29 -18,29 H 982 c -16,0 -26,-15 -18,-29 l 52,-91 c 5,-9 11,-13 20,-13 z"
+         fill="#ffffff"
+         id="path85" />
+      <path
+         d="m 1036,339 c 6,0 10,3 13,9 l 46,80 c 5,9 -1,19 -12,19 h -94 c -11,0 -17,-10 -12,-19 l 46,-80 c 3,-6 7,-9 13,-9 z"
+         fill="url(#red)"
+         id="path86" />
+      <rect
+         x="1029"
+         y="370"
+         width="14"
+         height="42"
+         rx="7"
+         fill="#ffffff"
+         id="rect86" />
+      <circle
+         cx="1036"
+         cy="429"
+         r="8"
+         fill="#ffffff"
+         id="circle86" />
+      <g
+         fill="none"
+         stroke="#ff361f"
+         stroke-width="11"
+         stroke-linecap="round"
+         id="g88">
+        <path
+           d="m 1090,333 16,-20"
+           id="path87" />
+        <path
+           d="m 1111,369 28,-10"
+           id="path88" />
+      </g>
+    </g>
+    <!-- Person -->
+    <g
+       id="g95"
+       style="display:inline"
+       inkscape:label="face and body">
+      <path
+         d="m 387,559 c 11,-9 34,-7 48,4 l -2,73 -54,-5 z"
+         fill="url(#skin)"
+         id="path89"
+         style="display:inline"
+         inkscape:label="neck" />
+      <path
+         d="m 229,697 c 15,-57 61,-92 119,-98 58,-6 111,17 143,68 l 35,63 -49,62 c -48,38 -106,58 -177,58 l -87,-75 z"
+         fill="url(#blue)"
+         id="path90"
+         style="display:inline;fill:#0465f4;fill-opacity:1"
+         inkscape:label="body" />
+      <path
+         d="M 613,479 570,590"
+         fill="none"
+         stroke="url(#phoneNavy)"
+         stroke-width="30"
+         stroke-linecap="round"
+         id="path96"
+         style="display:inline;stroke:#484848;stroke-opacity:1"
+         inkscape:label="handle" />
+      <path
+         d="m 561.38464,540.84408 c -4.29505,1.45471 -6.72326,4.72198 -9.38049,9.66747 -2.65724,4.9455 -5.5435,11.56921 -10.75464,19.7368 -9.0055,2.80374 -15.29183,10.7666 -19.27256,16.54241 -3.98072,5.7758 -5.65583,9.36455 -7.36771,14.9932 -2.1311,7.00702 -0.79378,15.15839 3.05807,22.15279 3.85184,6.9944 10.21822,12.83184 18.14524,15.21099 l 7.32578,3.80871 7.32579,3.80871 c 10,2.5 22.7817,0.53693 33.56341,-4.42614 10.7817,-4.96306 18.18489,-5.63964 20.38182,-24.00159 0,0 9.46632,-7.88581 7.53929,-19.88619 -1.92703,-12.00039 -9.60654,-12.07297 -9.60654,-12.07297 0,0 6.62077,-8.53012 2.8133,-17.63497 -3.80747,-9.10484 -16.39142,-9.77369 -33.65991,4.7937 -8.92096,7.52556 -16.60486,13.72985 -0.94155,-26.44707 0.7114,-4.43991 -0.86172,-6.90082 -4.24026,-6.95347 -2.00275,-0.0312 -3.69557,0.39383 -4.92907,0.70762 h 2e-5 z"
+         fill="url(#skin)"
+         id="path100"
+         style="display:inline"
+         inkscape:label="hand"
+         sodipodi:nodetypes="cscssscccsczczscsccc" />
+      <path
+         d="m 510,614 81,31 C 584,696 572.36234,761.0498 525.36234,792.0498 498.36234,810.0498 461,793 441,762 l 39,-86 z"
+         fill="url(#blue)"
+         id="path91"
+         style="display:inline;stroke:none;stroke-opacity:1;fill:#0465f4;fill-opacity:1"
+         inkscape:label="hand sleeve"
+         sodipodi:nodetypes="cccccc" />
+      <circle
+         cx="277"
+         cy="400"
+         r="78"
+         fill="url(#navy)"
+         id="circle91"
+         style="display:inline"
+         inkscape:label="hair bun" />
+      <path
+         d="m 278,442 c -1,-48 28,-75 89,-67 61,-8 120,10 144,44 -17,27 -53,43 -94,48 2,48 -7,99 -36,124 -25,22 -59,7 -80,-17 -19,-22 -24,-70 -23,-132 z"
+         fill="url(#navy)"
+         id="path92"
+         style="display:none" />
+      <path
+         d="m 412,405 c 49,-12 96,13 111,56 18,52 -7,109 -52,133 -40,21 -80,7 -94,-32 -14,-37 -8,-98 12,-132 6,-11 14,-20 23,-25 z"
+         fill="url(#skin)"
+         id="path93"
+         style="display:inline"
+         inkscape:label="face" />
+      <path
+         d="m 285.21011,443.60506 c 16.67749,-40.55287 53.08437,-58.09771 86.59242,-65.39495 34,-5 76.00632,-1.00632 107.00632,15.99368 17.52091,15.87596 -1.11575,55.17167 -62.28742,53.68911 12.70852,9.49765 17.05708,27.84203 17.12788,34.80698 C 434.08501,525.56453 406.59874,528.64931 411,542 c 2,24 -6,43 -30,52 -32.73951,6.3072 -62.64371,-1.95329 -83.64371,-25.95329 -20,-23 -34.38281,-70.37122 -12.14618,-124.44165 z"
+         fill="url(#navy)"
+         id="path94"
+         style="display:inline;fill:url(#linearGradient113)"
+         inkscape:label="hair"
+         sodipodi:nodetypes="scccscccs" />
+      <circle
+         cx="388"
+         cy="535"
+         r="31"
+         fill="url(#skin)"
+         id="circle94"
+         style="display:inline"
+         inkscape:label="ear" />
+      <circle
+         cx="491"
+         cy="481"
+         r="10"
+         fill="#0a1936"
+         id="circle95"
+         style="display:inline"
+         inkscape:label="eye" />
+      <path
+         d="m 495,520 c 8,9 19,12 29,1"
+         fill="none"
+         stroke="#0e2b5d"
+         stroke-width="5"
+         stroke-linecap="round"
+         id="path95"
+         style="display:inline"
+         inkscape:label="mouth" />
+    </g>
+    <!-- Magnifying glass and hand -->
+    <g
+       id="g100"
+       style="display:inline"
+       inkscape:label="hand and scope">
+      <circle
+         cx="647"
+         cy="399"
+         r="106"
+         fill="url(#phoneNavy)"
+         id="circle96"
+         style="display:inline;fill:#424242;fill-opacity:1"
+         inkscape:label="frame" />
+      <circle
+         cx="647"
+         cy="399"
+         r="84"
+         fill="url(#lens)"
+         id="circle97"
+         style="display:inline"
+         inkscape:label="inner glass" />
+      <g
+         id="g111"
+         style="display:inline"
+         inkscape:label="alert avatar"
+         transform="translate(-17.640072,-2.0753026)">
+        <circle
+           cx="664"
+           cy="400"
+           r="54"
+           fill="url(#red)"
+           id="circle98"
+           style="display:inline;fill:url(#linearGradient111)" />
+        <path
+           d="m 632,390 28,12 c -1.9907,9.29316 -8.9761,13.95791 -16.34914,12.60668 C 635.44955,413.10365 628.83728,406.53556 632,390 Z"
+           fill="#ffffff"
+           id="path98"
+           sodipodi:nodetypes="ccsc" />
+        <path
+           d="m 697.44809,390.69329 -28,12 c 1.9907,9.29316 8.9761,13.95791 16.34914,12.60668 8.20131,-1.50303 14.81358,-8.07112 11.65086,-24.60668 z"
+           fill="#ffffff"
+           id="path98-5"
+           sodipodi:nodetypes="ccsc"
+           style="display:inline" />
+      </g>
+      <path
+         d="m 615,340 c -16,19 -24,40 -25,65 -1,24 7,45 22,62"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="10"
+         stroke-linecap="round"
+         opacity="0.76"
+         id="path99"
+         style="display:none" />
+    </g>
+    <!-- Mascot -->
+    <g
+       id="g102"
+       style="display:inline"
+       inkscape:label="blue mascot">
+      <path
+         d="m 1088,842 c -39.2856,-347.38437 50.507,-264.61403 103,-412 21.8729,-61.41315 77,-83 131,-83 66,0 130.5397,33.84206 144,129 12.0642,85.28809 116.0194,161.71202 40.1902,316.16268 L 1421,840 1190,894 Z"
+         fill="url(#blue)"
+         id="path101"
+         sodipodi:nodetypes="cssscccc" />
+      <circle
+         cx="1270"
+         cy="432"
+         r="12"
+         fill="#080d17"
+         id="circle101" />
+      <circle
+         cx="1349"
+         cy="440"
+         r="12"
+         fill="#080d17"
+         id="circle102" />
+      <path
+         d="m 1279,471 c 4,15 14,23 28,23 12,0 21,-7 25,-19"
+         fill="none"
+         stroke="#080d17"
+         stroke-width="5.5"
+         stroke-linecap="round"
+         id="path102" />
+    </g>
+    <!-- Layered foreground -->
+    <ellipse
+       cx="666"
+       cy="946"
+       rx="190"
+       ry="125"
+       fill="url(#red)"
+       id="ellipse102" />
+    <ellipse
+       cx="1030"
+       cy="973"
+       rx="235"
+       ry="185"
+       fill="url(#gold)"
+       id="ellipse103" />
+    <path
+       d="m 0,607 c 120,9 215,39 320,96 45,28 88,56 130,76 53,27 98,47 150,65 112,42 211,80 318,97 H 0 Z"
+       fill="url(#navy)"
+       id="path103"
+       style="display:inline" />
+    <path
+       d="m 951,941 c 251.7479,-177.76945 302.625,-62.62495 474.0728,-135.81002 171.4478,-73.18507 104.2211,-167.44329 260.8221,-209.28559 L 1672,941 Z"
+       fill="url(#navy)"
+       id="path104"
+       style="display:inline"
+       sodipodi:nodetypes="czccc"
+       inkscape:label="black frame right" />
+    <ellipse
+       cx="-18"
+       cy="946"
+       rx="128"
+       ry="198"
+       fill="#ff940d"
+       id="ellipse104"
+       style="display:inline" />
+    <path
+       d="m 77,941 c -3,-60 4,-137 34,-190 27,-49 72,-49 91,-5 14,31 10,72 6,93 29,-55 78,-82 104,-59 23,20 15,58 -9,101 43,-32 84,-31 99,-4 12,22 3,45 -15,64 z"
+       fill="url(#red)"
+       id="path105"
+       style="display:inline" />
+    <!-- Shield remains in front of the foreground ridge -->
+    <g
+       id="g109"
+       style="display:inline"
+       inkscape:label="shield">
+      <path
+         d="m 1310,540 c -40,38 -95,60 -166,60 l 4,100 c 7,85 61,146 142,192 81,-46 140,-112 150,-192 l 16,-96 c -66,0 -111,-26 -146,-64 z"
+         fill="#ffffff"
+         filter="url(#tinyShadow)"
+         id="path106" />
+      <path
+         d="m 1310,562 c -38,32 -85,52 -146,54 l 3,84 c 7,73 55,126 123,162 68,-36 122,-92 132,-162 l 13,-82 c -55,-2 -93,-24 -125,-56 z"
+         fill="url(#gold)"
+         id="path107" />
+      <path
+         d="m 1257,708 v -25 c 0,-28 13,-42 35,-42 22,0 36,15 36,43 v 27"
+         fill="none"
+         stroke="url(#phoneNavy)"
+         stroke-width="20"
+         id="path108" />
+      <rect
+         x="1223"
+         y="697"
+         width="127"
+         height="105"
+         rx="16"
+         fill="url(#phoneNavy)"
+         transform="rotate(4,1286.5,749.5)"
+         id="rect108" />
+      <circle
+         cx="1287"
+         cy="739"
+         r="13"
+         fill="#ffc32c"
+         id="circle108" />
+      <path
+         d="m 1281,744 12,1 4,28 -21,-1 z"
+         fill="#ffc32c"
+         id="path109" />
+      <ellipse
+         cx="1422"
+         cy="624"
+         rx="47"
+         ry="42"
+         fill="url(#blueDark)"
+         id="ellipse109" />
+    </g>
+    <g
+       filter="url(#tinyShadow)"
+       id="g65"
+       style="display:inline"
+       inkscape:label="light bulb">
+      <g
+         fill="none"
+         stroke="#f9ad00"
+         stroke-width="13"
+         stroke-linecap="round"
+         id="g62">
+        <path
+           d="M 1481,231 V 209"
+           id="path60" />
+        <path
+           d="m 1428,253 -15,-15"
+           id="path61" />
+        <path
+           d="m 1534,252 15,-17"
+           id="path62" />
+      </g>
+      <path
+         d="m 1481,252 c -29,0 -52,22 -52,51 0,21 11,35 29,48 v 8 h 47 v -8 c 18,-13 29,-27 29,-48 0,-29 -23,-51 -53,-51 z"
+         fill="#f9ae00"
+         id="path63" />
+      <path
+         d="m 1468,353 v -27 c 0,-8 -1,-10 -5,-10 -5,0 -6,4 -6,8 0,4 4,8 10,8 h 28 c 6,0 10,-4 10,-8 0,-4 -2,-8 -6,-8 -5,0 -6,3 -6,10 v 27"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="6"
+         stroke-linecap="round"
+         id="path64" />
+      <rect
+         x="1457"
+         y="356"
+         width="48"
+         height="22"
+         rx="5"
+         fill="url(#navy)"
+         id="rect64" />
+      <rect
+         x="1467"
+         y="377"
+         width="29"
+         height="13"
+         rx="7"
+         fill="url(#navy)"
+         id="rect65" />
+    </g>
+    <g
+       filter="url(#tinyShadow)"
+       id="g85"
+       style="display:inline">
+      <circle
+         cx="981"
+         cy="706"
+         r="49"
+         fill="url(#green)"
+         id="circle82" />
+      <path
+         d="m 959,706 15,15 28,-31"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="13"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="path82" />
+      <g
+         fill="none"
+         stroke="#08a865"
+         stroke-width="11"
+         stroke-linecap="round"
+         id="g84">
+        <path
+           d="m 1013,646 8,-19"
+           id="path83" />
+        <path
+           d="m 1036,665 16,-10"
+           id="path84" />
+      </g>
+    </g>
+  </g>
+</svg>
