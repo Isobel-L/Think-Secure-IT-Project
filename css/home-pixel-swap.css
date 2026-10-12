@@ -1,0 +1,32 @@
+/* Homepage-only enhancement; the original welcome page remains the no-JS fallback. */
+.welcome-page .start-screen.pixel-home {
+  display: block; padding: 0; min-height: max(760px, calc(100svh - 90px));
+  overflow: hidden; isolation: isolate; background: #160d5f;
+}
+.home-face { position: absolute; inset: 0; background: #160d5f; }
+.home-face[aria-hidden="true"] { visibility: hidden; }
+.home-face-original { background: radial-gradient(circle at 50% 30%, #16406f, #0c2645 65%); }
+.home-face-content { position: absolute; inset: 100px 24px 265px; display: flex; align-items: center; justify-content: center; }
+.home-face-content .start-card { width: 100%; }
+.home-face-content .start-introduction { margin-bottom: 0; }
+.home-logo { display: block; width: min(580px, 100%); max-height: 100%; object-fit: contain; }
+.home-hover-zone { position: absolute; inset: 100px 18% 265px; z-index: 4; }
+.home-controls { position: absolute; bottom: 170px; left: 20px; right: 20px; z-index: 5; text-align: center; color: white; }
+.home-controls .start-duration { margin: 14px 0 20px; }
+.pixel-home .next-step { position: absolute; right: 24px; bottom: 24px; z-index: 5; transform: none; }
+.home-pixels { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.home-pixel { position: absolute; overflow: hidden; contain: paint; }
+.home-pixel-content { position: absolute; }
+@media (max-width: 700px) {
+  .welcome-page .start-screen.pixel-home { min-height: max(860px, 100svh); }
+  .home-face-content { inset: 95px 22px 340px; }
+  .home-hover-zone { inset: 95px 22px 340px; }
+  .home-face-content .start-badge { font-size: 60px; }
+  .home-face-content .start-card h1 { font-size: clamp(34px, 9vw, 54px); }
+  .home-face-content .start-tagline { font-size: 16px; margin-bottom: 20px; }
+  .home-face-content .start-introduction { font-size: 15px; }
+  .home-controls { bottom: 215px; }
+  .pixel-home .next-step { right: 20px; bottom: 24px; max-width: calc(100% - 40px); }
+}
+
+.home-hover-zone:focus-visible, .home-controls .start-button:focus-visible { outline: 3px solid #ac94ff; outline-offset: 5px; }

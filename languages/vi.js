@@ -1,5 +1,5 @@
 window.ThinkSecureLocales=window.ThinkSecureLocales||{};
-window.ThinkSecureLocales.vi={
+window.ThinkSecureLocales["vi"]={
   "password.pageTitle": "Kiểm tra mật khẩu | ThinkSecure",
   "password.eyebrow": "Thử thách mật khẩu ThinkSecure",
   "password.title": "Mật khẩu của bạn có chống được một cuộc tấn công không?",
@@ -25,11 +25,11 @@ window.ThinkSecureLocales.vi={
   "password.learn.uniqueTitle": "Dùng riêng cho từng tài khoản",
   "password.learn.uniqueBody": "Không dùng lại cùng một mật khẩu cho nhiều tài khoản.",
   "password.strength.0": "Rất yếu",
-  "password.bot.message.0": "Mật khẩu này quá dễ đoán. Hãy thử lại!",
-  "password.bot.alt.0": "Robot ThinkSecure tức giận",
+  "password.bot.message.0": "Mật khẩu mẫu này dễ đoán. Hãy cùng làm cho nó mạnh hơn.",
+  "password.bot.alt.0": "Security Bot ThinkSecure lo lắng",
   "password.strength.1": "Yếu",
-  "password.bot.message.1": "Vẫn còn dễ đoán. Bạn có thể làm nó mạnh hơn không?",
-  "password.bot.alt.1": "Robot ThinkSecure khó chịu",
+  "password.bot.message.1": "Một số mẫu vẫn dễ đoán. Hãy thử tăng độ dài.",
+  "password.bot.alt.1": "Security Bot ThinkSecure quan tâm",
   "password.strength.2": "Trung bình",
   "password.bot.message.2": "Khá hơn rồi, nhưng tôi vẫn nhận ra một số mẫu dễ đoán.",
   "password.bot.alt.2": "Robot ThinkSecure bình thản",

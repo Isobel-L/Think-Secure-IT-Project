@@ -50,7 +50,8 @@ function renderToggle(){
 function render(){
  renderToggle();
  if(view.kind!=='result'){
-  robotImage.src='../robotimage/neutral.png';robotImage.alt=text('bot.alt');
+  robotImage.closest('.cracker-area').removeAttribute('data-score');
+  robotImage.src='../robotimage/bot-thoughtful.png';robotImage.alt=text('bot.alt');
   crackerTitle.textContent=text(view.kind==='initial'?'bot.initialTitle':'bot.resetTitle');
   crackerMessage.textContent=text('bot.readyMessage');
   resultPanel.className='result-panel is-empty';
@@ -60,7 +61,8 @@ function render(){
  const {strength,breach,length}=view;
  const score=strength.score;
  const label=text('strength.'+score);
- robotImage.src='../robotimage/'+['angry','annoyed','neutral','happy','excited'][score]+'.png';
+ robotImage.closest('.cracker-area').dataset.score=String(score);
+ robotImage.src='../robotimage/bot-'+['worried','concerned','thoughtful','happy','celebrating'][score]+'.png';
  robotImage.alt=text('bot.alt.'+score);crackerTitle.textContent=label;crackerMessage.textContent=text('bot.message.'+score);
  resultPanel.className='result-panel '+(score<=1?'risk-high':score===2?'risk-medium':'risk-low');
  const summary=score<=1?'weak':score===2?'fair':strength.guesses_log10>=12?'highGuesses':'stronger';
