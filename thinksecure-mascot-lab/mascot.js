@@ -146,7 +146,7 @@
    *    lag   = ms of automatic follow-through delay when a pose is applied
    * ==================================================================== */
   const BONES = {
-    mascot_root: { parent: null, pivot: [300, 666], ch: 'x y r sx sy op', kind: 'squash', lag: 0 },
+    mascot_root: { parent: null, pivot: [300, 708], ch: 'x y r sx sy op', kind: 'squash', lag: 0 },
     hip: { parent: 'mascot_root', pivot: [300, 548], ch: 'x y r', kind: 'core', lag: 0 },
     pelvis: { parent: 'hip', pivot: [300, 548], ch: '', kind: 'core' },
 
@@ -154,27 +154,25 @@
     thigh_L: { parent: 'leg_L', pivot: [0, 0], ch: 'r', kind: 'ik' },
     shin_L: { parent: 'thigh_L', pivot: [0, 0], ch: 'r', kind: 'ik' },
     foot_L: { parent: 'shin_L', pivot: [0, 0], ch: 'r', kind: 'ik' },
-    toe_L: { parent: 'foot_L', pivot: [-5, 21], ch: 'r sy', kind: 'ik', lag: 20 },
     leg_R: { parent: 'hip', pivot: [330, 550], ch: '', kind: 'ik' },
     thigh_R: { parent: 'leg_R', pivot: [0, 0], ch: 'r', kind: 'ik' },
     shin_R: { parent: 'thigh_R', pivot: [0, 0], ch: 'r', kind: 'ik' },
     foot_R: { parent: 'shin_R', pivot: [0, 0], ch: 'r', kind: 'ik' },
-    toe_R: { parent: 'foot_R', pivot: [-5, 21], ch: 'r sy', kind: 'ik', lag: 20 },
 
     spine: { parent: 'hip', pivot: [300, 542], ch: 'x y r sx sy', kind: 'squash', lag: 15 },
     chest: { parent: 'spine', pivot: [300, 468], ch: 'y r sx sy', kind: 'squash', lag: 30 },
-    chest_badge: { parent: 'chest', pivot: [300, 466], ch: 'sx sy', kind: 'core', lag: 45 },
+    chest_badge: { parent: 'chest', pivot: [300, 450], ch: 'sx sy', kind: 'core', lag: 45 },
 
     shoulder_L: { parent: 'chest', pivot: [228, 420], ch: 'x y r', kind: 'core', lag: 35 },
     upper_arm_L: { parent: 'shoulder_L', pivot: [0, 0], ch: 'r', kind: 'core', lag: 35 },
     forearm_L: { parent: 'upper_arm_L', pivot: [0, 0], ch: 'r', kind: 'core', lag: 70 },
     hand_L: { parent: 'forearm_L', pivot: [0, 0], ch: 'r sx sy', kind: 'core', lag: 100 },
-    shoulder_cap_L: { parent: 'shoulder_L', pivot: [0, 0], ch: 'r', kind: 'secondary' },
+    shoulder_cap_L: { parent: 'shoulder_L', pivot: [-20, 2], ch: 'r', kind: 'secondary' },
     shoulder_R: { parent: 'chest', pivot: [228, 420], ch: 'x y r', kind: 'core', lag: 35 },
     upper_arm_R: { parent: 'shoulder_R', pivot: [0, 0], ch: 'r', kind: 'core', lag: 35 },
     forearm_R: { parent: 'upper_arm_R', pivot: [0, 0], ch: 'r', kind: 'core', lag: 70 },
     hand_R: { parent: 'forearm_R', pivot: [0, 0], ch: 'r sx sy', kind: 'core', lag: 100 },
-    shoulder_cap_R: { parent: 'shoulder_R', pivot: [0, 0], ch: 'r', kind: 'secondary' },
+    shoulder_cap_R: { parent: 'shoulder_R', pivot: [-20, 2], ch: 'r', kind: 'secondary' },
 
     neck: { parent: 'chest', pivot: [300, 394], ch: 'x y r', kind: 'core', lag: 50 },
     head: { parent: 'neck', pivot: [300, 382], ch: 'x y r sx sy', kind: 'squash', lag: 70 },
@@ -184,8 +182,7 @@
     brow_L: { parent: 'face', pivot: [247, 222], ch: 'y r op', kind: 'face', group: 'face' },
     brow_R: { parent: 'face', pivot: [353, 222], ch: 'y r op', kind: 'face', group: 'face' },
     mouth: { parent: 'face', pivot: [300, 324], ch: 'x y sx sy r', kind: 'face', group: 'face' },
-    hat: { parent: 'head', pivot: [300, 180], ch: 'x y r sx sy', kind: 'squash', lag: 95 },
-    hat_crown: { parent: 'hat', pivot: [300, 182], ch: 'r sx sy', kind: 'secondary', lag: 120 },
+    hat: { parent: 'head', pivot: [300, 196], ch: 'x y r sx sy', kind: 'squash', lag: 95 }, // whole hat moves as one piece
     ear_L: { parent: 'head', pivot: [152, 280], ch: 'x sx sy', kind: 'core', lag: 70 },
     ear_R: { parent: 'head', pivot: [448, 280], ch: 'x sx sy', kind: 'core', lag: 70 },
     antenna: { parent: 'head', pivot: [454, 262], ch: '', kind: 'secondary' },
@@ -372,7 +369,7 @@
         { at: 570, spring: 'track', pose: { mascot_root: { y: [0, 230, 'inQuad'] } } },
         { at: 610, spring: 'default', pose: { mascot_root: { sy: 1.06, sx: 0.96 }, ikL: { x: 2, y: -4, r: 0 }, ikR: { x: 2, y: -4, r: 0 } } },
         { at: 800, fx: 'dust' },
-        { at: 800, kick: { 'head.y': 150, 'hat.y': 120 },                               // landing squash
+        { at: 800, kick: { 'head.y': 150, 'hat.sy': -1.3 },                               // landing squash
           pose: P({ mascot_root: { sy: 0.82, sx: 1.14 }, hip: { y: 13 }, ikL: { x: 4, y: 0 }, ikR: { x: 4, y: 0 } }, arm('L', 124, 30, 6), arm('R', 124, 30, 6)) },
         { at: 890, spring: 'track', pose: { mascot_root: { y: [-34, 150, 'outQuad'] } } }, // rebound 1
         { at: 890, pose: P({ mascot_root: { sy: 1.07, sx: 0.95 }, hip: { y: -1 } }, arm('L', 146, 16, 6), arm('R', 146, 16, 6)) },
@@ -545,12 +542,12 @@
         { at: 660, spring: 'snappy', pose: { head: { r: 3 }, neck: { r: 1 } } },
         { at: 800, pose: { head: { r: 0 }, neck: { r: 0 }, mascot_root: { sy: 1, sx: 1 } } },
         { at: 1150, face: 'encourage', look: [0, -0.1] },                                  // …then encourage
-        { at: 1150, spring: 'bouncy', hands: { L: 'fist' },
-          pose: P({ spine: { r: 1, sy: 1.03 }, head: { y: -3, r: -2 }, shoulder_L: { y: 0 }, shoulder_R: { y: 0 } }, arm('L', -10, -130, -10)) },
+        { at: 1150, spring: 'bouncy', hands: { L: 'fist' }, order: { L: 'front' },             // side "you got this" pump
+          pose: P({ spine: { r: 1, sy: 1.03 }, head: { y: -3, r: -2 }, shoulder_L: { y: 0 }, shoulder_R: { y: 0 } }, arm('L', 40, 100, 15)) },
         { at: 1500, spring: 'default', pose: { head: { y: 2 } } },                         // nod
         { at: 1660, spring: 'default', pose: { head: { y: -2 } } },
         { at: 1900, spring: 'default', pose: P({ spine: { r: 0, sy: 1 }, head: { y: 0, r: 0 } }, restArm('L')) },
-        { at: 2050, hands: HANDS_RELAXED, look: null },
+        { at: 2050, hands: HANDS_RELAXED, order: ORDER_BACK, look: null },
       ],
     },
 
@@ -584,7 +581,7 @@
         { at: 200, spring: 'track', pose: { mascot_root: { y: [0, 150, 'inQuad'] } } },
         { at: 200, abs: true, pose: { mascot_root: { sx: 1, sy: 1 } } },
         { at: 350, face: 'excited', fx: ['dust', { name: 'sparkles', n: 6, y: 330, r: 220 }] },
-        { at: 350, kick: { 'hat.y': 140 }, pose: { mascot_root: { sx: 1.12, sy: 0.86 }, hip: { y: 8 } } },
+        { at: 350, kick: { 'hat.sy': -1.4 }, pose: { mascot_root: { sx: 1.12, sy: 0.86 }, hip: { y: 8 } } },
         { at: 450, pose: { mascot_root: { sx: 1, sy: 1 }, hip: { y: 0 } } },
         { at: 520, hands: { L: 'open' }, order: { L: 'front' }, pose: arm('L', 96, 46, 0) },
         { at: 690, spring: 'snappy', pose: arm('L', 98, 66, 12) },
@@ -758,7 +755,37 @@
         L: this.boneMap.hand_L ? [...this.boneMap.hand_L.el.querySelectorAll('.hand-var')] : [],
         R: this.boneMap.hand_R ? [...this.boneMap.hand_R.el.querySelectorAll('.hand-var')] : [],
       };
+      this._measureLegs();
       if (this.missing.length) console.warn('[mascot] missing SVG ids:', this.missing.join(', '));
+    }
+
+    // Reads each leg's real geometry from the artwork (before any rig transform is written):
+    // thigh frame -> hip space, knee offset (A), ankle offset (B), rest ankle position.
+    _measureLegs() {
+      this.legGeo = {};
+      const hip = this._byId('hip');
+      // position of child's pivot (its origin) inside the parent bone's coordinates
+      const at = (parent, child) => { const k = parent.getCTM().inverse().multiply(child.getCTM()); return [k.e, k.f]; };
+      for (const side of ['L', 'R']) {
+        const thigh = this._byId('thigh_' + side), shin = this._byId('shin_' + side), foot = this._byId('foot_' + side);
+        if (!hip || !thigh || !shin || !foot) continue;
+        const m = hip.getCTM().inverse().multiply(thigh.getCTM());
+        const toHip = [m.a, m.b, m.c, m.d, m.e, m.f];
+        const A = at(thigh, shin), B = at(shin, foot);
+        const rest = Mx.apply(toHip, A[0] + B[0], A[1] + B[1]);
+        const thA0 = Math.atan2(-A[0], A[1]) / DEG, thB0 = Math.atan2(-B[0], B[1]) / DEG;
+        const dirRest = Math.atan2(-(A[0] + B[0]), A[1] + B[1]) / DEG;
+        const a = Math.hypot(A[0], A[1]), b = Math.hypot(B[0], B[1]), D0 = Math.hypot(A[0] + B[0], A[1] + B[1]);
+        const bendRest = Math.acos(clamp((a * a + D0 * D0 - b * b) / (2 * a * D0), -1, 1)) / DEG;
+        this.legGeo[side] = {
+          toHip, fromHip: Mx.inv(toHip), A, B, rest, thA0, thB0,
+          a, b,
+          // knees always bow outward when crouching; corr keeps the artwork's rest pose exact
+          corr: thA0 - (dirRest + bendRest), D0,
+          mirror: toHip[0] * toHip[3] - toHip[1] * toHip[2] < 0,
+          out: rest[0] < 300 ? -1 : 1,
+        };
+      }
     }
 
     /* ---------------- public API ---------------- */
@@ -1038,10 +1065,10 @@
     }
 
     _handClearOfHead(side) {
-      const C = this.ch;
-      const u = C['upper_arm_' + side + '.r'].v, f = C['forearm_' + side + '.r'].v, h = C['hand_' + side + '.r'].v;
-      const tipY = 420 + C['shoulder_' + side + '.y'].v + 58 * Math.cos(u * DEG) + 46 * Math.cos((u + f) * DEG) + 44 * Math.cos((u + f + h) * DEG);
-      return tipY > 386;
+      // measured, so it stays right whatever the glove artwork looks like
+      const hand = this.boneMap['hand_' + side], head = this.boneMap.head;
+      if (!hand || !head) return true;
+      return hand.el.getBoundingClientRect().top > head.el.querySelector('use').getBoundingClientRect().bottom - 6;
     }
 
     /* ---------------- face helpers ---------------- */
@@ -1196,25 +1223,28 @@
       const hip = Mx.local(300, 548, C['hip.x'].v, C['hip.y'].v, C['hip.r'].v, 1, 1);
       const inv = Mx.inv(hip);
       const hipRot = C['hip.r'].v + C['mascot_root.r'].v;
-      const A = 42, Bl = 38; // thigh, shin length
       for (const side of ['L', 'R']) {
-        const sg = side === 'L' ? -1 : 1;
-        const tx = (side === 'L' ? 270 : 330) + sg * C['ik' + side + '.x'].v; // +x = outward
-        const ty = 630 + C['ik' + side + '.y'].v;
-        let [qx, qy] = Mx.apply(inv, tx, ty);
-        if (side === 'R') qx = 600 - qx; // into the mirrored leg frame
-        const dx = qx - 270, dy = qy - 550;
-        let D = Math.hypot(dx, dy);
-        D = clamp(D, Math.abs(A - Bl) + 0.01, A + Bl - 0.01);
+        const g = this.legGeo[side];
+        if (!g) continue;
+        const tx = g.rest[0] + g.out * C['ik' + side + '.x'].v; // +ik.x = outward
+        const ty = g.rest[1] + C['ik' + side + '.y'].v;
+        const [hx, hy] = Mx.apply(inv, tx, ty);
+        const [dx, dy] = Mx.apply(g.fromHip, hx, hy); // into the thigh's parent frame
+        const a = g.a, b = g.b;
+        const D = clamp(Math.hypot(dx, dy), Math.abs(a - b) + 0.01, a + b); // straight leg at full reach
         const dir = Math.atan2(-dx, dy) / DEG;
-        const bend = Math.acos(clamp((A * A + D * D - Bl * Bl) / (2 * A * D), -1, 1)) / DEG;
-        const thigh = dir + bend; // knees bow outward
-        const kx = -Math.sin(thigh * DEG) * A, ky = Math.cos(thigh * DEG) * A;
+        const bend = Math.acos(clamp((a * a + D * D - b * b) / (2 * a * D), -1, 1)) / DEG;
+        // rest correction fades out over the first 12u of compression, so crouches are exact
+        const corr = g.corr * clamp((D - (g.D0 - 12)) / 12, 0, 1);
+        const thigh = dir + bend - g.thA0 + corr;
+        const c = Math.cos(thigh * DEG), sn = Math.sin(thigh * DEG);
+        const kx = g.A[0] * c - g.A[1] * sn, ky = g.A[0] * sn + g.A[1] * c;
         const shinAbs = Math.atan2(-(dx - kx), dy - ky) / DEG;
-        const rotInFrame = side === 'L' ? hipRot : -hipRot;
+        const shin = shinAbs - g.thB0 - thigh;
+        const rotInFrame = g.mirror ? -hipRot : hipRot;
         C['thigh_' + side + '.r'].v = thigh;
-        C['shin_' + side + '.r'].v = shinAbs - thigh;
-        C['foot_' + side + '.r'].v = C['ik' + side + '.r'].v - shinAbs - rotInFrame;
+        C['shin_' + side + '.r'].v = shin;
+        C['foot_' + side + '.r'].v = C['ik' + side + '.r'].v - (thigh + shin) - rotInFrame;
       }
     }
 
@@ -1223,7 +1253,7 @@
       if (dt <= 0) return;
       const C = this.ch, B = this.boneMap, d = this.dyn;
       const v = (n) => C[n].v;
-      const mRoot = Mx.local(300, 666, v('mascot_root.x') + this.shakeX, v('mascot_root.y'), v('mascot_root.r'),
+      const mRoot = Mx.local(300, 708, v('mascot_root.x') + this.shakeX, v('mascot_root.y'), v('mascot_root.r'),
         Math.max(0.001, v('mascot_root.sx')), Math.max(0.001, v('mascot_root.sy')));
       const mHip = Mx.mul(mRoot, Mx.local(300, 548, v('hip.x'), v('hip.y'), v('hip.r'), 1, 1));
       const mSpine = Mx.mul(mHip, Mx.local(300, 542, v('spine.x'), v('spine.y'), v('spine.r'), v('spine.sx'), v('spine.sy')));
@@ -1241,11 +1271,12 @@
       const clx = d.cx.step(cx, dt), cly = d.cy.step(cy, dt), cla = d.ca.step(cang, dt);
       const g = dynGain();
 
-      B.hat.ar += clamp((la * 0.32 + lx * 0.08) * g, -8, 8);
-      B.hat.ay += clamp(ly * 0.07 * g, -4, 4);
-      B.hat_crown.ar += clamp((la * 0.26 + lx * 0.1) * g, -8, 8);
-      B.hat_crown.asy *= clamp(1 - ly * 0.0022 * g, 0.9, 1.1);
-      B.hat_crown.asx *= clamp(1 + ly * 0.0011 * g, 0.95, 1.05);
+      // hat follow-through: tilt + squash/stretch of the whole hat about its seat on the head,
+      // so crown and band always stay together and the hat never lifts off
+      B.hat.ar += clamp((la * 0.45 + lx * 0.14) * g, -10, 10);
+      // soft limit (tanh) so big jumps ease into the max squash instead of flattening against it
+      B.hat.asy *= 1 - 0.12 * Math.tanh((ly * 0.0015 * g) / 0.12);
+      B.hat.asx *= 1 + 0.05 * Math.tanh((ly * 0.0008 * g) / 0.05);
       B.antenna_1.ar += clamp((la * 0.5 + lx * 0.2 + ly * 0.16) * g, -26, 26);
       B.antenna_2.ar += clamp(((la2 - la) * 0.7 + (lx2 - lx) * 0.3 + (ly2 - ly) * 0.22) * g, -22, 22);
       B.shoulder_cap_L.ar += clamp((cla * 0.5 + cly * 0.12 + clx * 0.1) * g, -8, 8);
@@ -1293,7 +1324,7 @@
       const ry = C['mascot_root.y'].v;
       const rsx = clamp(C['mascot_root.sx'].v, 0, 1.3);
       const s = clamp(1 + ry / 300, 0.3, 1.1);
-      E.shadow.setAttribute('transform', `translate(${f3(300 + C['mascot_root.x'].v)} 667) scale(${f3(s * rsx)} ${f3(s)}) translate(-300 -667)`);
+      E.shadow.setAttribute('transform', `translate(${f3(300 + C['mascot_root.x'].v)} 709) scale(${f3(s * rsx)} ${f3(s)}) translate(-300 -709)`);
       E.shadow.setAttribute('opacity', f3(0.16 * s * Math.min(1, rsx) * clamp(C['mascot_root.op'].v, 0, 1)));
     }
 
@@ -1361,8 +1392,9 @@
       }
       const mr = inv.multiply(this.boneMap.mascot_root.el.getScreenCTM());
       ['L', 'R'].forEach((s, i) => {
-        const sg = s === 'L' ? -1 : 1;
-        const p = new DOMPoint((s === 'L' ? 270 : 330) + sg * this.ch['ik' + s + '.x'].v, 630 + this.ch['ik' + s + '.y'].v).matrixTransform(mr);
+        const g = this.legGeo[s];
+        if (!g) return;
+        const p = new DOMPoint(g.rest[0] + g.out * this.ch['ik' + s + '.x'].v, g.rest[1] + this.ch['ik' + s + '.y'].v).matrixTransform(mr);
         this.rigIK[i].setAttribute('transform', `translate(${f3(p.x)} ${f3(p.y)})`);
       });
     }
@@ -1657,7 +1689,7 @@
       for (const side of [-1, 1]) {
         for (let i = 0; i < 3; i++) {
           P.push({ c: mk('circle', { r: 1, fill: '#E3E7F6', stroke: '#C9CFEA', 'stroke-width': 2, opacity: 0 }, g),
-            x: 300 + rx + side * rand(48, 70), y: 660 - rand(0, 6), dx: side * rand(26, 54), dy: -rand(6, 18), r: rand(9, 15), d: i * 30 });
+            x: 300 + rx + side * rand(48, 70), y: 702 - rand(0, 6), dx: side * rand(26, 54), dy: -rand(6, 18), r: rand(9, 15), d: i * 30 });
         }
       }
       return {
@@ -1693,7 +1725,7 @@
             if (p < 0) { alive = true; continue; }
             if (p > 1) { q.l.setAttribute('opacity', 0); continue; }
             alive = true;
-            const y0 = 610 + ry + EASE.outCubic(p) * 50;
+            const y0 = 652 + ry + EASE.outCubic(p) * 50;
             q.l.setAttribute('x1', f3(q.x)); q.l.setAttribute('x2', f3(q.x));
             q.l.setAttribute('y1', f3(y0)); q.l.setAttribute('y2', f3(y0 + 46 * (1 - p)));
             q.l.setAttribute('opacity', f3(1 - p));

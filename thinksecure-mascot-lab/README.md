@@ -18,7 +18,7 @@ thinksecure-mascot-lab/
 - the new screen-face language sheet
 - a reference / v1 / v2 comparison with measured proportions
 
-The motion lab (`index.html`) still runs the v1 draft rig. Once the v2 model is approved, the states get re-targeted to it. Supporting files are `model.css`, `model.js`, `previous-draft.svg` (frozen v1) and `reference/turnaround.webp`.
+The motion lab (`index.html`) runs your adjusted model. `mascot.svg` is a standalone export of that model in its rest pose. Supporting files for the review page are `model.css`, `model.js` and `reference/turnaround.webp`.
 
 ## Running it
 

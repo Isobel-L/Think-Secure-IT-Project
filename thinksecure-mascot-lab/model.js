@@ -224,7 +224,7 @@
     sync();
   }
 
-  // v1 values were measured from previous-draft.svg with the same method;
+  // v1 values were measured from the old v1 draft (since removed) with the same method;
   // reference values are read off the front view of the turnaround sheet.
   function fillCompareTable(m) {
     const tb = document.querySelector('#cmpTable tbody');
