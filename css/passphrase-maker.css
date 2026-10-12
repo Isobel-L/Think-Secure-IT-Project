@@ -1,0 +1,962 @@
+/*
+    Passphrase Maker
+
+    Page layout on top of the illustrated theme: the explanation with its
+    scene, picking four words, and the finished passphrase.
+*/
+
+
+/* ------------------------------
+   Shared pieces
+------------------------------ */
+
+.pm-main {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Picture tiles joined by plus signs, as drawn in the scene */
+.pm-tiles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 34px;
+}
+
+.pm-tile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+    background: var(--tint-sky);
+    font-size: 32px;
+    line-height: 1;
+}
+
+.pm-tile:nth-child(4n + 2) { background: var(--tint-mint); }
+.pm-tile:nth-child(4n + 3) { background: var(--tint-peach); }
+.pm-tile:nth-child(4n + 4) { background: var(--tint-lilac); }
+
+.pm-tile + .pm-tile::before,
+.chosen-slot + .chosen-slot::before,
+.result-emoji span + span::before {
+    content: "+";
+    position: absolute;
+    left: -34px;
+    top: 50%;
+    width: 34px;
+    translate: 0 -50%;
+    color: #9fb3cf;
+    font-family: "Fredoka", "Nunito", system-ui, sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+
+.pm-tiles-large {
+    justify-content: center;
+}
+
+.pm-tiles-large .pm-tile {
+    width: 84px;
+    height: 84px;
+    border-radius: 22px;
+    font-size: 44px;
+    box-shadow: var(--hard-shadow);
+}
+
+.pm-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+
+/* Scroll reveals, only once the script has taken over */
+
+.pm-ready [data-reveal] {
+    opacity: 0;
+    translate: 0 40px;
+    transition: opacity 0.8s var(--ease), translate 0.8s var(--ease);
+}
+
+.pm-ready [data-reveal].is-visible {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.pm-compare [data-reveal]:nth-child(2),
+.pm-points [data-reveal]:nth-child(2) { transition-delay: 0.12s; }
+.pm-points [data-reveal]:nth-child(3) { transition-delay: 0.24s; }
+
+
+/* ------------------------------
+   Explanation: hero
+------------------------------ */
+
+.pm-hero {
+    position: relative;
+    height: clamp(540px, calc(100svh - 88px), 72vw);
+    overflow: hidden;
+    background: #fdf8ed;
+    isolation: isolate;
+}
+
+/* The picture is held in its own frame, so zooming it never widens the page */
+.pm-hero-frame {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.pm-hero-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 64%;
+}
+
+.pm-hero-copy {
+    position: relative;
+    width: min(540px, 42vw);
+    margin-left: var(--gutter);
+    padding-top: clamp(14px, 3vh, 36px);
+}
+
+/* A soft patch of the scene's own sky behind the words, so they read without a card */
+.pm-hero-copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -30% -28% -26% -40%;
+    background: radial-gradient(closest-side, #fdf8ed 55%, transparent);
+    opacity: 0.94;
+    pointer-events: none;
+}
+
+.pm-title {
+    margin-bottom: 18px;
+    padding-bottom: 0.06em;
+    font-size: clamp(40px, 4.6vw, 72px);
+    line-height: 1;
+}
+
+.pm-lead {
+    max-width: 30em;
+    margin-bottom: 22px;
+    font-size: clamp(16px, 1.25vw, 19px);
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.pm-hero-copy > * {
+    animation: pm-rise 0.9s var(--ease) both;
+}
+
+.pm-hero-copy > :nth-child(2) { animation-delay: 0.08s; }
+.pm-hero-copy > :nth-child(3) { animation-delay: 0.16s; }
+.pm-hero-copy > :nth-child(4) { animation-delay: 0.24s; }
+
+@keyframes pm-rise {
+    from { opacity: 0; translate: 0 26px; }
+    to { opacity: 1; translate: 0 0; }
+}
+
+
+/* ------------------------------
+   Explanation: password against passphrase
+------------------------------ */
+
+.pm-ground {
+    position: relative;
+    z-index: 1;
+    padding: 56px var(--gutter) 96px;
+    background: var(--ground);
+    color: var(--ground-ink);
+}
+
+/* The ground rises out of the scene as one more hill */
+.pm-ground::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -30px;
+    height: 70px;
+    z-index: -1;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: var(--ground);
+}
+
+.pm-compare {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    text-align: left;
+}
+
+.pm-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px;
+    border-radius: 28px;
+    background: var(--cream);
+    color: var(--ink);
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.28);
+}
+
+.pm-card h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 22px;
+    line-height: 1.15;
+}
+
+.pm-card h2::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--danger) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7 7 17'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+
+.pm-card-strong h2::before {
+    background-color: var(--accent-bright);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+    background-size: 17px;
+}
+
+.pm-card .pm-tiles {
+    margin-bottom: 16px;
+}
+
+.pm-code {
+    display: block;
+    max-width: 100%;
+    margin-bottom: 22px;
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: clamp(16px, 1.4vw, 20px);
+    font-weight: 700;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.pm-code-weak {
+    padding: 12px 20px;
+    border-radius: 16px;
+    background: #fde0da;
+    color: #a9200f;
+    font-size: clamp(22px, 2.2vw, 30px);
+}
+
+/* The awkward symbols, as tiles of their own */
+.pm-tiles-weak .pm-tile {
+    background: #fde0da;
+    color: #a9200f;
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* Each word wears the colour of its tile */
+.pm-word {
+    display: inline-block;
+    margin-block: 3px;
+    padding: 4px 9px;
+    border-radius: 10px;
+    background: var(--tint-sky);
+}
+
+.pm-word:nth-child(3) { background: var(--tint-mint); }
+.pm-word:nth-child(5) { background: var(--tint-peach); }
+.pm-word:nth-child(7) { background: var(--tint-lilac); }
+
+.pm-dash {
+    display: inline-block;
+    padding-inline: 3px;
+    color: #9fb3cf;
+}
+
+.pm-ready .pm-word,
+.pm-ready .pm-dash {
+    opacity: 0;
+    translate: 0 14px;
+    transition: opacity 0.5s var(--ease), translate 0.5s var(--ease);
+    transition-delay: calc(0.35s + var(--i) * 0.16s);
+}
+
+.pm-ready .is-visible .pm-word,
+.pm-ready .is-visible .pm-dash {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.pm-meter {
+    width: 100%;
+    height: 12px;
+    margin-bottom: 14px;
+    border-radius: 999px;
+    background: rgba(6, 41, 82, 0.1);
+    overflow: hidden;
+}
+
+.pm-meter span {
+    display: block;
+    width: var(--fill);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--danger);
+    transform-origin: left;
+    transition: transform 1.2s 0.3s var(--ease);
+}
+
+.pm-card-strong .pm-meter span {
+    background: var(--accent-bright);
+}
+
+.pm-ready .pm-meter span { transform: scaleX(0); }
+.pm-ready .is-visible .pm-meter span { transform: scaleX(1); }
+
+.pm-count {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: var(--ink-soft);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.pm-count-number {
+    color: var(--ink);
+    font-family: "Fredoka", "Nunito", system-ui, sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.pm-card-body {
+    color: var(--ink-soft);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* ------------------------------
+   Explanation: three points
+------------------------------ */
+
+.pm-points {
+    width: 100%;
+    max-width: calc(1080px + var(--gutter) * 2);
+    margin: -44px auto 0;
+    padding: 0 var(--gutter);
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: left;
+}
+
+.pm-point {
+    padding: 26px 24px;
+    border-radius: 24px;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 2px var(--line), var(--hard-shadow);
+    transition: translate 0.25s, box-shadow 0.25s;
+}
+
+.pm-ready .pm-point.is-visible {
+    transition: opacity 0.8s var(--ease), translate 0.25s, box-shadow 0.25s;
+}
+
+.pm-point:hover {
+    translate: 0 -4px;
+    box-shadow: inset 0 0 0 2px var(--line), 0 9px 0 rgba(6, 41, 82, 0.16);
+}
+
+.pm-point-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 18px;
+    border-radius: 18px;
+    background: var(--tint-mint);
+}
+
+.pm-point:nth-child(2) .pm-point-icon { background: var(--tint-sky); }
+.pm-point:nth-child(3) .pm-point-icon { background: var(--tint-lilac); }
+
+.pm-point-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.pm-point p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.pm-point strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+
+/* ------------------------------
+   Explanation: call to action
+------------------------------ */
+
+.pm-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 76px var(--gutter) 90px;
+    text-align: center;
+}
+
+.pm-instruction {
+    text-wrap: balance;
+    font-family: var(--display);
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+html[lang^="zh"] .pm-instruction,
+html[lang="vi"] .pm-instruction {
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+
+/* ------------------------------
+   Picking words and the result
+------------------------------ */
+
+.pm-stage {
+    flex: 1;
+    padding: 18px var(--gutter) 10px;
+}
+
+.pm-stage-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pm-stage-title {
+    font-size: clamp(34px, 4.2vw, 58px);
+}
+
+.pm-stage-hint {
+    margin-top: -10px;
+    color: var(--ink-soft);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pm-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.pm-progress-label {
+    margin: 0;
+}
+
+.pm-progress-track {
+    width: min(420px, 100%);
+    height: 12px;
+    border-radius: 999px;
+    background: var(--tint-mint);
+    overflow: hidden;
+}
+
+.pm-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent-bright);
+    transition: width 0.5s var(--ease);
+}
+
+
+/* Words chosen so far */
+
+.chosen-strip {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px 34px;
+}
+
+.chosen-slot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 116px;
+    min-height: 92px;
+    padding: 10px 8px;
+    border: 2px dashed #c9bfa8;
+    border-radius: 20px;
+    color: #9a927f;
+}
+
+.chosen-slot.filled {
+    border: 0;
+    background: var(--tint-sky);
+    color: var(--ink);
+    box-shadow: var(--hard-shadow);
+}
+
+.chosen-slot.filled:nth-child(2) { background: var(--tint-mint); }
+.chosen-slot.filled:nth-child(3) { background: var(--tint-peach); }
+.chosen-slot.filled:nth-child(4) { background: var(--tint-lilac); }
+
+.chosen-emoji {
+    font-size: 32px;
+    line-height: 1.1;
+    font-family: "Fredoka", "Nunito", system-ui, sans-serif;
+    font-weight: 700;
+}
+
+.chosen-word {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+
+/* The twenty options */
+
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    width: 100%;
+}
+
+.word-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 18px 8px 14px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--tint-mint);
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: 0 5px 0 rgba(6, 41, 82, 0.12);
+    transition: translate 0.2s, box-shadow 0.2s;
+}
+
+.word-button:nth-child(5n + 2) { background: var(--tint-sky); }
+.word-button:nth-child(5n + 3) { background: var(--tint-lilac); }
+.word-button:nth-child(5n + 4) { background: var(--tint-butter); }
+.word-button:nth-child(5n + 5) { background: var(--tint-peach); }
+
+.word-button:hover {
+    translate: 0 -4px;
+    box-shadow: 0 9px 0 rgba(6, 41, 82, 0.14);
+}
+
+.word-button:active {
+    translate: 0 3px;
+    box-shadow: 0 2px 0 rgba(6, 41, 82, 0.12);
+}
+
+.word-emoji {
+    font-size: 40px;
+    line-height: 1.1;
+}
+
+.word-label {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+
+/* The finished passphrase */
+
+.pm-check svg {
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+
+.pm-check circle {
+    fill: var(--accent-bright);
+}
+
+.pm-check-tick {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pm-check-spark {
+    fill: none;
+    stroke: var(--accent-bright);
+    stroke-width: 7;
+    stroke-linecap: round;
+}
+
+.pm-result .pm-check {
+    animation: pm-pop 0.7s var(--ease) both;
+}
+
+@keyframes pm-pop {
+    from { opacity: 0; scale: 0.4; }
+    60% { scale: 1.12; }
+    to { opacity: 1; scale: 1; }
+}
+
+.pm-result .pm-stage-title {
+    margin-top: -8px;
+}
+
+.result-emoji {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px 34px;
+}
+
+.result-emoji span {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    background: var(--tint-sky);
+    font-size: 46px;
+    line-height: 1;
+    box-shadow: var(--hard-shadow);
+}
+
+.result-emoji span:nth-child(2) { background: var(--tint-mint); }
+.result-emoji span:nth-child(3) { background: var(--tint-peach); }
+.result-emoji span:nth-child(4) { background: var(--tint-lilac); }
+
+.pm-bracket {
+    display: block;
+    width: min(400px, 78%);
+    margin-block: -8px;
+    fill: none;
+    stroke: #9fb3cf;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pm-phrase-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 100%;
+    padding: 12px 12px 12px 26px;
+    border-radius: 999px;
+    background: var(--tint-mint);
+    box-shadow: var(--hard-shadow);
+}
+
+.pm-phrase-box code {
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: clamp(17px, 2.2vw, 24px);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
+.pm-copy-status {
+    min-height: 1.4em;
+    margin-block: -12px;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.pm-stats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.pm-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 150px;
+    padding: 16px 22px;
+    border-radius: 22px;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 2px var(--line);
+}
+
+.pm-stat-value {
+    font-family: "Fredoka", "Nunito", system-ui, sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.pm-stat-label {
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* Hills along the bottom of the picking and result screens */
+
+.pm-hills {
+    display: block;
+    width: 100%;
+    height: clamp(70px, 10vw, 150px);
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-top: 34px;
+    margin-bottom: -1px;
+    box-sizing: content-box;
+}
+
+#phrase-intro:not(.hidden) ~ .pm-hills {
+    display: none;
+}
+
+
+/* ------------------------------
+   Smaller screens
+------------------------------ */
+
+/* Portrait: the scene above, the words on the ground below */
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+
+    .pm-hero {
+        height: auto;
+        overflow: visible;
+        background: var(--ground);
+        padding-top: 79vw;
+    }
+
+    .pm-hero-frame {
+        inset: 0 0 auto 0;
+        height: 80vw;
+    }
+
+    /* Zoom onto the laptop and the mascot */
+    .pm-hero-art {
+        object-position: 57% 62%;
+        scale: 1.62;
+        transform-origin: 57% 58%;
+    }
+
+    .pm-hero-copy {
+        width: auto;
+        margin: 0;
+        padding: 40px var(--gutter) 34px;
+        background: var(--ground);
+        color: var(--ground-ink);
+        border-radius: 50% 50% 0 0 / 34px 34px 0 0;
+    }
+
+    .pm-hero-copy::before {
+        display: none;
+    }
+
+    .pm-hero-copy .il-eyebrow-num {
+        background: var(--ground-ink);
+        color: var(--ground);
+    }
+
+    .pm-hero-copy .il-btn {
+        background: var(--accent-soft);
+        color: var(--ink);
+    }
+
+    .pm-title {
+        font-size: clamp(36px, 9.6vw, 60px);
+    }
+
+    .pm-ground {
+        padding-top: 14px;
+        padding-bottom: 84px;
+    }
+
+    .pm-ground::before {
+        display: none;
+    }
+}
+
+@media (max-width: 860px) {
+
+    .pm-compare,
+    .pm-points {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-cta {
+        padding-block: 56px 70px;
+    }
+
+    .word-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 620px) {
+
+    .pm-card {
+        padding: 24px 20px;
+    }
+
+    .word-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .word-button {
+        padding: 14px 6px 12px;
+        border-radius: 18px;
+    }
+
+    .word-emoji {
+        font-size: 34px;
+    }
+
+    .word-label {
+        font-size: 13px;
+    }
+
+    .pm-tiles,
+    .chosen-strip,
+    .result-emoji {
+        gap: 12px 26px;
+    }
+
+    .pm-tile + .pm-tile::before,
+    .chosen-slot + .chosen-slot::before,
+    .result-emoji span + span::before {
+        left: -26px;
+        width: 26px;
+        font-size: 22px;
+    }
+
+    .pm-tile {
+        width: 52px;
+        height: 52px;
+        font-size: 27px;
+    }
+
+    .pm-tiles-large .pm-tile,
+    .result-emoji span {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        font-size: 32px;
+    }
+
+    .chosen-slot {
+        width: 68px;
+        min-height: 74px;
+        padding: 8px 4px;
+        border-radius: 16px;
+    }
+
+    .chosen-emoji {
+        font-size: 24px;
+    }
+
+    .chosen-word {
+        font-size: 11px;
+    }
+
+    .pm-phrase-box {
+        flex-direction: column;
+        padding: 18px 18px 16px;
+        border-radius: 26px;
+    }
+
+    .pm-phrase-box code {
+        text-align: center;
+    }
+
+    .pm-stat {
+        min-width: 0;
+        flex: 1 1 96px;
+        padding: 12px 10px;
+    }
+
+    .pm-stat-value {
+        font-size: 26px;
+    }
+
+    .pm-actions .il-btn {
+        width: 100%;
+    }
+}
+
+/* Short, wide windows: keep the title clear of the picture */
+@media (max-height: 620px) and (min-aspect-ratio: 1/1) and (min-width: 761px) {
+    .pm-lead {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pm-ready [data-reveal],
+    .pm-ready .pm-word,
+    .pm-ready .pm-dash {
+        opacity: 1;
+        translate: 0 0;
+    }
+
+    .pm-ready .pm-meter span {
+        transform: none;
+    }
+}
