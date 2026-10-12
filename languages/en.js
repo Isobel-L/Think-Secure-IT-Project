@@ -2,7 +2,7 @@ window.ThinkSecureLocales=window.ThinkSecureLocales||{};
 window.ThinkSecureLocales["en"]={
   "password.pageTitle": "Password Checker | ThinkSecure",
   "password.eyebrow": "ThinkSecure Password Challenge",
-  "password.title": "Can Your Password Survive an Attack?",
+  "password.title": "Build a stronger defence.",
   "password.intro": "Create a fake example password and put it to the test. See what makes it weak, learn how attackers recognise predictable patterns, and try to make it stronger.",
   "password.warning": "Never enter a password you currently use. This activity is for educational purposes only.",
   "password.bot.alt": "ThinkSecure Security Bot",

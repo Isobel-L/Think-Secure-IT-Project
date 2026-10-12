@@ -2,7 +2,7 @@ window.ThinkSecureLocales=window.ThinkSecureLocales||{};
 window.ThinkSecureLocales["fr"]={
   "password.pageTitle": "Test de mot de passe — ThinkSecure",
   "password.eyebrow": "Défi de mot de passe ThinkSecure",
-  "password.title": "Votre mot de passe résisterait-il à une attaque ?",
+  "password.title": "Renforcez votre protection.",
   "password.intro": "Créez un mot de passe fictif et testez-le. Découvrez ses faiblesses, les schémas prévisibles et comment le renforcer.",
   "password.warning": "Ne saisissez jamais un mot de passe que vous utilisez réellement. Cette activité est uniquement pédagogique.",
   "password.bot.alt": "Robot de sécurité ThinkSecure",

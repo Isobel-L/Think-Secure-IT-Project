@@ -17,9 +17,9 @@ The component creates its HTML dynamically. It does not read passwords, modify a
 1. Initially only the Need a hand? launcher is visible. Hover does nothing.
 2. Clicking the launcher replaces it with a randomly selected full-body robot. A small invitation bubble appears; detailed guidance stays closed.
 3. Clicking the invitation opens one tip beside the robot (above it on narrow screens). The robot remains visible; the original launcher is hidden.
-4. Closing the tip returns to the robot and invitation. Clicking the robot also returns to its invitation. The robot’s separate dismiss button returns to the compact launcher.
+4. Closing the tip dismisses the entire assistant and returns focus to the compact launcher. The robot’s separate dismiss button is shown only at the invitation stage; detailed tips have just one close button. Clicking the robot returns to its invitation.
 
-Keyboard Enter/Space and touch follow the same two-click sequence. Escape goes back one stage. Language changes preserve the current stage, pose, and tip. Each new summon chooses a random pose without immediately repeating the previous one. There is no timer or hover-based change, and no dragging.
+Keyboard Enter/Space and touch follow the same two-click sequence. Escape dismisses the assistant from either open stage. Language changes preserve the current stage, pose, and tip. Each new summon chooses a random pose without immediately repeating the previous one. There is no timer or hover-based change, and no dragging.
 
 The bubble has a visual tail pointing to the robot. Its content scrolls when viewport space is limited. Reduced-motion preferences disable appearance animation. If full-body artwork fails, the avatar remains a usable fallback character.
 
@@ -48,7 +48,7 @@ All four activity pages are connected. Welcome and menu pages are unchanged. Qui
 ## Validation checklist
 
 - Hover the launcher: no reveal. First click: robot and invitation. Click invitation: one detailed tip, no compact button.
-- Close the bubble, reopen it, then dismiss the robot. Summon again and verify a different pose.
+- Close the tip and verify that the robot also collapses to the launcher. At the invitation stage, close with the robot’s dismiss button. Verify that only one close button is visible in either stage. Summon again and verify a different pose.
 - Switch all six languages while speaking; retain pose and tip state.
 - Use keyboard Enter/Space and Escape, and repeat the sequence with touch.
 - Check bubble bounds at phone, landscape and tablet sizes.

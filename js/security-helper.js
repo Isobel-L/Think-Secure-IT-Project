@@ -51,11 +51,11 @@
    const key='passphrase.'+tip[2],target=document.querySelector('#phrase-result [data-i18n="'+key+'"]');
    if(target){const button=document.createElement('button');button.type='button';button.className='helper-action';button.textContent=I18n.t(key);button.addEventListener('click',()=>target.click());actions.append(button);}
   }
-  el('.helper-close').setAttribute('aria-label',c.close);dismiss.setAttribute('aria-label',c.dismiss);
+  el('.helper-close').setAttribute('aria-label',c.dismiss);dismiss.setAttribute('aria-label',c.dismiss);
   launch.setAttribute('aria-label',state==='launcher'?c.help:c.name+' — '+c.help);host.setAttribute('aria-label',c.name);
  }
  function setState(next,focus=true){
-  state=next;host.dataset.state=state;speech.hidden=state!=='speech';invitation.hidden=state!=='robot';dismiss.hidden=state==='launcher';
+  state=next;host.dataset.state=state;speech.hidden=state!=='speech';invitation.hidden=state!=='robot';dismiss.hidden=state!=='robot';
   launch.setAttribute('aria-expanded',String(state!=='launcher'));launch.setAttribute('aria-controls',state==='speech'?'security-helper-panel':'security-helper-invitation');invite.setAttribute('aria-expanded',String(state==='speech'));render();
   if(focus)(state==='speech'?el('.helper-close'):state==='robot'?invite:launch).focus({preventScroll:true});
  }
@@ -73,10 +73,11 @@
  }
  launch.addEventListener('click',()=>{if(state==='launcher')showRobot();else {chooseInvite();setState('robot');}});
  invite.addEventListener('click',()=>{chooseTip();setState('speech');});
- el('.helper-close').addEventListener('click',()=>setState('robot'));
- dismiss.addEventListener('click',()=>{++request;launch.removeAttribute('aria-busy');setState('launcher');});
+ function closeAssistant(){++request;launch.removeAttribute('aria-busy');setState('launcher');}
+ el('.helper-close').addEventListener('click',closeAssistant);
+ dismiss.addEventListener('click',closeAssistant);
  el('.helper-next').addEventListener('click',()=>{chooseTip();render();});
- host.addEventListener('keydown',e=>{if(e.key==='Escape'&&state!=='launcher'){setState(state==='speech'?'robot':'launcher');e.stopPropagation();}});
+ host.addEventListener('keydown',e=>{if(e.key==='Escape'&&state!=='launcher'){closeAssistant();e.stopPropagation();}});
  const next=document.querySelector('.next-step');
  function position(){
   const rect=next?.getBoundingClientRect();

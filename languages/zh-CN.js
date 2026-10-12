@@ -2,7 +2,7 @@ window.ThinkSecureLocales=window.ThinkSecureLocales||{};
 window.ThinkSecureLocales["zh-CN"]={
   "password.pageTitle": "密码强度检测 | ThinkSecure",
   "password.eyebrow": "ThinkSecure 密码挑战",
-  "password.title": "你的密码能抵御攻击吗？",
+  "password.title": "每一次尝试，都更安全。",
   "password.intro": "创建一个虚构的示例密码，测试它的强度。了解密码的弱点以及攻击者如何识别容易猜到的规律，再试着改进它。",
   "password.warning": "请勿输入你正在使用的真实密码。本活动仅用于学习和演示。",
   "password.bot.alt": "ThinkSecure 安全机器人",

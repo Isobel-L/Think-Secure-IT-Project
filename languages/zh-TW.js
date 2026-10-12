@@ -2,7 +2,7 @@ window.ThinkSecureLocales=window.ThinkSecureLocales||{};
 window.ThinkSecureLocales["zh-TW"]={
   "password.pageTitle": "密碼強度檢測 | ThinkSecure",
   "password.eyebrow": "ThinkSecure 密碼挑戰",
-  "password.title": "你的密碼能抵禦攻擊嗎？",
+  "password.title": "每一次嘗試，都更安全。",
   "password.intro": "建立一個虛構的示例密碼，測試它的強度。瞭解密碼的弱點以及攻擊者如何識別容易猜到的規律，再試著改進它。",
   "password.warning": "請勿輸入你正在使用的真實密碼。本活動僅用於學習和演示。",
   "password.bot.alt": "ThinkSecure 安全機器人",

@@ -2,7 +2,7 @@ window.ThinkSecureLocales=window.ThinkSecureLocales||{};
 window.ThinkSecureLocales["vi"]={
   "password.pageTitle": "Kiểm tra mật khẩu | ThinkSecure",
   "password.eyebrow": "Thử thách mật khẩu ThinkSecure",
-  "password.title": "Mật khẩu của bạn có chống được một cuộc tấn công không?",
+  "password.title": "Xây dựng lớp bảo vệ vững chắc hơn.",
   "password.intro": "Tạo một mật khẩu giả để thử nghiệm. Tìm hiểu điều gì khiến mật khẩu yếu, cách kẻ tấn công nhận ra các mẫu dễ đoán và cách làm mật khẩu mạnh hơn.",
   "password.warning": "Không nhập mật khẩu bạn đang sử dụng. Hoạt động này chỉ phục vụ mục đích học tập.",
   "password.bot.alt": "Robot bảo mật ThinkSecure",
