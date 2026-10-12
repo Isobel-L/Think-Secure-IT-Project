@@ -38,17 +38,17 @@
       "Picture a little story",
       "Imagine your four unrelated words in one scene to help you remember them.",
       "Try the next activity",
-      "After choosing four words, test the example or turn it into a sticker. This small word list is a learning demo, not a real password generator."
+      "After choosing four words, test the example or turn it into a keychain. This small word list is a learning demo, not a real password generator."
     ],
     "stickerStudio": [
-      "Your Sticker Studio guide",
+      "Your Keychain Studio guide",
       "Bring your four words",
-      "First finish Passphrase Maker, then choose Make My Sticker to bring your words here.",
-      "Choose your layout",
-      "Compare the square and wide layouts in the preview.",
+      "First finish Passphrase Maker, then choose Make My Keychain to bring your words here.",
+      "Choose your shape",
+      "Compare the square and round shapes in the preview.",
       "Choose what to show",
-      "You can hide word labels and the full phrase. Avoid displaying an actual secret on a sticker others can see.",
-      "Download your sticker",
+      "You can hide word labels and the full phrase. Avoid displaying an actual secret on a keychain others can see.",
+      "Download your keychain",
       "Use Download PNG when ready. If opening the HTML file directly prevents downloading, use the project’s local web preview."
     ],
     "cyberQuiz": [
@@ -73,17 +73,17 @@
       "想象一个小故事",
       "把四个互不相关的词想象成一个场景，帮助自己记住它们。",
       "继续体验下一步",
-      "选好四个词后，可以检测这个示例，或制作贴纸。这份小词表用于学习演示，不是真实密码生成器。"
+      "选好四个词后，可以检测这个示例，或制作钥匙扣。这份小词表用于学习演示，不是真实密码生成器。"
     ],
     "stickerStudio": [
-      "陪你制作记忆贴纸",
+      "陪你制作记忆钥匙扣",
       "先带上你的四个词",
-      "先完成密码短语生成器，再点击制作贴纸，把选好的词带到这里。",
-      "选择贴纸布局",
-      "在预览中比较方形和横向两种布局。",
+      "先完成密码短语生成器，再点击制作钥匙扣，把选好的词带到这里。",
+      "选择钥匙扣形状",
+      "在预览中比较方形和圆形两种形状。",
       "决定显示什么",
-      "可以隐藏单词标签和完整短语。不要把真实秘密印在别人能看到的贴纸上。",
-      "下载你的贴纸",
+      "可以隐藏单词标签和完整短语。不要把真实秘密印在别人能看到的钥匙扣上。",
+      "下载你的钥匙扣",
       "确认后点击下载 PNG。如果直接打开 HTML 导致无法下载，请使用项目的本地网页预览。"
     ],
     "cyberQuiz": [
@@ -108,17 +108,17 @@
       "想像一個小故事",
       "把四個互不相關的詞想像成一個場景，幫助自己記住它們。",
       "繼續體驗下一步",
-      "選好四個詞後，可以檢測這個範例，或製作貼紙。這份小詞表用於學習示範，不是真實密碼產生器。"
+      "選好四個詞後，可以檢測這個範例，或製作鑰匙圈。這份小詞表用於學習示範，不是真實密碼產生器。"
     ],
     "stickerStudio": [
-      "陪你製作記憶貼紙",
+      "陪你製作記憶鑰匙圈",
       "先帶上你的四個詞",
-      "先完成密碼短語產生器，再點選製作貼紙，把選好的詞帶到這裡。",
-      "選擇貼紙版面",
-      "在預覽中比較方形和橫向兩種版面。",
+      "先完成密碼短語產生器，再點選製作鑰匙圈，把選好的詞帶到這裡。",
+      "選擇鑰匙圈形狀",
+      "在預覽中比較方形和圓形兩種形狀。",
       "決定顯示什麼",
-      "可以隱藏單字標籤和完整短語。不要把真實秘密印在別人能看到的貼紙上。",
-      "下載你的貼紙",
+      "可以隱藏單字標籤和完整短語。不要把真實秘密印在別人能看到的鑰匙圈上。",
+      "下載你的鑰匙圈",
       "確認後點選下載 PNG。如果直接開啟 HTML 導致無法下載，請使用專案的本機網頁預覽。"
     ],
     "cyberQuiz": [
@@ -143,17 +143,17 @@
       "Tưởng tượng một câu chuyện",
       "Hình dung bốn từ không liên quan trong cùng một cảnh để dễ nhớ hơn.",
       "Thử hoạt động tiếp theo",
-      "Sau khi chọn bốn từ, hãy kiểm tra ví dụ hoặc tạo nhãn dán. Danh sách nhỏ này chỉ dùng để học, không phải công cụ tạo mật khẩu thực tế."
+      "Sau khi chọn bốn từ, hãy kiểm tra ví dụ hoặc tạo móc khóa. Danh sách nhỏ này chỉ dùng để học, không phải công cụ tạo mật khẩu thực tế."
     ],
     "stickerStudio": [
-      "Hướng dẫn tạo nhãn dán",
+      "Hướng dẫn tạo móc khóa",
       "Mang theo bốn từ",
-      "Hoàn thành phần tạo cụm mật khẩu, rồi chọn tạo nhãn dán để chuyển các từ sang đây.",
-      "Chọn bố cục",
-      "So sánh bố cục vuông và ngang trong bản xem trước.",
+      "Hoàn thành phần tạo cụm mật khẩu, rồi chọn tạo móc khóa để chuyển các từ sang đây.",
+      "Chọn hình dạng",
+      "So sánh hình vuông và hình tròn trong bản xem trước.",
       "Chọn nội dung hiển thị",
-      "Bạn có thể ẩn nhãn từ và toàn bộ cụm mật khẩu. Không in bí mật thật lên nhãn dán mà người khác có thể thấy.",
-      "Tải nhãn dán",
+      "Bạn có thể ẩn nhãn từ và toàn bộ cụm mật khẩu. Không in bí mật thật lên móc khóa mà người khác có thể thấy.",
+      "Tải móc khóa",
       "Chọn tải PNG khi hoàn tất. Nếu mở trực tiếp tệp HTML khiến việc tải xuống bị chặn, hãy dùng bản xem trước web cục bộ của dự án."
     ],
     "cyberQuiz": [
@@ -178,17 +178,17 @@
       "Imaginez une petite histoire",
       "Imaginez les quatre mots sans rapport dans une même scène pour mieux les retenir.",
       "Essayez la suite",
-      "Testez ensuite votre exemple ou créez un autocollant. Cette petite liste sert à apprendre, pas à générer de vrais mots de passe."
+      "Testez ensuite votre exemple ou créez un porte-clés. Cette petite liste sert à apprendre, pas à générer de vrais mots de passe."
     ],
     "stickerStudio": [
-      "Votre guide de l’atelier d’autocollants",
+      "Votre guide de l’atelier de porte-clés",
       "Apportez vos quatre mots",
-      "Terminez la création de la phrase de passe, puis choisissez de créer un autocollant pour transférer vos mots ici.",
-      "Choisissez la disposition",
-      "Comparez les formats carré et large dans l’aperçu.",
+      "Terminez la création de la phrase de passe, puis choisissez de créer un porte-clés pour transférer vos mots ici.",
+      "Choisissez la forme",
+      "Comparez les formes carrée et ronde dans l’aperçu.",
       "Choisissez ce qui apparaît",
-      "Vous pouvez masquer les mots et la phrase entière. N’imprimez pas un vrai secret sur un autocollant visible par d’autres.",
-      "Téléchargez votre autocollant",
+      "Vous pouvez masquer les mots et la phrase entière. N’imprimez pas un vrai secret sur un porte-clés visible par d’autres.",
+      "Téléchargez votre porte-clés",
       "Choisissez Télécharger le PNG. Si l’ouverture directe du fichier HTML bloque le téléchargement, utilisez l’aperçu web local du projet."
     ],
     "cyberQuiz": [
@@ -213,17 +213,17 @@
       "Stell dir eine Geschichte vor",
       "Stelle dir die vier unabhängigen Wörter in einer Szene vor, um sie leichter zu merken.",
       "Probiere den nächsten Schritt",
-      "Prüfe anschließend dein Beispiel oder erstelle einen Sticker. Diese kleine Wortliste dient zum Lernen, nicht zur Erzeugung echter Passwörter."
+      "Prüfe anschließend dein Beispiel oder erstelle einen Schlüsselanhänger. Diese kleine Wortliste dient zum Lernen, nicht zur Erzeugung echter Passwörter."
     ],
     "stickerStudio": [
-      "Dein Begleiter im Sticker-Studio",
+      "Dein Begleiter im Schlüsselanhänger-Studio",
       "Bring deine vier Wörter mit",
-      "Erstelle zuerst eine Passphrase und wähle dann die Sticker-Erstellung, um deine Wörter hierher zu übertragen.",
-      "Wähle die Anordnung",
-      "Vergleiche das quadratische und das breite Format in der Vorschau.",
+      "Erstelle zuerst eine Passphrase und wähle dann die Schlüsselanhänger-Erstellung, um deine Wörter hierher zu übertragen.",
+      "Wähle die Form",
+      "Vergleiche die quadratische und die runde Form in der Vorschau.",
       "Wähle die sichtbaren Angaben",
-      "Du kannst Wortbeschriftungen und die ganze Passphrase ausblenden. Drucke keine echten Geheimnisse auf einen Sticker, den andere sehen können.",
-      "Lade deinen Sticker herunter",
+      "Du kannst Wortbeschriftungen und die ganze Passphrase ausblenden. Drucke keine echten Geheimnisse auf einen Schlüsselanhänger, den andere sehen können.",
+      "Lade deinen Schlüsselanhänger herunter",
       "Wähle PNG herunterladen. Falls das direkte Öffnen der HTML-Datei den Download verhindert, nutze die lokale Webvorschau des Projekts."
     ],
     "cyberQuiz": [

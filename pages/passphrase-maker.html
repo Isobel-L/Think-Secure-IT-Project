@@ -7,87 +7,136 @@
 
     <title data-i18n="passphrase.pageTitle">Passphrase Maker | ThinkSecure</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-<link rel="stylesheet" href="../css/security-helper.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+
+    <link rel="stylesheet" href="../css/illustrated.css">
+    <link rel="stylesheet" href="../css/passphrase-maker.css">
+    <link rel="stylesheet" href="../css/security-helper.css">
 </head>
 
-<body>
+<body class="il-page theme-passphrase">
 
     <!-- Header -->
-    <header class="site-header">
+    <header class="il-header">
 
-        <div class="logo">
-            <h1>ThinkSecure</h1>
-        </div>
+        <a class="il-logo" href="../index.html#passphrase" aria-label="ThinkSecure">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="60 296 820 440" aria-hidden="true" focusable="false">
+            <g class="lg-think" fill="#fff">
+            <path d="M162.83 541.18L162.83 362.36L203.87 362.36L203.87 323.60L74.89 323.60L74.89 362.36L115.93 362.36L115.93 541.18ZM265.43 311.22L219.51 311.22L219.51 541.18L265.43 541.18L265.43 438.58C265.43 419.69 271.95 411.55 281.39 411.55C290.19 411.55 293.77 417.73 293.77 429.46L293.770 541.18L339.37 541.18L339.37 418.71C339.37 389.72 325.36 373.76 300.94 373.76C283.67 373.76 270.32 383.860 265.43 398.52ZM674.54 452.26L709.71 376.37L661.83 376.37L635.12 435.65L629.59 435.65L629.59 311.22L583.66 311.22L583.66 541.18L629.59 541.18L629.59 471.80L635.12 471.80L662.16 541.18L710.69 541.18Z"/>
+            <rect x="359" y="376" width="45" height="165"/>
+            <path class="lg-star" d="M375.35 328.02L374.48 311.77L388.11 311.77L387.35 328.02L402.52 322.13L406.66 335.12L391.06 339.48L401.32 352.14L390.30 360.10L381.24 346.57L372.18 360.10L361.17 352.14L371.530 339.48L355.93 335.12L360.07 322.13L375.35 328.02Z"/>
+            <g class="lg-lock" transform="translate(424 372)">
+            <path d="M74.8966 0.129751C40.4625 -2.08838 5.54979 24.2381 0.540375 71.0381C-0.0415276 76.4745 -0.223692 167.839 0.346089 168.5C1.15888 169.444 35.5151 168.929 35.8326 167.969C36.0002 167.462 36.1411 146.038 36.1441 120.36C36.1524 68.4287 36.0692 69.8552 39.5458 61.7983C53.3492 29.8095 92.9292 32.8471 103.208 66.6847C104.623 71.3436 104.624 71.3443 104.875 119.971L105.125 168.598L123.062 168.751L141 168.904V120.617C141 59.8269 140.326 54.7798 129.799 36.6944C116.045 13.0673 95.5572 1.46063 74.8966 0.129751Z"/>
+            <path d="M70.2198 74.0006C65.9267 74.0369 61.8232 75.7571 58.8092 78.7839C55.7951 81.8107 54.1165 85.8971 54.1412 90.1473C54.1588 93.1487 55.0261 96.0851 56.6444 98.6233C58.2627 101.161 60.5674 103.2 63.2967 104.507L51 145H90L78.0984 104.162C80.6629 102.783 82.804 100.745 84.2959 98.2615C85.7878 95.7785 86.5753 92.943 86.5753 90.0539V89.8712C86.5262 85.6215 84.7769 81.5644 81.7111 78.5894C78.6452 75.6144 74.5128 73.9642 70.2198 74.0006Z"/>
+            </g>
+            </g>
+            <path class="lg-secure" fill="#9374FF" d="M381.09 724.49C404.32 724.49 421.94 709.14 421.94 685.71C421.94 644.86 371.55 639.47 371.55 618.32C371.55 610.86 375.91 606.09 382.96 606.09C391.25 606.09 395.61 615.00 395.61 626.82L421.11 621.23C420.28 597.17 406.60 582.66 382.75 582.66C359.11 582.66 342.73 598.62 342.73 621.23C342.73 660.83 392.70 665.18 392.70 688.20C392.70 696.08 388.35 700.85 380.89 700.85C371.55 700.85 365.54 691.31 365.96 676.59L340.45 683.64C340.87 708.94 357.25 724.49 381.09 724.49ZM500.32 698.15L461.96 698.15L461.96 664.35L494.31 664.35L494.31 640.92L461.96 640.92L461.96 608.99L500.32 608.99L500.32 584.32L432.72 584.32L432.72 722.83L500.32 722.83ZM507.99 653.36C507.99 700.02 524.58 724.49 553.40 724.49C577.66 724.49 590.10 706.86 592.18 681.77L565.01 674.72C564.39 687.16 561.90 698.78 553.20 698.78C543.45 698.78 538.68 683.64 538.68 653.36C538.68 623.30 543.24 608.37 552.99 608.37C561.90 608.37 564.39 619.57 564.81 632.01L591.97 624.96C589.90 599.87 577.46 582.66 553.40 582.66C524.58 582.66 507.99 606.92 507.99 653.36ZM644.02 699.81C634.06 699.81 631.58 691.10 631.58 679.70L631.58 584.32L601.72 584.32L601.72 678.04C601.72 707.69 616.65 724.49 644.02 724.49C671.59 724.49 686.32 707.69 686.32 678.04L686.32 584.32L656.46 584.32L656.46 679.70C656.46 691.10 653.76 699.81 644.02 699.81ZM754.95 627.86C754.95 640.51 751.63 647.35 739.61 647.35L730.48 647.35L730.48 608.37L739.40 608.37C751.63 608.37 754.95 615.21 754.95 627.86ZM789.16 722.83C786.26 718.47 784.60 713.29 783.77 707.07L780.04 679.91C778.17 667.46 771.54 660.41 762.41 658.34L762.41 657.93C774.44 655.23 785.43 643.83 785.43 624.54C785.43 598.83 771.95 584.32 743.13 584.32L701.04 584.32L701.04 722.83L730.48 722.830L730.48 669.95L738.15 669.95C745.62 669.95 749.35 673.27 750.80 682.39L753.71 707.90C754.74 714.33 755.99 719.30 758.06 722.83ZM866.30 698.15L827.94 698.15L827.94 664.35L860.29 664.35L860.29 640.92L827.94 640.92L827.94 608.99L866.30 608.99L866.30 584.32L798.70 584.32L798.70 722.83L866.30 722.83Z"/>
+            </svg>
+        </a>
 
-        <nav class="navigation">
-            <a href="../index.html" data-i18n="common.home">Home</a>
-            <a href="cyber-quiz.html" data-i18n="common.quiz">Cyber Safety Quiz</a>
-            <a href="password-checker.html" data-i18n="common.passwordChecker">Password Checker</a>
-            <a href="passphrase-maker.html" data-i18n="common.passphraseMaker">Passphrase Maker</a>
-            <a href="sticker-generator.html" data-i18n="common.stickerStudio">Sticker Studio</a>
+        <nav class="il-nav">
+
+            <a class="il-stop il-stop-home" href="../index.html#passphrase">
+                <span class="il-stop-label" data-i18n="common.home">Home</span>
+            </a>
+
+            <a class="il-stop" href="cyber-quiz.html">
+                <span class="il-stop-n" aria-hidden="true">1</span>
+                <span class="il-stop-label" data-i18n="common.quiz">Cyber Safety Quiz</span>
+            </a>
+            <a class="il-stop" href="password-checker.html">
+                <span class="il-stop-n" aria-hidden="true">2</span>
+                <span class="il-stop-label" data-i18n="common.passwordChecker">Password Checker</span>
+            </a>
+            <a class="il-stop" href="passphrase-maker.html" aria-current="page">
+                <span class="il-stop-n" aria-hidden="true">3</span>
+                <span class="il-stop-label" data-i18n="common.passphraseMaker">Passphrase Maker</span>
+            </a>
+            <a class="il-stop" href="sticker-generator.html">
+                <span class="il-stop-n" aria-hidden="true">4</span>
+                <span class="il-stop-label" data-i18n="common.stickerStudio">Keychain Studio</span>
+            </a>
+
         </nav>
 
-    <div class="language-control"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option><option value="zh-TW" lang="zh-TW">繁體中文</option>
-<option value="vi" lang="vi">Tiếng Việt</option>
-<option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option></select></div></header>
+        <div class="language-control">
+            <label for="languageSelect" data-i18n="common.language">Language</label>
+            <select id="languageSelect" data-language-select>
+                <option value="en" lang="en">English</option>
+                <option value="zh-CN" lang="zh-CN">简体中文</option>
+                <option value="zh-TW" lang="zh-TW">繁體中文</option>
+                <option value="vi" lang="vi">Tiếng Việt</option>
+                <option value="fr" lang="fr">Français</option>
+                <option value="de" lang="de">Deutsch</option>
+            </select>
+        </div>
+
+    </header>
 
 
-    <!-- Chequered band -->
-    <div class="sapol-checker"></div>
-
-
-    <main class="phrase-main">
+    <main class="pm-main">
 
 
         <!-- ------------------------------
              Explanation
         ------------------------------ -->
-        <section id="phrase-intro" class="phrase-section apple-intro">
+        <section id="phrase-intro" class="pm-intro">
 
 
-            <!-- Hero -->
-            <div class="ai-hero">
+            <!-- Hero: the words sit in the sky of the illustration -->
+            <div class="pm-hero">
 
-                <div class="ai-glow ai-glow-one" aria-hidden="true"></div>
-                <div class="ai-glow ai-glow-two" aria-hidden="true"></div>
+                <div class="pm-hero-frame">
+                    <img class="pm-hero-art" src="../Images/illustration/passphrase-scene.svg" alt="">
+                </div>
 
-                <div class="ai-hero-inner" data-hero-parallax>
+                <div class="pm-hero-copy">
 
-                    <p class="ai-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
+                    <p class="il-eyebrow">
+                        <span class="il-eyebrow-num">03 / 04</span>
+                        <span data-i18n="common.passphraseMaker">Passphrase Maker</span>
+                    </p>
 
-                    <div class="ai-key" aria-hidden="true"><span>🔑</span></div>
+                    <h1 class="pm-title" data-i18n="passphrase.introTitle">What is a passphrase?</h1>
 
-                    <h2 class="ai-title" data-i18n="passphrase.introTitle">What is a passphrase?</h2>
-
-                    <p class="ai-lead" data-i18n="passphrase.intro">
+                    <p class="pm-lead" data-i18n="passphrase.intro">
                         A passphrase is a password made from several unrelated words
                         instead of one short, complicated word.
                     </p>
 
-                    <div class="ai-scroll-cue" aria-hidden="true"><span></span></div>
+                    <button type="button" class="il-btn il-btn-arrow" data-begin data-i18n="passphrase.begin">
+                        Start Building
+                    </button>
 
                 </div>
 
             </div>
 
 
-            <!-- Password against passphrase -->
-            <div class="ai-compare">
+            <!-- Password against passphrase, on the ground below the scene -->
+            <div class="pm-ground">
 
-                <div class="ai-compare-grid">
+                <div class="pm-compare">
 
-                    <article class="ai-card ai-card-weak" data-reveal>
+                    <article class="pm-card pm-card-weak" data-reveal>
 
-                        <h3 data-i18n="passphrase.typical">A typical password</h3>
+                        <h2 data-i18n="passphrase.typical">A typical password</h2>
 
-                        <code class="ai-code ai-code-weak">P@ssw0rd1</code>
+                        <div class="pm-tiles pm-tiles-weak" aria-hidden="true">
+                            <span class="pm-tile">@</span>
+                            <span class="pm-tile">0</span>
+                            <span class="pm-tile">1</span>
+                        </div>
 
-                        <div class="ai-meter" aria-hidden="true"><span style="--fill: 22%"></span></div>
+                        <code class="pm-code pm-code-weak">P@ssw0rd1</code>
 
-                        <p class="ai-count"><span class="ai-count-number" data-count-to="9">9</span> <span data-i18n="passphrase.characters">characters</span></p>
+                        <div class="pm-meter" aria-hidden="true"><span style="--fill: 22%"></span></div>
 
-                        <p class="ai-card-body" data-i18n="passphrase.weak">
+                        <p class="pm-count"><span class="pm-count-number" data-count-to="9">9</span> <span data-i18n="passphrase.characters">characters</span></p>
+
+                        <p class="pm-card-body" data-i18n="passphrase.weak">
                             Short, full of awkward symbols, hard to remember, and
                             the substitutions are exactly what guessing software
                             tries first.
@@ -95,17 +144,24 @@
 
                     </article>
 
-                    <article class="ai-card ai-card-strong" data-reveal>
+                    <article class="pm-card pm-card-strong" data-reveal>
 
-                        <h3 data-i18n="passphrase.example">A passphrase</h3>
+                        <h2 data-i18n="passphrase.example">A passphrase</h2>
 
-                        <code class="ai-code ai-code-strong" data-word-split>Ocean-Gorilla-Watermelon-Japan</code>
+                        <div class="pm-tiles" aria-hidden="true">
+                            <span class="pm-tile">🌊</span>
+                            <span class="pm-tile">🦍</span>
+                            <span class="pm-tile">🍉</span>
+                            <span class="pm-tile">🇯🇵</span>
+                        </div>
 
-                        <div class="ai-meter" aria-hidden="true"><span style="--fill: 100%"></span></div>
+                        <code class="pm-code pm-code-strong" data-word-split>Ocean-Gorilla-Watermelon-Japan</code>
 
-                        <p class="ai-count"><span class="ai-count-number" data-count-to="30">30</span> <span data-i18n="passphrase.characters">characters</span></p>
+                        <div class="pm-meter" aria-hidden="true"><span style="--fill: 100%"></span></div>
 
-                        <p class="ai-card-body" data-i18n="passphrase.strong">
+                        <p class="pm-count"><span class="pm-count-number" data-count-to="30">30</span> <span data-i18n="passphrase.characters">characters</span></p>
+
+                        <p class="pm-card-body" data-i18n="passphrase.strong">
                             Much longer, easy to picture in your head, and far
                             harder to guess because the words have nothing to do
                             with each other.
@@ -119,22 +175,28 @@
 
 
             <!-- Three supporting points -->
-            <div class="ai-points">
+            <div class="pm-points">
 
-                <div class="ai-point" data-reveal data-spotlight>
-                    <span class="ai-point-icon" aria-hidden="true">📏</span>
+                <div class="pm-point" data-reveal>
+                    <span class="pm-point-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48"><rect x="4" y="17" width="40" height="14" rx="4" fill="#037e6e"/><path d="M12 17v6M19 17v9M26 17v6M33 17v9M40 17v6" stroke="#fdf8ed" stroke-width="2.6" stroke-linecap="round"/></svg>
+                    </span>
                     <p><strong data-i18n="passphrase.lengthTitle">Length beats complexity.</strong><span data-i18n="passphrase.lengthBody"> Every extra
                     character multiplies the work an attacker has to do.</span></p>
                 </div>
 
-                <div class="ai-point" data-reveal data-spotlight>
-                    <span class="ai-point-icon" aria-hidden="true">🧠</span>
+                <div class="pm-point" data-reveal>
+                    <span class="pm-point-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48"><rect x="5" y="8" width="38" height="32" rx="7" fill="#5ab2f8"/><circle cx="33" cy="18" r="4.5" fill="#ffc22e"/><path d="M5 34l11-12 9 9 5-5 13 11v0a7 7 0 0 1-7 3H12a7 7 0 0 1-7-6z" fill="#062952"/></svg>
+                    </span>
                     <p><strong data-i18n="passphrase.pictureTitle">Pictures stick.</strong><span data-i18n="passphrase.pictureBody"> You remember a gorilla
                     in the ocean far better than a string of symbols.</span></p>
                 </div>
 
-                <div class="ai-point" data-reveal data-spotlight>
-                    <span class="ai-point-icon" aria-hidden="true">🎲</span>
+                <div class="pm-point" data-reveal>
+                    <span class="pm-point-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="9" fill="#7c62e0"/><circle cx="16" cy="16" r="3.4" fill="#fdf8ed"/><circle cx="32" cy="16" r="3.4" fill="#fdf8ed"/><circle cx="24" cy="24" r="3.4" fill="#fdf8ed"/><circle cx="16" cy="32" r="3.4" fill="#fdf8ed"/><circle cx="32" cy="32" r="3.4" fill="#fdf8ed"/></svg>
+                    </span>
                     <p><strong data-i18n="passphrase.unrelatedTitle">Unrelated is the point.</strong><span data-i18n="passphrase.unrelatedBody"> Words that
                     belong together are easier to guess.</span></p>
                 </div>
@@ -143,20 +205,25 @@
 
 
             <!-- Call to action -->
-            <div class="ai-cta" data-reveal>
+            <div class="pm-cta" data-reveal>
 
-                <div class="ai-cta-emoji" aria-hidden="true">
-                    <span>🌊</span><span>🦍</span><span>🍉</span><span>🇯🇵</span>
+                <div class="pm-tiles pm-tiles-large" aria-hidden="true">
+                    <span class="pm-tile">🌊</span>
+                    <span class="pm-tile">🦍</span>
+                    <span class="pm-tile">🍉</span>
+                    <span class="pm-tile">🇯🇵</span>
                 </div>
 
-                <p class="ai-instruction" data-i18n="passphrase.instruction">
+                <p class="pm-instruction" data-i18n="passphrase.instruction">
                     You are about to pick four words: a place, an animal, a fruit
                     and a country. Choose whatever sticks in your mind.
                 </p>
 
-                <button type="button" id="begin-button" class="ai-button" data-i18n="passphrase.begin">
+                <button type="button" id="begin-button" class="il-btn il-btn-arrow" data-i18n="passphrase.begin">
                     Start Building
                 </button>
+
+                <p class="il-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             </div>
 
@@ -164,47 +231,54 @@
 
 
         <!-- ------------------------------
-             Word Picker
+             Picking Words
         ------------------------------ -->
-        <section id="phrase-picker" class="phrase-section hidden">
-<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
+        <section id="phrase-picker" class="pm-stage hidden">
 
-            <!-- Progress -->
-            <div class="phrase-progress">
+            <div class="pm-stage-inner">
 
-                <div class="progress-track">
-                    <div class="progress-fill" id="progress-fill"></div>
+                <!-- Progress -->
+                <div class="pm-progress">
+
+                    <p class="il-eyebrow pm-progress-label">
+                        <span class="il-eyebrow-num" id="progress-label">Step 1 of 4</span>
+                    </p>
+
+                    <div class="pm-progress-track">
+                        <div class="pm-progress-fill" id="progress-fill"></div>
+                    </div>
+
                 </div>
 
-                <p class="progress-label" id="progress-label">Step 1 of 4</p>
 
-            </div>
+                <h1 id="picker-title" class="pm-stage-title">Choose a place</h1>
 
-
-            <h2 id="picker-title">Choose a place</h2>
-
-            <p class="phrase-lead" id="picker-hint">
-                Where does your passphrase happen?
-            </p>
+                <p class="pm-stage-hint" id="picker-hint">
+                    Where does your passphrase happen?
+                </p>
 
 
-            <!-- Words chosen so far -->
-            <div class="chosen-strip" id="chosen-strip"></div>
+                <!-- Words chosen so far -->
+                <div class="chosen-strip" id="chosen-strip"></div>
 
 
-            <!-- The 20 options -->
-            <div class="word-grid" id="word-grid"></div>
+                <!-- The 20 options -->
+                <div class="word-grid" id="word-grid"></div>
 
 
-            <div class="picker-actions">
+                <div class="pm-actions">
 
-                <button type="button" id="back-button" class="answer-button" data-i18n="passphrase.back">
-                    Back
-                </button>
+                    <button type="button" id="back-button" class="il-btn il-btn-light" data-i18n="passphrase.back">
+                        Back
+                    </button>
 
-                <button type="button" id="shuffle-button" class="answer-button" data-i18n="passphrase.random">
-                    Surprise Me
-                </button>
+                    <button type="button" id="shuffle-button" class="il-btn il-btn-accent" data-i18n="passphrase.random">
+                        Surprise Me
+                    </button>
+
+                </div>
+
+                <p class="il-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             </div>
 
@@ -214,78 +288,101 @@
         <!-- ------------------------------
              Result
         ------------------------------ -->
-        <section id="phrase-result" class="phrase-section hidden">
-<p class="phrase-language-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
+        <section id="phrase-result" class="pm-stage pm-result hidden">
 
-            <div class="phrase-icon">✅</div>
+            <div class="pm-stage-inner">
 
-            <h2 data-i18n="passphrase.resultTitle">Your passphrase</h2>
-
-            <div class="result-emoji" id="result-emoji"></div>
-
-            <div class="passphrase-box">
-
-                <code id="passphrase-text"></code>
-
-                <button type="button" id="copy-button" class="small-button" data-i18n="passphrase.copy">
-                    Copy
-                </button>
-
-            </div>
-
-            <p role="status" class="copy-status" id="copy-status"></p>
-
-
-            <div class="result-stats">
-
-                <div class="result-stat">
-                    <span class="stat-value" id="stat-length">0</span>
-                    <span class="stat-label" data-i18n="passphrase.characters">characters</span>
+                <div class="pm-check" aria-hidden="true">
+                    <svg viewBox="0 0 120 120">
+                        <path class="pm-check-spark" d="M92 14l8-12M104 30l14-7M106 50l14 3" />
+                        <circle cx="56" cy="64" r="44" />
+                        <path class="pm-check-tick" d="M36 64l14 14 28-30" />
+                    </svg>
                 </div>
 
-                <div class="result-stat">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label" data-i18n="passphrase.words">words</span>
+                <h1 class="pm-stage-title" data-i18n="passphrase.resultTitle">Your passphrase</h1>
+
+                <div class="result-emoji" id="result-emoji"></div>
+
+                <svg class="pm-bracket" viewBox="0 0 400 46" aria-hidden="true">
+                    <path d="M14 2v10a10 10 0 0 0 10 10h352a10 10 0 0 0 10-10V2M200 22v18M190 31l10 10 10-10" />
+                </svg>
+
+                <div class="pm-phrase-box">
+
+                    <code id="passphrase-text"></code>
+
+                    <button type="button" id="copy-button" class="il-btn il-btn-small" data-i18n="passphrase.copy">
+                        Copy
+                    </button>
+
                 </div>
 
-                <div class="result-stat">
-                    <span class="stat-value">160,000</span>
-                    <span class="stat-label" data-i18n="passphrase.combinations">combinations</span>
+                <p role="status" class="pm-copy-status" id="copy-status"></p>
+
+
+                <div class="pm-stats">
+
+                    <div class="pm-stat">
+                        <span class="pm-stat-value" id="stat-length">0</span>
+                        <span class="pm-stat-label" data-i18n="passphrase.characters">characters</span>
+                    </div>
+
+                    <div class="pm-stat">
+                        <span class="pm-stat-value">4</span>
+                        <span class="pm-stat-label" data-i18n="passphrase.words">words</span>
+                    </div>
+
+                    <div class="pm-stat">
+                        <span class="pm-stat-value">160,000</span>
+                        <span class="pm-stat-label" data-i18n="passphrase.combinations">combinations</span>
+                    </div>
+
                 </div>
 
-            </div>
 
-            <p class="result-note" data-i18n="passphrase.note">
-                This is a demonstration. When you make a real passphrase,
-                pick the words yourself rather than from a list of twenty,
-                and never reuse it across accounts.
-            </p>
+                <div class="pm-actions">
 
+                    <a href="sticker-generator.html" class="il-btn il-btn-arrow" data-i18n="passphrase.sticker">
+                        Make My Keychain
+                    </a>
 
-            <div class="result-actions">
+                    <a href="password-checker.html?check=passphrase" class="il-btn il-btn-light" data-i18n="passphrase.check">
+                        Test Its Strength
+                    </a>
 
-                <a href="sticker-generator.html" class="quiz-button" data-i18n="passphrase.sticker">
-                    Make My Sticker
-                </a>
+                    <button type="button" id="restart-button" class="il-btn il-btn-light" data-i18n="passphrase.restart">
+                        Start Over
+                    </button>
 
-                <a href="password-checker.html?check=passphrase" class="answer-button" data-i18n="passphrase.check">
-                    Test Its Strength
-                </a>
+                </div>
 
-                <button type="button" id="restart-button" class="answer-button" data-i18n="passphrase.restart">
-                    Start Over
-                </button>
+                <p class="il-note" data-i18n="passphrase.note">
+                    This is a demonstration. When you make a real passphrase,
+                    pick the words yourself rather than from a list of twenty,
+                    and never reuse it across accounts.
+                </p>
+
+                <p class="il-note" data-i18n="passphrase.englishNote">The generated passphrase uses English words. Translated labels help you choose; switching language does not change your passphrase.</p>
 
             </div>
 
         </section>
 
 
+        <!-- Hills along the bottom of the picking and result screens -->
+        <svg class="pm-hills" viewBox="0 0 1440 170" preserveAspectRatio="none" aria-hidden="true">
+            <path fill="#8dd9c2" d="M0 96c180-70 380-78 560-30 190 52 330 38 500-6 150-38 280-30 380 6v104H0z"/>
+            <path fill="#03a18b" d="M0 128c220-56 420-40 620-4 220 40 420 10 620-22 80-12 150-10 200 0v68H0z"/>
+            <path fill="#062952" d="M0 150c260-34 520-22 760-6 240 16 470 6 680-14v40H0z"/>
+        </svg>
+
+
     </main>
 
 
     <!-- Footer -->
-    <footer>
+    <footer class="il-footer">
 
         <p data-i18n="common.footer">
             ThinkSecure | Cybersecurity Awareness
@@ -295,18 +392,19 @@
 
 
     <script src="../languages/en.js"></script>
-<script src="../languages/zh-CN.js"></script>
-<script src="../languages/zh-TW.js"></script>
-<script src="../languages/vi.js"></script>
-<script src="../languages/fr.js"></script>
-<script src="../languages/de.js"></script>
-<script src="../js/i18n.js"></script>
-<script src="../js/passphrase-maker.js"></script>
-<script src="../js/passphrase-intro.js"></script>
+    <script src="../languages/zh-CN.js"></script>
+    <script src="../languages/zh-TW.js"></script>
+    <script src="../languages/vi.js"></script>
+    <script src="../languages/fr.js"></script>
+    <script src="../languages/de.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/passphrase-maker.js"></script>
+    <script src="../js/passphrase-intro.js"></script>
 
-<script src="../js/security-helper-guidance.js"></script>
-<script src="../js/security-helper-stages.js"></script>
-<script src="../js/security-helper.js" data-guidance="passphraseMaker"></script>
+    <script src="../js/security-helper-guidance.js"></script>
+    <script src="../js/security-helper-stages.js"></script>
+    <script src="../js/security-helper.js" data-guidance="passphraseMaker"></script>
+
 </body>
 
 </html>

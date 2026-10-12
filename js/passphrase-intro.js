@@ -1,14 +1,15 @@
 /*
     Passphrase Maker intro effects
 
-    Scroll reveals, counting numbers, the passphrase building itself word by
-    word, a cursor spotlight on the point cards and a gentle hero parallax.
-    Everything is decoration: without this script the intro reads the same.
+    Scroll reveals, counting numbers and the example passphrase building
+    itself word by word. Everything is decoration: without this script the
+    intro reads the same.
 */
 
 (function () {
 
     const intro = document.getElementById("phrase-intro");
+    const beginButton = document.getElementById("begin-button");
 
     if (!intro) {
         return;
@@ -19,7 +20,7 @@
 
 
     // Content only starts hidden once we know it will be revealed
-    intro.classList.add("ai-ready");
+    intro.classList.add("pm-ready");
 
 
     /* ------------------------------
@@ -37,7 +38,7 @@
             if (index > 0) {
 
                 const dash = document.createElement("span");
-                dash.className = "ai-dash";
+                dash.className = "pm-dash";
                 dash.textContent = "-";
                 dash.style.setProperty("--i", index);
                 code.appendChild(dash);
@@ -45,7 +46,7 @@
             }
 
             const word = document.createElement("span");
-            word.className = "ai-word";
+            word.className = "pm-word";
             word.textContent = part;
             word.style.setProperty("--i", index);
             code.appendChild(word);
@@ -68,7 +69,7 @@
             return;
         }
 
-        const duration = 1200;
+        const duration = 1100;
         const start = performance.now();
 
         function step(now) {
@@ -121,7 +122,7 @@
 
             });
 
-        }, { threshold: 0.25, rootMargin: "0px 0px -8% 0px" });
+        }, { threshold: 0.2, rootMargin: "0px 0px -6% 0px" });
 
         revealItems.forEach(function (item) {
             observer.observe(item);
@@ -135,68 +136,24 @@
 
 
     /* ------------------------------
-       Spotlight that follows the cursor
+       Starting to build
     ------------------------------ */
-
-    intro.querySelectorAll("[data-spotlight]").forEach(function (card) {
-
-        card.addEventListener("pointermove", function (event) {
-
-            const box = card.getBoundingClientRect();
-
-            card.style.setProperty("--x", (event.clientX - box.left) + "px");
-            card.style.setProperty("--y", (event.clientY - box.top) + "px");
-
-        });
-
-    });
-
-
-    /* ------------------------------
-       Hero drifts and fades as you scroll away
-    ------------------------------ */
-
-    const hero = intro.querySelector("[data-hero-parallax]");
-
-    if (hero && !reduceMotion) {
-
-        let ticking = false;
-
-        window.addEventListener("scroll", function () {
-
-            if (ticking) {
-                return;
-            }
-
-            ticking = true;
-
-            requestAnimationFrame(function () {
-
-                const progress = Math.min(window.scrollY / (window.innerHeight * 0.8), 1);
-
-                hero.style.transform = "translateY(" + (progress * 60) + "px) scale(" + (1 - progress * 0.06) + ")";
-                hero.style.opacity = String(1 - progress * 0.7);
-
-                ticking = false;
-
-            });
-
-        }, { passive: true });
-
-    }
-
-
-    /* ------------------------------
-       Starting to build: jump back to the top of the picker
-    ------------------------------ */
-
-    const beginButton = document.getElementById("begin-button");
 
     if (beginButton) {
 
+        // The button in the hero does the same job as the one at the bottom
+        intro.querySelectorAll("[data-begin]").forEach(function (button) {
+
+            button.addEventListener("click", function () {
+                beginButton.click();
+            });
+
+        });
+
+        // The picker replaces a long page, so start it from the top
         beginButton.addEventListener("click", function () {
 
-            window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+            window.scrollTo({ top: 0, behavior: "auto" });
 
         });
 

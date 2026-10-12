@@ -3,7 +3,7 @@
 
     Walks the user through four categories of twenty words. The four words
     they pick become a passphrase, and the emoji for those words are handed
-    to the Sticker Studio through sessionStorage.
+    to the Keychain Studio through sessionStorage.
 */
 
 
@@ -37,7 +37,7 @@ const copyStatus = document.getElementById("copy-status");
 const statLength = document.getElementById("stat-length");
 
 
-// Where the finished passphrase is left for the Sticker Studio
+// Where the finished passphrase is left for the Keychain Studio
 const PHRASE_STORAGE_NAME = "thinksecure-passphrase";
 
 
@@ -408,9 +408,9 @@ function showResult() {
 
 
 /*
-    Hand the choices to the Sticker Studio and the Password Checker.
+    Hand the choices to the Keychain Studio and the Password Checker.
 
-    The Sticker Studio clears this as soon as it reads it, so a passphrase
+    The Keychain Studio clears this as soon as it reads it, so a passphrase
     only ever exists for as long as its result screen is in front of you.
 */
 function storePassphrase() {

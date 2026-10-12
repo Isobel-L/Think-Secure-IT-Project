@@ -3,81 +3,103 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <title>ThinkSecure</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/home-pixel-swap.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
-<body class="welcome-page">
-<div class="language-control welcome-language"><label for="languageSelect" data-i18n="common.language">Language</label><select id="languageSelect" data-language-select><option value="en" lang="en">English</option><option value="zh-CN" lang="zh-CN">简体中文</option><option value="zh-TW" lang="zh-TW">繁體中文</option>
-<option value="vi" lang="vi">Tiếng Việt</option>
-<option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option></select></div>
+<body class="is-intro">
 
-    <!-- Start Screen -->
-    <main class="start-screen">
+    <a class="skip" href="#copy" data-i18n="home.skipLink">Skip to the current activity</a>
 
-        <div class="start-card">
 
-            <div class="start-badge">🛡️</div>
+    <!-- Intro: "Think" then "Secure", then a landscape sweep into the world -->
+    <div id="intro" aria-hidden="true">
 
-            <h1>ThinkSecure</h1>
+        <div class="intro-logo" id="introLogo"></div>
 
-            <p class="start-tagline" data-i18n="home.tagline">
-                Learn. Recognise. Stay Secure.
-            </p>
+        <svg class="intro-hills" viewBox="0 0 1600 1000" preserveAspectRatio="none">
+            <path class="h" fill="#FBE9BA" d="M0 140 C200 40 380 40 560 120 C760 210 900 60 1100 70 C1300 80 1420 160 1600 110 V1000 H0Z"/>
+            <path class="h" fill="#5445F0" d="M0 120 C160 180 320 40 520 70 C720 100 820 200 1040 150 C1240 100 1400 30 1600 90 V1000 H0Z"/>
+            <path class="h" fill="#03A18B" d="M0 90 C220 20 400 150 640 120 C860 90 980 20 1180 60 C1380 100 1480 170 1600 140 V1000 H0Z"/>
+            <path class="h" fill="#0F244C" d="M0 150 C180 70 420 60 600 140 C760 210 960 190 1120 110 C1280 40 1460 60 1600 130 V1000 H0Z"/>
+            <path class="h" fill="#FCEBB7" d="M0 110 C240 40 420 120 620 90 C840 60 960 160 1200 130 C1380 110 1480 50 1600 80 V1000 H0Z"/>
+        </svg>
 
-            <p class="start-introduction" data-i18n="home.intro">
-                A short four part game about staying safe online. Spot the
-                scams, test a password, build a passphrase you can actually
-                remember, then take home a sticker.
-            </p>
+        <div class="intro-sun"></div>
 
-            <a href="pages/cyber-quiz.html" class="start-button" data-i18n="home.start">
-                Start the Game
-            </a>
+    </div>
 
-            <p class="start-duration" data-i18n="home.duration">
-                Takes about five minutes
-            </p>
 
+    <!-- Header: logo and language -->
+    <header class="top">
+
+        <a class="brand" href="#" aria-label="ThinkSecure, back to the first activity" data-i18n-aria-label="home.brandLabel" id="brand"></a>
+
+        <div class="language-control">
+            <label for="languageSelect" data-i18n="common.language">Language</label>
+            <select id="languageSelect" data-language-select>
+                <option value="en" lang="en">English</option>
+                <option value="zh-CN" lang="zh-CN">简体中文</option>
+                <option value="zh-TW" lang="zh-TW">繁體中文</option>
+                <option value="vi" lang="vi">Tiếng Việt</option>
+                <option value="fr" lang="fr">Français</option>
+                <option value="de" lang="de">Deutsch</option>
+            </select>
         </div>
 
-
-        <!-- Skip straight to the activity menu -->
-        <a href="pages/menu.html" class="next-step next-step-light">
-
-            <span class="next-step-label" data-i18n="home.skipLabel">Not in the mood for a game?</span>
-            <span class="next-step-name" data-i18n="home.skip">Skip the Game →</span>
-
-        </a>
-
-    </main>
+    </header>
 
 
-    <!-- Chequered band -->
-    <div class="sapol-checker"></div>
+    <!-- The world: four scenes share one stage; the mascot lives above them all -->
+    <div id="stage" class="stage" aria-hidden="true">
+        <div id="scenes"></div>
+        <div id="mascotLayer" class="mascot-layer"></div>
+    </div>
 
 
-    <!-- Footer -->
-    <footer>
+    <!-- The words for each activity, built by home.js -->
+    <main id="copy" class="copy-layer" aria-live="polite"></main>
 
-        <p data-i18n="common.footer">
-            ThinkSecure | Cybersecurity Awareness
-        </p>
 
-    </footer>
+    <!-- Dock: one stop per activity -->
+    <nav class="dock" aria-label="Activities" data-i18n-aria-label="home.dock.label">
 
-<script src="languages/en.js"></script>
-<script src="languages/zh-CN.js"></script>
-<script src="languages/zh-TW.js"></script>
-<script src="languages/vi.js"></script>
-<script src="languages/fr.js"></script>
-<script src="languages/de.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/home-pixel-swap.js"></script>
+        <button class="step prev" id="prev" aria-label="Previous activity" data-i18n-aria-label="home.dock.prev">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
+        </button>
+
+        <ol class="stops" id="stops"></ol>
+
+        <button class="step next" id="next" aria-label="Next activity" data-i18n-aria-label="home.dock.next">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>
+        </button>
+
+    </nav>
+
+
+    <!-- Rises over the page on the way into an activity -->
+    <div id="curtain" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path id="curtainPath" d="M0 100 H100 V100 H0Z"/></svg></div>
+
+
+    <script src="languages/en.js"></script>
+    <script src="languages/zh-CN.js"></script>
+    <script src="languages/zh-TW.js"></script>
+    <script src="languages/vi.js"></script>
+    <script src="languages/fr.js"></script>
+    <script src="languages/de.js"></script>
+    <script src="js/i18n.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="js/home-scenes.js"></script>
+    <script src="js/home.js"></script>
+
 </body>
 
 </html>
