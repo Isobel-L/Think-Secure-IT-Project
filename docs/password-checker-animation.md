@@ -22,3 +22,7 @@ Both rigs resolve joints locally; the scoring SVG also namespaces every ID and p
 ## Validation
 
 Test real zxcvbn scores across all five levels, clear/input during scanning and midair, the one-time landing and artwork bounds, guidance open/next/close/Escape, six languages, responsive widths, reduced motion, passphrase handoff, and relative links. Browser automation stubs breach responses; it does not certify live breach-service availability. The existing zxcvbn CDN dependency remains in place.
+
+## Illustrated-site compatibility
+
+Integrated with Brand-New-Design (2af0670): the four-scene homepage, new Passphrase Maker and Keychain Studio remain intact. The checker reuses illustrated.css numbered navigation and links Home to the password scene. The six shared dictionaries supply Keychain Studio labels while retaining the approved checker headline. Existing file names and passphrase handoff/storage contracts stay compatible.
