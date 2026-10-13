@@ -76,3 +76,15 @@
  .has-animated-model .helper-speech { bottom:114px; }
  .has-animated-model .helper-panel { max-height:calc(100dvh - var(--helper-bottom,24px) - 130px); }
 }
+
+/* The compact invitation is a face; expanding restores the entire same rig. */
+.has-animated-model[data-state="launcher"] .helper-model { width:76px; height:68px; overflow:hidden; border-radius:50%; }
+.has-animated-model[data-state="launcher"] .helper-model svg { overflow:hidden; }
+.has-animated-model[data-state="launcher"] .helper-model #mascot_art,
+.has-animated-model[data-state="launcher"] .helper-model #ground_shadow,
+.has-animated-model[data-state="launcher"] .helper-model #fx_back,
+.has-animated-model[data-state="launcher"] .helper-model #fx_front { visibility:hidden; }
+.has-animated-model[data-state="launcher"] .helper-model #head { visibility:visible; }
+.has-animated-model:not([data-state="launcher"]) .helper-model { animation:helper-appear .22s ease-out; }
+@media(max-width:640px) { .has-animated-model[data-state="launcher"] .helper-model { width:64px; height:58px; } }
+@media(prefers-reduced-motion:reduce) { .has-animated-model .helper-model { animation:none!important; } }

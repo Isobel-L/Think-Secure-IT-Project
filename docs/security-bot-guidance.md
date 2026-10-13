@@ -67,3 +67,8 @@ Additional Edge/Playwright checks passed for stage transitions, nonrepeating cyc
 ## Shared articulated model
 
 All four activities now load security-bot-runtime.js, security-bot-art.js and security-bot-guidance-animation.js after the shared guidance engine. Model sizing lives in security-helper.css; no Password Checker theme is needed on other pages. Existing per-page tips, passphrase stages, six languages and single-close behavior are retained. The Quiz simulation modal hides the assistant and immediately pauses its animation; closing the modal restores it. Shoulder markings use small vector lettering centered inside the same transformed group as each cap, with a local mirror correction on the right. This avoids font sizing differences during scaling.
+
+
+The collapsed animated launcher shows an enlarged head from the same SVG rig, with pointer tracking. Only the guidance adapter changes its viewBox and hides body artwork; the scoring mascot is unchanged. Expanding restores the full rig, and closing returns to the head. Reduced-motion preferences still disable pointer tracking.
+
+Activity navigation and the legacy activity menu use css/site-header.css, extracted from the illustrated Passphrase Maker header. Page headers keep static HTML links and i18n keys so local file navigation works without a build step.

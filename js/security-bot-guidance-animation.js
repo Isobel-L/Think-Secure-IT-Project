@@ -18,11 +18,15 @@
   host.classList.add('has-animated-model');
   const mascot = new api.Mascot(svg);
   window.guidanceMascot = mascot;
+  const fullViewBox = svg.getAttribute('viewBox');
+  // Use the same articulated head, keeping every joint available for expansion.
+  const headViewBox = '75 20 450 390';
   let state, lastVisible = false;
   function sync() {
     const next = host.dataset.state;
     if (next !== state) {
       state = next;
+      svg.setAttribute('viewBox', next === 'launcher' ? headViewBox : fullViewBox);
       if (next === 'robot') mascot.play(motion.matches ? 'idle' : 'wave');
       else if (next === 'speech') mascot.play('listen');
       else {mascot.reset(); mascot.clearPointerLook();}

@@ -11,7 +11,7 @@
     effect.finished.catch(() => {}).finally(() => {effects = effects.filter(a => a !== effect);});
   }
   const entrance = [
-    ['.site-header', 0, -12], ['.intro-copy', 80, 20], ['.hero-emblem', 160, 22],
+    ['.il-header', 0, -12], ['.intro-copy', 80, 20], ['.hero-emblem', 160, 22],
     ['.cracker-area', 220, 24], ['.checker-workspace', 300, 24]
   ];
   for (const [selector, delay, y] of entrance) animate(document.querySelector(selector),
