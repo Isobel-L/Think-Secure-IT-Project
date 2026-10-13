@@ -786,6 +786,8 @@
 
 
 
+            <div class="ts-tutorial-reopen"><button type="button" id="ts-reopen-tutorial">? How to investigate</button></div>
+
             <!-- Instructions -->
 
 
@@ -1076,6 +1078,8 @@
 
 
 
+            <div id="ts-feedback-review" class="ts-feedback-review"></div>
+
             <button
 
                 id="next-question-button"
@@ -1205,6 +1209,8 @@
 
 
 
+
+            <section id="ts-personal-report" class="ts-personal-report"></section>
 
             <div class="results-actions">
 
@@ -1430,7 +1436,13 @@
 
 
 
-    <script src="../languages/en.js"></script>
+    <div class="ts-tutorial hidden" id="ts-tutorial" role="dialog" aria-modal="true" aria-labelledby="ts-tutorial-heading">
+  <div class="ts-tutorial-card"><div class="ts-tutorial-icon" aria-hidden="true">⌕</div><span id="ts-tutorial-step" class="ts-investigator-kicker"></span>
+  <h2 id="ts-tutorial-heading"></h2><p id="ts-tutorial-body"></p><div id="ts-tutorial-dots" class="ts-tutorial-dots"></div>
+  <div class="ts-tutorial-actions"><button type="button" class="secondary-action" id="ts-tutorial-skip">Skip tutorial</button><button type="button" class="primary-action" id="ts-tutorial-next">Next →</button></div></div>
+</div>
+
+<script src="../languages/en.js"></script>
 
 <script src="../languages/zh-CN.js"></script>
 
@@ -1446,9 +1458,11 @@
 
 
 
+
 </body>
 
 
 
 </html>
+
 
