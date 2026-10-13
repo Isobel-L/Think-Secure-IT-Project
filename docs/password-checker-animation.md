@@ -6,7 +6,7 @@ The checker uses a navy, blue and violet theme, a code-drawn shield with orbitin
 
 The score model moves through neutral, checking, deeply slumped with gloom effects (0), mildly dejected (1), two-handed shrug (2), double thumbs-up (3), and a single victory leap with a bent leg and raised fist (4). The leap lands and holds. The lowest score uses a low crouch, not hands-on-floor kneeling. Clear/input cancels pending choreography; translated score text remains immediate. Language changes and breach responses do not restart it.
 
-Guidance keeps the two-click invitation/tip flow and six-language content, with a waving, blinking, pointer-following model. Closing detailed tips dismisses the entire assistant. Other activity pages retain their existing artwork and use the same corrected close behavior.
+Guidance keeps the two-click invitation/tip flow and six-language content, with a waving, blinking, pointer-following model. Closing detailed tips dismisses the entire assistant. Passphrase Maker, Keychain Studio and Cyber Safety Quiz also use this animated guidance model and the same corrected close behavior.
 
 Both rigs resolve joints locally; the scoring SVG also namespaces every ID and paint/clip reference. Offscreen/background rendering pauses. Reduced motion skips the scan, orbit motion and victory jump. PNG artwork is retained as a fallback. The original scoring and passphrase handoff code are unchanged; the handoff script runs after animation listeners are installed.
 

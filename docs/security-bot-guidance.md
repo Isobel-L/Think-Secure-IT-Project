@@ -63,3 +63,7 @@ Passphrase Maker observes the existing intro, picker and result sections. They p
 Each stage uses a shuffled bag: every tip is selected once before the bag refills, with no immediate repeat across cycles. Language changes retain the selected tip. Invitation wording and robot artwork vary independently. Other pages retain their own four tips, now randomly rotated with the same invitation flow.
 
 Additional Edge/Playwright checks passed for stage transitions, nonrepeating cycles, six-language state preservation, dismissed-state preservation and actual result-to-checker/sticker handoffs. Breach API responses were mocked.
+
+## Shared articulated model
+
+All four activities now load security-bot-runtime.js, security-bot-art.js and security-bot-guidance-animation.js after the shared guidance engine. Model sizing lives in security-helper.css; no Password Checker theme is needed on other pages. Existing per-page tips, passphrase stages, six languages and single-close behavior are retained. The Quiz simulation modal hides the assistant and immediately pauses its animation; closing the modal restores it. Shoulder markings use small vector lettering centered inside the same transformed group as each cap, with a local mirror correction on the right. This avoids font sizing differences during scaling.
