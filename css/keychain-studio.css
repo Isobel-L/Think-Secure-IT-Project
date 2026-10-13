@@ -1,0 +1,437 @@
+/*
+    Keychain Studio
+
+    Page layout on top of the illustrated theme. The studio is laid out as
+    the app window drawn in the scene: a navy frame, the controls down the
+    left and the preview on a chequered backdrop.
+*/
+
+
+/* ------------------------------
+   Page
+------------------------------ */
+
+.kc-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
+    overflow: clip;
+}
+
+/* The scene's low sun, tucked behind the top right corner */
+.kc-main::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 26px;
+    right: clamp(-30px, 7vw, 130px);
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: #fb7a62;
+}
+
+/* The scene shown before there is a passphrase has a sun of its own */
+.kc-main:has(#no-phrase:not(.hidden))::before {
+    display: none;
+}
+
+.kc-studio {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 10px var(--gutter) 0;
+}
+
+.kc-intro .il-eyebrow {
+    margin-bottom: 8px;
+}
+
+.kc-intro h1 {
+    margin-bottom: 8px;
+    font-size: clamp(34px, 3.8vw, 54px);
+}
+
+.kc-intro p:not(.il-eyebrow) {
+    max-width: 34em;
+    color: var(--ink-soft);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.kc-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+
+/* ------------------------------
+   The studio window
+------------------------------ */
+
+.kc-window {
+    padding: 0 16px 16px;
+    border-radius: 34px;
+    background: #0b2a66;
+    box-shadow: 0 10px 0 rgba(46, 33, 119, 0.28), var(--soft-shadow);
+}
+
+.kc-window-bar {
+    display: flex;
+    gap: 10px;
+    padding: 16px 12px 14px;
+}
+
+.kc-window-bar i {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #f96a5c;
+}
+
+.kc-window-bar i:nth-child(2) { background: #7c62e0; }
+.kc-window-bar i:nth-child(3) { background: #b9a7f0; }
+
+.kc-window-body {
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px;
+    border-radius: 22px;
+    background: #fbfaff;
+}
+
+
+/* Controls */
+
+.kc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.kc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 18px;
+    background: #efecfa;
+}
+
+.kc-group h2 {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.kc-hint {
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.kc-words {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kc-word {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 12px 7px 7px;
+    border-radius: 14px;
+    background: var(--paper);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.kc-word-thumb {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--tint-lilac);
+    font-size: 26px;
+    line-height: 1;
+    overflow: hidden;
+}
+
+.kc-word:nth-child(2) .kc-word-thumb { background: var(--tint-sky); }
+.kc-word:nth-child(3) .kc-word-thumb { background: var(--tint-peach); }
+.kc-word:nth-child(4) .kc-word-thumb { background: var(--tint-mint); }
+
+.kc-word-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kc-word-label {
+    overflow-wrap: anywhere;
+}
+
+
+/* Shape */
+
+.kc-shapes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.kc-shape {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px 10px;
+    border: 3px solid transparent;
+    border-radius: 16px;
+    background: var(--paper);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: border-color 0.2s, translate 0.2s;
+}
+
+.kc-shape:hover {
+    translate: 0 -2px;
+}
+
+.kc-shape.selected {
+    border-color: var(--accent);
+}
+
+.kc-shape-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #d6cff0;
+}
+
+.kc-shape.selected .kc-shape-icon {
+    background: var(--accent-soft);
+}
+
+.kc-shape-round {
+    border-radius: 50%;
+}
+
+
+/* Text options */
+
+.kc-check {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    cursor: pointer;
+}
+
+.kc-check input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.kc-check-box {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border: 3px solid #b3a3e6;
+    border-radius: 8px;
+    background: var(--paper) center / 16px no-repeat;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.kc-check input:checked + .kc-check-box {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+}
+
+.kc-check input:focus-visible + .kc-check-box {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.kc-download {
+    margin-top: 4px;
+}
+
+
+/* Preview */
+
+.kc-preview {
+    display: flex;
+    min-width: 0;
+}
+
+.kc-stage {
+    flex: 1;
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    min-height: 420px;
+    padding: 18px;
+    border-radius: 18px;
+    overflow: hidden;
+    background:
+        conic-gradient(#efecfa 25%, #fafafe 0 50%, #efecfa 0 75%, #fafafe 0) 0 0 / 52px 52px;
+}
+
+.kc-stage canvas {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: min(66vh, 620px);
+
+    /* Stays in view while the controls beside it scroll */
+    position: sticky;
+    top: 18px;
+
+    /* Swings gently from the middle of its ring */
+    transform-origin: 46.7% 12.1%;
+    animation: kc-sway 4.6s ease-in-out infinite alternate;
+}
+
+@keyframes kc-sway {
+    from { rotate: -2.2deg; }
+    to { rotate: 2.2deg; }
+}
+
+
+/* ------------------------------
+   No passphrase yet
+------------------------------ */
+
+.kc-empty {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: clamp(22px, 4vw, 60px);
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px var(--gutter) 20px;
+}
+
+.kc-empty-art {
+    aspect-ratio: 1448 / 1086;
+    border-radius: 34px;
+    overflow: hidden;
+    box-shadow: 0 10px 0 rgba(46, 33, 119, 0.24), var(--soft-shadow);
+}
+
+.kc-empty-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kc-empty-copy h1 {
+    margin-bottom: 14px;
+    font-size: clamp(36px, 4.4vw, 64px);
+}
+
+.kc-empty-copy p:not(.il-eyebrow) {
+    margin-bottom: 24px;
+    color: var(--ink-soft);
+    font-weight: 700;
+}
+
+
+/* Hills along the bottom of the page */
+
+.kc-hills {
+    display: block;
+    width: 100%;
+    height: clamp(70px, 10vw, 150px);
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-top: 34px;
+    margin-bottom: -1px;
+    box-sizing: content-box;
+}
+
+
+/* ------------------------------
+   Smaller screens
+------------------------------ */
+
+@media (max-width: 900px) {
+
+    .kc-window-body {
+        grid-template-columns: 1fr;
+    }
+
+    /* The keychain first, then the controls */
+    .kc-preview {
+        order: -1;
+    }
+
+    .kc-stage {
+        min-height: 0;
+    }
+
+    .kc-stage canvas {
+        position: static;
+        max-height: 60vh;
+    }
+
+    .kc-empty {
+        grid-template-columns: 1fr;
+    }
+
+    .kc-main::before {
+        display: none;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .kc-window {
+        padding: 0 8px 8px;
+        border-radius: 26px;
+    }
+
+    .kc-window-bar {
+        padding: 12px 10px 10px;
+    }
+
+    .kc-window-body {
+        padding: 10px;
+        border-radius: 18px;
+    }
+
+    .kc-stage {
+        padding: 10px;
+    }
+
+    .kc-actions .il-btn {
+        width: 100%;
+    }
+}

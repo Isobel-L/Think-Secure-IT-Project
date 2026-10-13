@@ -1,41 +1,95 @@
-// Password Checker pilot: fixed guidance only; never reads password input.
+// Shared guidance: launcher -> robot invitation -> one contextual tip at a time.
 (()=>{
  const script=document.currentScript;
- const image=new URL('../robotimage/helper-front.png',script.src).href;
- const copy={
-  en:{help:'Need a hand?',name:'Security Bot',subtitle:'Your Password Checker guide',close:'Close tips',section:'A SMALL SECURITY TIP',next:'Next tip →',count:'Tip {n} of 4',tips:[
-   ['Start with a made-up password','Type a fictional example into the checker. Never enter a password you use for a real account.'],
-   ['Read the feedback','Try your example, then read the strength result and suggestions. The estimate is a learning aid, not a guarantee of security.'],
-   ['Change one thing at a time','Make your example longer or replace predictable patterns. Test it again and compare the feedback.'],
-   ['Try a passphrase next','Ready for another approach? Open Passphrase Maker using the Next step button and explore combining unrelated words.']
-  ]},
-  'zh-CN':{help:'需要帮忙吗？',name:'Security Bot 安全小助手',subtitle:'陪你体验密码检测器',close:'关闭提示',section:'一个安全小提示',next:'下一条提示 →',count:'第 {n} 条，共 4 条',tips:[
-   ['先用一个虚构密码试试','在输入框里填写一个虚构的示例密码。不要输入你正在用于真实账户的密码。'],
-   ['看看检测结果在说什么','检测后，阅读密码强度和改进建议。这里的估算用于帮助学习，并不代表安全保证。'],
-   ['每次改一点，再比较','试着增加示例密码的长度，或替换容易预测的规律。再次检测，看看反馈有什么变化。'],
-   ['接下来试试密码短语','想换一种方法？点击「下一步」进入密码短语生成器，试试把几个互不相关的词组合起来。']
-  ]}
- };
- copy['zh-TW']={help:'需要幫忙嗎？',name:'Security Bot 安全小助手',subtitle:'陪你體驗密碼檢測器',close:'關閉提示',section:'一個安全小提示',next:'下一條提示 →',count:'第 {n} 條，共 4 條',tips:[
-    ['先用一個虛構密碼試試','在輸入框裡填寫一個虛構的示例密碼。不要輸入你正在用於真實帳戶的密碼。'],
-    ['看看檢測結果在說什麼','檢測後，閱讀密碼強度和改進建議。這裡的估算用於幫助學習，並不代表安全保證。'],
-    ['每次改一點，再比較','試著增加示例密碼的長度，或替換容易預測的規律。再次檢測，看看回饋有什麼變化。'],
-    ['接下來試試密碼短語','想換一種方法？點選「下一步」進入密碼短語生成器，試試把幾個互不相關的詞組合起來。']
-   ]};
- copy.vi={"help":"Cần trợ giúp?","name":"Security Bot","subtitle":"Hướng dẫn kiểm tra mật khẩu","close":"Đóng mẹo","section":"MẸO AN TOÀN NHỎ","next":"Mẹo tiếp theo →","count":"Mẹo {n} / 4","tips":[["Thử bằng mật khẩu giả","Nhập một mật khẩu mẫu giả định vào công cụ. Không nhập mật khẩu bạn dùng cho tài khoản thật."],["Đọc phản hồi","Kiểm tra mật khẩu mẫu, rồi đọc kết quả độ mạnh và gợi ý. Đây là công cụ học tập, không phải bảo đảm an toàn."],["Mỗi lần thay đổi một chút","Tăng độ dài hoặc thay các mẫu dễ đoán trong mật khẩu mẫu. Kiểm tra lại và so sánh phản hồi."],["Tiếp theo, thử cụm mật khẩu","Bạn muốn thử cách khác? Nhấn nút Bước tiếp theo để mở trang tạo cụm mật khẩu và thử kết hợp các từ không liên quan."]]};
- const host=document.createElement('aside');host.className='security-helper';
- host.innerHTML=`<section class="helper-panel" id="security-helper-panel" aria-labelledby="helper-name" hidden><div class="helper-head"><span class="helper-avatar"><img alt="" src="${image}"></span><div><div class="helper-name" id="helper-name"></div><div class="helper-subtitle"></div></div><button class="helper-close" type="button">×</button></div><div class="helper-content"><div class="helper-kicker"></div><div aria-live="polite" aria-atomic="true"><h2 class="helper-title"></h2><p class="helper-copy"></p></div><div class="helper-footer"><span class="helper-count"></span><button class="helper-next" type="button"></button></div></div></section><button class="helper-launch" type="button" aria-expanded="false" aria-controls="security-helper-panel"><span class="helper-avatar"><img alt="" src="${image}"></span><span class="helper-label"></span></button>`;
+ const copy=window.ThinkSecureGuidance?.[script.dataset.guidance];
+ if(!copy || document.querySelector('.security-helper'))return;
+ const avatar=new URL(script.dataset.avatar || '../robotimage/helper-front.png',script.src).href;
+ const paths=script.dataset.figure?[script.dataset.figure]:['wave','guide','think'].map(p=>'../robotimage/assistant-'+p+'.png');
+ const assets=paths.map(path=>{const img=new Image();img.src=new URL(path,script.src).href;return img;});
+ const ready=Promise.allSettled(assets.map(img=>img.decode()));
+ const host=document.createElement('aside');host.className='security-helper';host.dataset.state='launcher';
+ host.innerHTML=`<div class="helper-speech helper-invitation" id="security-helper-invitation" hidden><button class="helper-invite" type="button" aria-controls="security-helper-panel" aria-expanded="false"></button></div><div class="helper-speech helper-details" hidden><section class="helper-panel" id="security-helper-panel" aria-labelledby="helper-name"><div class="helper-head"><div><div class="helper-name" id="helper-name"></div><div class="helper-subtitle"></div></div><button class="helper-close" type="button">×</button></div><div class="helper-content"><div class="helper-kicker"></div><div aria-live="polite" aria-atomic="true"><h2 class="helper-title"></h2><p class="helper-copy"></p></div><div class="helper-actions"></div><div class="helper-footer"><span class="helper-count"></span><button class="helper-next" type="button"></button></div></div></section></div><div class="helper-character"><button class="helper-launch" type="button" aria-expanded="false" aria-controls="security-helper-panel"><span class="helper-avatar"><img alt="" src="${avatar}"></span><span class="helper-label"></span><span class="helper-figure" aria-hidden="true"><img alt="" draggable="false"></span></button><button class="helper-dismiss" type="button" hidden>×</button></div>`;
  document.body.append(host);
- const el=s=>host.querySelector(s),panel=el('.helper-panel'),launch=el('.helper-launch');let index=0;
- function render(){const c=copy[window.I18n?.getLanguage()]||copy.en;for(const [selector,text] of Object.entries({'.helper-name':c.name,'.helper-subtitle':c.subtitle,'.helper-label':c.help,'.helper-kicker':c.section,'.helper-title':c.tips[index][0],'.helper-copy':c.tips[index][1],'.helper-count':c.count.replace('{n}',index+1),'.helper-next':c.next}))el(selector).textContent=text;el('.helper-close').setAttribute('aria-label',c.close);host.setAttribute('aria-label',c.name);}
- function toggle(open){panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));if(open)el('.helper-close').focus();else launch.focus();}
- launch.addEventListener('click',()=>toggle(panel.hidden));el('.helper-close').addEventListener('click',()=>toggle(false));
- el('.helper-next').addEventListener('click',()=>{index=(index+1)%4;render();});
- host.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){toggle(false);e.stopPropagation();}});
- // Measure the existing Next step link, including wrapped translated labels.
- const next=document.querySelector('.next-step');
- function position(){const rect=next?.getBoundingClientRect();host.style.setProperty('--helper-bottom',rect&&rect.height?Math.max(16,innerHeight-rect.top+14)+'px':'24px');}
- if(next)new ResizeObserver(position).observe(next);
- window.addEventListener('resize',position);window.addEventListener('languagechange',()=>{render();position();});render();position();
-})();
+ const el=s=>host.querySelector(s),speech=el('.helper-details'),launch=el('.helper-launch'),dismiss=el('.helper-dismiss');
+ let state='launcher',index=0,lastImage=null,request=0,stage='default',inviteIndex=0;
+ const invite=el('.helper-invite'),invitation=el('.helper-invitation');
+ const bags=new Map(),lastTips=new Map();
+ const locale=()=>copy[window.I18n?.getLanguage()]||copy.en;
+ const content=()=>locale().stages?.[stage]||locale();
+ function chooseInvite(){const n=content().invites.length;inviteIndex=n>1?(inviteIndex+1+Math.floor(Math.random()*(n-1)))%n:0;}
+ function chooseTip(){
+  const total=content().tips.length;let bag=bags.get(stage)||[];
+  if(!bag.length){
+   bag=Array.from({length:total},(_,i)=>i);
+   for(let i=total-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
+   if(total>1&&bag[total-1]===lastTips.get(stage))[bag[0],bag[total-1]]=[bag[total-1],bag[0]];
+  }
+  index=bag.pop();bags.set(stage,bag);lastTips.set(stage,index);
+ }
+ function detectStage(){
+  if(!copy.en.stages)return 'default';
+  const visible=id=>{const e=document.getElementById(id);return e&&!e.hidden&&!e.classList.contains('hidden');};
+  return visible('phrase-result')?'result':visible('phrase-picker')?'picker':'intro';
+ }
+ function syncStage(){
+  const detected=detectStage();if(detected===stage)return;
+  stage=detected;host.dataset.stage=stage;index=0;chooseInvite();
+  // Update a summoned bot, but never summon a dismissed one or steal page focus.
+  const assistantHadFocus=host.contains(document.activeElement);
+  if(state==='speech')setState('robot',assistantHadFocus);else render();
+ }
+ const stageObserver=new MutationObserver(syncStage);
+ for(const id of ['phrase-intro','phrase-picker','phrase-result']){const section=document.getElementById(id);if(section)stageObserver.observe(section,{attributes:true,attributeFilter:['class','hidden']});}
 
+ function render(){
+  const c=locale(),group=content(),tip=group.tips[index];
+  for(const [selector,text] of Object.entries({'.helper-name':c.name,'.helper-subtitle':c.subtitle,'.helper-label':c.help,'.helper-kicker':c.section,'.helper-title':tip[0],'.helper-copy':tip[1],'.helper-count':c.count.replace('{n}',index+1).replace('{total}',group.tips.length),'.helper-next':c.next}))el(selector).textContent=text;
+  invite.textContent=group.invites[inviteIndex%group.invites.length];
+  const actions=el('.helper-actions');actions.replaceChildren();
+  // Delegate to the page's existing actions so its handoff logic remains intact.
+  if(stage==='result'&&tip[2]){
+   const key='passphrase.'+tip[2],target=document.querySelector('#phrase-result [data-i18n="'+key+'"]');
+   if(target){const button=document.createElement('button');button.type='button';button.className='helper-action';button.textContent=I18n.t(key);button.addEventListener('click',()=>target.click());actions.append(button);}
+  }
+  el('.helper-close').setAttribute('aria-label',c.dismiss);dismiss.setAttribute('aria-label',c.dismiss);
+  launch.setAttribute('aria-label',state==='launcher'?c.help:c.name+' — '+c.help);host.setAttribute('aria-label',c.name);
+ }
+ function setState(next,focus=true){
+  state=next;host.dataset.state=state;speech.hidden=state!=='speech';invitation.hidden=state!=='robot';dismiss.hidden=state!=='robot';
+  launch.setAttribute('aria-expanded',String(state!=='launcher'));launch.setAttribute('aria-controls',state==='speech'?'security-helper-panel':'security-helper-invitation');invite.setAttribute('aria-expanded',String(state==='speech'));render();
+  if(focus)(state==='speech'?el('.helper-close'):state==='robot'?invite:launch).focus({preventScroll:true});
+ }
+ async function showRobot(){
+  if(launch.getAttribute('aria-busy')==='true')return;
+  const version=++request;launch.setAttribute('aria-busy','true');
+  await ready;
+  if(version!==request)return;
+  launch.removeAttribute('aria-busy');if(host.hidden)return;
+  const loaded=assets.filter(img=>img.complete&&img.naturalWidth>0);
+  const choices=loaded.length>1?loaded.filter(img=>img.src!==lastImage):loaded;
+  const chosen=choices[Math.floor(Math.random()*choices.length)];
+  // If all full-body art fails, retain a usable character using the avatar.
+  lastImage=chosen?.src||avatar;el('.helper-figure img').src=lastImage;chooseInvite();setState('robot');
+ }
+ launch.addEventListener('click',()=>{if(state==='launcher')showRobot();else {chooseInvite();setState('robot');}});
+ invite.addEventListener('click',()=>{chooseTip();setState('speech');});
+ function closeAssistant(){++request;launch.removeAttribute('aria-busy');setState('launcher');}
+ el('.helper-close').addEventListener('click',closeAssistant);
+ dismiss.addEventListener('click',closeAssistant);
+ el('.helper-next').addEventListener('click',()=>{chooseTip();render();});
+ host.addEventListener('keydown',e=>{if(e.key==='Escape'&&state!=='launcher'){closeAssistant();e.stopPropagation();}});
+ const next=document.querySelector('.next-step');
+ function position(){
+  const rect=next?.getBoundingClientRect();
+  const reserve=rect?.height && getComputedStyle(next).position==='fixed';
+  const bottom=reserve?Math.max(16,innerHeight-rect.top+14):24;
+  host.style.setProperty('--helper-bottom',Math.min(bottom,Math.max(24,innerHeight-160))+'px');
+ }
+ if(next)new ResizeObserver(position).observe(next);
+ const blocker=script.dataset.blocker&&document.querySelector(script.dataset.blocker);
+ if(blocker){
+  const sync=()=>{host.hidden=getComputedStyle(blocker).display!=='none'&&!blocker.hidden;};
+  new MutationObserver(sync).observe(blocker,{attributes:true,attributeFilter:['class','hidden','style']});sync();
+ }
+ window.addEventListener('resize',position);window.addEventListener('languagechange',()=>{render();position();});stage=detectStage();host.dataset.stage=stage;render();position();
+})();
