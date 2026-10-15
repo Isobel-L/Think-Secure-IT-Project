@@ -509,8 +509,10 @@
   });
 
   /* ---------- start: intro, then the mascot flies into the first scene ---------- */
-  // deep links (#quiz, #password, #passphrase, #sticker) open that activity directly
-  const fromHash = ACTS.findIndex((a) => a.key === location.hash.slice(1));
+  // deep links (#quiz, #password, #passphrase, #keychain) open that activity directly;
+  // the keychain scene also answers to its artwork's name, #sticker
+  const hash = location.hash.slice(1);
+  const fromHash = ACTS.findIndex((a) => a.key === hash || a.art === hash);
   state.index = fromHash > 0 ? fromHash : 0;
   showStatic(state.index);
   window.TS_BUILD_MS = Math.round(performance.now() - t0);
