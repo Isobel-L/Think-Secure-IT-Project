@@ -173,7 +173,6 @@ window.ThinkSecureLocales["en"]={
   "passphrase.swapKeep": "Keep {letter}",
   "passphrase.swapLabel": "Replace {letter} with",
   "passphrase.swapReset": "Undo all swaps",
-  "passphrase.swapNote": "Guessing tools know these swaps too, so they add only a little strength. Length is what protects you most.",
   "passphrase.category.place": "place",
   "passphrase.title.place": "Choose a place",
   "passphrase.hint.place": "Where does your passphrase happen?",

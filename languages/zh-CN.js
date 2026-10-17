@@ -173,7 +173,6 @@ window.ThinkSecureLocales["zh-CN"]={
   "passphrase.swapKeep": "保留 {letter}",
   "passphrase.swapLabel": "把 {letter} 替换为",
   "passphrase.swapReset": "撤销全部替换",
-  "passphrase.swapNote": "猜密码的工具也熟悉这些替换，所以它们只能稍微增加强度。真正起保护作用的是长度。",
   "passphrase.category.place": "地点",
   "passphrase.title.place": "选择一个地点",
   "passphrase.hint.place": "你的密码短语发生在哪里？",

@@ -173,7 +173,6 @@ window.ThinkSecureLocales["vi"]={
   "passphrase.swapKeep": "Giữ {letter}",
   "passphrase.swapLabel": "Thay {letter} bằng",
   "passphrase.swapReset": "Hoàn tác tất cả",
-  "passphrase.swapNote": "Công cụ dò mật khẩu cũng biết những cách thay này, nên chúng chỉ tăng độ mạnh một chút. Độ dài mới là điều bảo vệ bạn nhiều nhất.",
   "passphrase.category.place": "địa điểm",
   "passphrase.title.place": "Chọn địa điểm",
   "passphrase.hint.place": "Cụm mật khẩu của bạn diễn ra ở đâu?",

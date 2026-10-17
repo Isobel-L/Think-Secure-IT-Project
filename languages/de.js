@@ -173,7 +173,6 @@ window.ThinkSecureLocales["de"]={
   "passphrase.swapKeep": "{letter} behalten",
   "passphrase.swapLabel": "{letter} ersetzen durch",
   "passphrase.swapReset": "Alle Ersetzungen zurücknehmen",
-  "passphrase.swapNote": "Ratewerkzeuge kennen diese Ersetzungen auch, deshalb machen sie das Passwort nur wenig stärker. Am meisten schützt die Länge.",
   "passphrase.category.place": "Ort",
   "passphrase.title.place": "Wähle einen Ort",
   "passphrase.hint.place": "Wo spielt deine Passphrase?",

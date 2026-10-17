@@ -173,7 +173,6 @@ window.ThinkSecureLocales["fr"]={
   "passphrase.swapKeep": "Garder {letter}",
   "passphrase.swapLabel": "Remplacer {letter} par",
   "passphrase.swapReset": "Annuler tous les remplacements",
-  "passphrase.swapNote": "Les outils de devinette connaissent aussi ces remplacements : ils n’ajoutent qu’un peu de solidité. C’est la longueur qui vous protège le plus.",
   "passphrase.category.place": "lieu",
   "passphrase.title.place": "Choisissez un lieu",
   "passphrase.hint.place": "Où se déroule votre phrase de passe ?",
