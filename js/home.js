@@ -1,455 +1,354 @@
 /* ThinkSecure home — one illustrated world
  *
- * Adapted from the illustrated prototype: each scene's button now opens the real
- * activity page, and the words come from the shared language files.
- *
- * Structure
- *  - #stage holds the four scene SVGs stacked in one box, plus #mascotLayer above them.
- *  - Each scene gets a "camera": its viewBox is recomputed for the current box so the
- *    important region stays in frame (wide screens show the whole scene with room for the
- *    words; portrait screens zoom onto the main object and mascot).
- *  - The mascot is lifted out of each scene into its own "pose" SVG in #mascotLayer, using
- *    the same camera, so it sits exactly where it was drawn. Anything in the scene that was
- *    painted in front of it (hills, the phone frame, foliage) becomes a mask on the pose, so
- *    the original layering is kept and no copy is left behind.
- *  - Between scenes a single "flyer" (the free-flying mascot from the Password scene) carries
- *    the character from one pose to the next while the new scene opens around its landing spot.
+ * Three layers, all driven by one piece of state (state.index):
+ *  1. The illustrated environment. Each scene SVG (assets/, bundled by tools/bundle-scenes.mjs)
+ *     is split at its "Title card" layer: a back plane holds what was painted before the card,
+ *     a front plane what was painted after it (hills, people, the mascot). The drawn card is
+ *     left out, so the artwork keeps its original layering around the live card.
+ *  2. One persistent title card (HTML) between the two planes. All four drawings put their card
+ *     in the same place, so on wide screens it is pinned to that spot in artwork units. It never
+ *     moves: it flips on its horizontal axis and changes its words at the halfway point.
+ *  3. The activity navigation at the top centre, with a sliding active indicator.
+ * Changing activity cross-fades the scenes with a little depth parallax while the card flips.
  */
 (() => {
   const SVG = window.TS_SVG;
-  const t0 = performance.now();
   // ?reduced previews the reduced-motion version without changing OS settings
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]reduced/.test(location.search);
   const hasGsap = typeof window.gsap !== 'undefined';
   const root = document.documentElement;
-  const NS = 'http://www.w3.org/2000/svg';
   // testing aid: ?skip jumps past the intro, ?fast runs every animation 20x faster
   if (hasGsap && /[?&]fast/.test(location.search)) gsap.globalTimeline.timeScale(20);
+
+  // every drawing is 1920 × 1080 and draws its title card here (the bottom is hidden by the land)
+  const ART = { w: 1920, h: 1080 };
+  const CARD = { x: 82.43, y: 206.42, w: 838.19, h: 870 };
 
   const ACTS = [
     {
       key: 'quiz', href: 'pages/cyber-quiz.html', name: 'common.quiz',
-      mascot: ['q-g102', 'q-g109'], pos: 'tl',
-      roi: { wide: { x: 0, y: -250, w: 1672, h: 1160 }, tall: { x: 600, y: 120, w: 930, h: 780 } },
-      c: { ink: '#0F244C', accent: '#D9301A', cta: '#F93519', ctaInk: '#FFFFFF', ground: '#0F244C', inkGround: '#FBF0D2', accentGround: '#FCC237', brand: '#F93519' },
+      sky: '#FBF3D7', ground: '#15264C', focus: 1290,
+      card: { ink: '#15264C', accent: '#FC2A12', body: '#15264C', cta: '#FC2A12', accentSize: 96, ctaSize: 39.7, ctaH: 92.6, split: false },
     },
     {
       key: 'password', href: 'pages/password-checker.html', name: 'common.passwordChecker',
-      mascot: ['p-g72'], pos: 'bl',
-      roi: { wide: { x: 0, y: -120, w: 1672, h: 1060 }, tall: { x: 700, y: 40, w: 900, h: 860 } },
-      c: { ink: '#FBF9F2', accent: '#93C5FB', cta: '#FBF9F2', ctaInk: '#0C2554', ground: '#0C2554', inkGround: '#FBF9F2', accentGround: '#93C5FB', brand: '#5445F0', haze: '#0C2554' },
+      sky: '#E5F1FC', ground: '#142B6B', focus: 1310,
+      card: { ink: '#15264C', accent: '#0064FE', body: '#15264C', cta: '#0064FE', accentSize: 96, ctaSize: 39.7, ctaH: 92.6, split: true },
     },
     {
       key: 'passphrase', href: 'pages/passphrase-maker.html', name: 'common.passphraseMaker',
-      mascot: ['f-g61', 'f-g99'], pos: 'tl',
-      roi: { wide: { x: 0, y: -250, w: 1672, h: 1160 }, tall: { x: 420, y: 60, w: 960, h: 760 } },
-      c: { ink: '#062952', accent: '#037E6E', cta: '#062952', ctaInk: '#FDF9F1', ctaGround: '#92D4C2', ctaGroundInk: '#062952', ground: '#062952', inkGround: '#FDF9F1', accentGround: '#92D4C2', brand: '#03A18B' },
+      sky: '#FCF8EE', ground: '#008994', focus: 1220,
+      card: { ink: '#080B32', accent: '#008FBD', body: '#365881', cta: '#008FBD', accentSize: 72, ctaSize: 34, ctaH: 79.5, split: true },
     },
     {
-      // the artwork keeps its original name in home-scenes.js
+      // the artwork keeps its original name in home-scenes.js; its sky is a sideways gradient
       key: 'keychain', art: 'sticker', href: 'pages/sticker-generator.html', name: 'common.stickerStudio',
-      mascot: ['s-mascot', 's-g157'], pos: 'bl', compact: true,
-      roi: { wide: { x: 0, y: 140, w: 1448, h: 905 }, tall: { x: 100, y: 120, w: 1080, h: 880 } },
-      c: { ink: '#FBF7FF', accent: '#F7A182', cta: '#F7A182', ctaInk: '#0E2755', ground: '#2E2177', inkGround: '#FBF7FF', accentGround: '#F7A182', brand: '#6446C7', haze: '#2E2177' },
+      sky: ['#C9B1F7', '#FEC3BE'], ground: '#7958DC', focus: 1180,
+      card: { ink: '#080B32', accent: '#5800F5', body: '#365881', cta: '#5800F5', accentSize: 82, ctaSize: 49.3, ctaH: 92.6, split: true },
     },
   ];
   const N = ACTS.length;
-  // each activity's words live in the language files under home.scene.<key>.* and home.dock.<key>
+  const NS = 'http://www.w3.org/2000/svg';
   const t = (key) => window.I18n.t(key);
   const mod = (n, m) => ((n % m) + m) % m;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const flatSky = (a) => (Array.isArray(a.sky) ? a.sky[0] : a.sky);
 
-  const stage = document.getElementById('stage');
-  const scenesEl = document.getElementById('scenes');
-  const mascotLayer = document.getElementById('mascotLayer');
-  const copyLayer = document.getElementById('copy');
-  const stopsEl = document.getElementById('stops');
+  const planeBack = document.getElementById('planeBack');
+  const planeFront = document.getElementById('planeFront');
+  const card = document.getElementById('titleCard');
+  const cardTitle = document.getElementById('cardTitle');
+  const cardLede = document.getElementById('cardLede');
+  const cardCta = document.getElementById('cardCta');
+  const cardCtaText = document.getElementById('cardCtaText');
+  const tabList = document.getElementById('tabList');
+  const tabsInk = document.getElementById('tabsInk');
+  const header = document.querySelector('.top');
   document.getElementById('brand').innerHTML = SVG.logo;
   document.getElementById('introLogo').innerHTML = SVG.logo;
 
-  /* ---------- scenes ---------- */
-  function skyColour(svg) {
-    const bg = [...svg.querySelectorAll('rect')].find((r) => !r.closest('defs, clipPath, mask, symbol'));
-    const fill = bg && bg.getAttribute('fill');
-    const m = fill && fill.match(/url\(#([^)]+)\)/);
-    if (m) {
-      const stop = svg.getElementById ? svg.querySelector(`#${CSS.escape(m[1])} stop`) : null;
-      if (stop) return stop.getAttribute('stop-color') || getComputedStyle(stop).stopColor;
+  /* ---------- layer 1: split each drawing around its title card ---------- */
+  // keep everything painted before the card (side 'back') or after it (side 'front'),
+  // walking up through its ancestors so nested layers keep their own transforms.
+  // The drawn panel, words and button give way to the live card; any other decoration in the
+  // card layer (the sticker scene's sparkles) stays, painted on top of it.
+  function cut(svg, side) {
+    const drawn = svg.querySelector('[data-ts="title-card"]');
+    for (let node = drawn; node !== svg; node = node.parentNode) {
+      const sibs = [...node.parentNode.childNodes];
+      const i = sibs.indexOf(node);
+      (side === 'back' ? sibs.slice(i + 1) : sibs.slice(0, i))
+        .forEach((n) => { if (n.localName !== 'defs') n.remove(); });
     }
-    return fill && fill.startsWith('#') ? fill : '#FBF6EA';
+    if (side === 'back') drawn.remove();
+    else drawn.querySelectorAll(':scope > rect, :scope > text').forEach((n) => n.remove());
+  }
+  // sky behind and above the drawing, for screens taller than 16:9
+  function addSky(svg, a) {
+    const r = document.createElementNS(NS, 'rect');
+    Object.entries({ x: -ART.w, y: -4 * ART.h, width: 3 * ART.w, height: 5 * ART.h }).forEach(([k, v]) => r.setAttribute(k, v));
+    if (Array.isArray(a.sky)) {
+      const g = document.createElementNS(NS, 'linearGradient');
+      g.id = `sky-${a.key}`;
+      Object.entries({ gradientUnits: 'userSpaceOnUse', x1: 0, x2: ART.w, y1: 0, y2: 0 }).forEach(([k, v]) => g.setAttribute(k, v));
+      a.sky.forEach((c, k) => {
+        const stop = document.createElementNS(NS, 'stop');
+        stop.setAttribute('offset', k / (a.sky.length - 1));
+        stop.setAttribute('stop-color', c);
+        g.appendChild(stop);
+      });
+      svg.insertBefore(g, svg.firstChild);
+      r.setAttribute('fill', `url(#${g.id})`);
+    } else {
+      r.setAttribute('fill', a.sky);
+    }
+    const defs = svg.querySelector(':scope > defs');
+    svg.insertBefore(r, defs ? defs.nextSibling : svg.firstChild);
   }
 
-  const scenes = ACTS.map((a, i) => {
-    const el = document.createElement('div');
-    el.className = 'scene';
-    el.dataset.key = a.key;
-    el.innerHTML = SVG[a.art || a.key];
-    scenesEl.appendChild(el);
-    const svg = el.querySelector('svg');
-    svg.removeAttribute('width'); svg.removeAttribute('height');
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svg.setAttribute('aria-hidden', 'true');
-    const [, , W, H] = svg.getAttribute('viewBox').split(/[\s,]+/).map(Number);
-    a.sky = skyColour(svg);
-    el.style.setProperty('--scene-sky', a.sky);
-    return { a, i, el, svg, W, H, layers: [], pose: null, cam: null };
+  const parser = new DOMParser();
+  let zTop = 1;
+  const scenes = ACTS.map((a) => {
+    const art = parser.parseFromString(SVG[a.art || a.key], 'image/svg+xml').documentElement;
+    const [back, front] = ['back', 'front'].map((side) => {
+      const svg = document.importNode(art, true);
+      cut(svg, side);
+      svg.removeAttribute('width'); svg.removeAttribute('height');
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      svg.setAttribute('focusable', 'false');
+      const el = document.createElement('div');
+      el.className = 'scene';
+      el.dataset.key = a.key;
+      el.appendChild(svg);
+      (side === 'back' ? planeBack : planeFront).appendChild(el);
+      return { el, svg };
+    });
+    addSky(back.svg, a);
+    // the mascot gets a wrapper we can nudge between scenes, without touching the drawing
+    const rigs = [...front.svg.querySelectorAll('[data-ts="mascot"]')].map((m) => {
+      const g = document.createElementNS(NS, 'g');
+      m.replaceWith(g); g.appendChild(m);
+      return g;
+    });
+    return { a, back, front, rigs, centre: null };
   });
 
-  /* ---------- camera ---------- */
-  const layoutKind = () => {
-    const r = stage.getBoundingClientRect();
-    return r.width / r.height >= 1 && r.width > 760 ? 'wide' : 'tall';
-  };
-  function camera(s) {
-    const r = stage.getBoundingClientRect();
-    const asp = r.width / r.height;
-    const kind = layoutKind();
-    const roi = s.a.roi[kind];
-    const E = s.H * (kind === 'wide' ? 0.42 : 0.16);    // how far the sky may extend above the art
-    let w = Math.min(s.W, Math.max(roi.w, roi.h * asp));
-    let h = w / asp;
-    if (h > s.H + E) { h = s.H + E; w = h * asp; }
-    const x = clamp(roi.x + roi.w / 2 - w / 2, 0, Math.max(0, s.W - w));
-    const y = clamp(roi.y + roi.h / 2 - h / 2, -E, s.H - h);
-    return { x, y, w, h };
-  }
-  function applyCameras() {
-    scenes.forEach((s) => {
-      s.cam = camera(s);
-      const vb = `${s.cam.x} ${s.cam.y} ${s.cam.w} ${s.cam.h}`;
-      s.svg.setAttribute('viewBox', vb);
-      if (s.pose) s.pose.svg.setAttribute('viewBox', vb);
-    });
-  }
-  applyCameras();
-
-  /* ---------- lift the mascot out of each scene ---------- */
-  const rectsOverlap = (p, q) => p.left < q.right && p.right > q.left && p.top < q.bottom && p.bottom > q.top;
-  function maskClone(orig) {
-    const c = orig.cloneNode(true);
-    const o = [orig, ...orig.querySelectorAll('*')];
-    const k = [c, ...c.querySelectorAll('*')];
-    k.forEach((n, j) => {
-      n.removeAttribute('id'); n.removeAttribute('class'); n.removeAttribute('filter'); n.removeAttribute('mask');
-      if (!(n instanceof SVGGraphicsElement)) return;
-      const cs = getComputedStyle(o[j]);
-      n.style.fill = cs.fill === 'none' ? 'none' : '#000';
-      n.style.stroke = cs.stroke === 'none' ? 'none' : '#000';
-      n.style.opacity = '1'; n.style.fillOpacity = '1'; n.style.strokeOpacity = '1';
-    });
-    return c;
-  }
-
-  let flyerSource = null;
+  // where each mascot stands, in artwork units (measured once, while laid out)
   scenes.forEach((s) => {
-    s.el.classList.add('is-on');                       // laid out for measuring
-    const top = s.svg.querySelector(':scope > g[clip-path]') || s.svg;
-    const parts = s.a.mascot.map((id) => s.svg.getElementById(id)).filter(Boolean);
-    if (s.a.key === 'password' && parts[0]) flyerSource = parts[0].cloneNode(true);
-
-    const pose = document.createElementNS(NS, 'svg');
-    pose.setAttribute('class', 'pose');
-    pose.setAttribute('viewBox', s.svg.getAttribute('viewBox'));
-    pose.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    const defs = document.createElementNS(NS, 'defs');
-    pose.appendChild(defs);
-    mascotLayer.appendChild(pose);
-
-    const kids = [...top.children];
-    const bobs = [];
-    parts.forEach((part, pi) => {
-      const pr = part.getBoundingClientRect();
-      const after = kids.slice(kids.indexOf(part) + 1)
-        .filter((k) => !parts.includes(k) && k instanceof SVGGraphicsElement && rectsOverlap(k.getBoundingClientRect(), pr));
-      const holder = document.createElementNS(NS, 'g');
-      if (after.length) {
-        const m = document.createElementNS(NS, 'mask');
-        m.id = `mask-${s.a.key}-${pi}`;
-        m.setAttribute('maskUnits', 'userSpaceOnUse');
-        ['x', 'y'].forEach((k) => m.setAttribute(k, '-4000'));
-        ['width', 'height'].forEach((k) => m.setAttribute(k, '10000'));
-        const white = document.createElementNS(NS, 'rect');
-        ['x', 'y'].forEach((k) => white.setAttribute(k, '-4000'));
-        ['width', 'height'].forEach((k) => white.setAttribute(k, '10000'));
-        white.setAttribute('fill', '#fff');
-        m.appendChild(white);
-        after.forEach((k) => m.appendChild(maskClone(k)));
-        defs.appendChild(m);
-        holder.setAttribute('mask', `url(#${m.id})`);
-      }
-      const bob = document.createElementNS(NS, 'g');
-      bob.setAttribute('class', 'bob');
-      holder.appendChild(bob);
-      pose.appendChild(holder);
-      bob.appendChild(part);                            // moved, not copied: nothing is left in the scene
-      bobs.push(bob);
-    });
-    // each mascot part gets a small "rig": float, tilt and squash about its own bottom centre.
-    // Written straight to the transform attribute so nothing accumulates between tweens.
-    const rigs = bobs.map((g) => {
-      const bb = g.getBBox();
-      return { el: g, y: 0, r: 0, sx: 1, sy: 1, ox: bb.x + bb.width / 2, oy: bb.y + bb.height };
-    });
-    s.pose = { svg: pose, bobs, rigs, anchor: bobs[0] };
-
-    // wrap every remaining top-level layer: .par (pointer parallax) > .tr (transitions)
-    const layers = [...top.children].filter((k) => k instanceof SVGGraphicsElement);
-    layers.forEach((k, li) => {
-      const par = document.createElementNS(NS, 'g');
-      const tr = document.createElementNS(NS, 'g');
-      par.setAttribute('class', 'par'); tr.setAttribute('class', 'tr');
-      k.replaceWith(par); par.appendChild(tr); tr.appendChild(k);
-      const depth = li === 0 ? 0 : li / (layers.length - 1);
-      s.layers.push({ par, tr, depth });
-    });
-    s.el.classList.remove('is-on');
+    s.back.el.classList.add('is-on'); s.front.el.classList.add('is-on');
+    const boxes = s.rigs.map((g) => g.getBBox()).filter((b) => b.width);
+    if (boxes.length) {
+      const x1 = Math.min(...boxes.map((b) => b.x)), y1 = Math.min(...boxes.map((b) => b.y));
+      const x2 = Math.max(...boxes.map((b) => b.x + b.width)), y2 = Math.max(...boxes.map((b) => b.y + b.height));
+      s.centre = { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
+    }
+    s.back.el.classList.remove('is-on'); s.front.el.classList.remove('is-on');
   });
 
-  /* ---------- the flyer: the free-flying mascot pose, used between scenes ---------- */
-  const flyer = document.createElementNS(NS, 'svg');
-  flyer.setAttribute('class', 'flyer');
-  const flyerG = document.createElementNS(NS, 'g');
-  flyer.appendChild(flyerG);
-  mascotLayer.appendChild(flyer);
-  let FLY = { w: 100, h: 100 };
-  if (flyerSource) {
-    flyerSource.removeAttribute('id');
-    flyerSource.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
-    flyerG.appendChild(flyerSource);
-    const b = flyerG.getBBox();
-    flyer.setAttribute('viewBox', `${b.x} ${b.y} ${b.width} ${b.height}`);
-    FLY = { w: 100 * (b.width / b.height), h: 100 };
-    flyer.style.width = `${FLY.w}px`; flyer.style.height = `${FLY.h}px`;
+  /* ---------- camera: one shared view on wide screens, a framed view on tall ones ---------- */
+  let wide = true;
+  function layout() {
+    const vw = innerWidth, vh = innerHeight;
+    wide = vw >= 900 && vw / vh >= 1.3;
+    root.dataset.layout = wide ? 'wide' : 'tall';
+    const set = (k, v) => root.style.setProperty(k, v);
+    if (wide) {
+      // the full width of the drawing; taller screens get more sky above it,
+      // wider ones lose a little more from the ground than from the sky
+      // and the card always clears the header
+      const u = vw / ART.w, visH = vh / u;
+      const head = header.getBoundingClientRect().bottom;
+      const y0 = Math.min(visH >= ART.h ? ART.h - visH : (ART.h - visH) * 0.35, CARD.y - (head + 16) / u);
+      const vb = `0 ${y0} ${ART.w} ${visH}`;
+      scenes.forEach((s) => { s.back.svg.setAttribute('viewBox', vb); s.front.svg.setAttribute('viewBox', vb); });
+      set('--stage-h', `${vh}px`);
+      set('--u', `${u}px`);
+      set('--card-x', `${CARD.x * u}px`);
+      set('--card-y', `${(CARD.y - y0) * u}px`);
+      set('--card-w', `${CARD.w * u}px`);
+      set('--card-h', `${CARD.h * u}px`);
+    } else {
+      // the card sits at the bottom, as tall as the longest activity needs so it never changes
+      // size; the illustration fills the rest of the screen (sky under the header)
+      const cardH = Math.min(tallCardHeight(), vh * 0.62);
+      const stageH = Math.round(Math.max(vh * 0.38, vh - 16 - cardH + 28));
+      const head = header.getBoundingClientRect().bottom;
+      const u = Math.max(vw / ART.w, (stageH - head) / ART.h);
+      const visW = vw / u, visH = stageH / u, y0 = ART.h - visH;
+      scenes.forEach((s) => {
+        const x0 = clamp(s.a.focus - visW / 2, 0, ART.w - visW);
+        const vb = `${x0} ${y0} ${visW} ${visH}`;
+        s.back.svg.setAttribute('viewBox', vb); s.front.svg.setAttribute('viewBox', vb);
+      });
+      set('--stage-h', `${stageH}px`);
+      set('--u', `${u}px`);
+      set('--tall-card-h', `${Math.ceil(cardH)}px`);
+    }
   }
-  // stage-relative box of a pose's main body
-  function anchorBox(s) {
-    const st = stage.getBoundingClientRect();
-    const r = s.pose.anchor.getBoundingClientRect();
-    return { cx: r.left - st.left + r.width / 2, cy: r.top - st.top + r.height / 2, w: r.width, h: r.height };
+  function tallCardHeight() {
+    card.style.height = 'auto';
+    const h = Math.max(...ACTS.map((a, i) => { writeCard(i); return card.offsetHeight; }));
+    card.style.height = '';
+    writeCard(state.index);
+    return h;
   }
-  const flyerAt = (b) => ({ x: b.cx - FLY.w / 2, y: b.cy - FLY.h / 2, scale: Math.min(b.h / FLY.h, (b.w * 1.15) / FLY.w) });
 
-  /* ---------- copy + dock ---------- */
-  // "Spot the <em>Scam</em>" becomes one span per word, so the words can arrive one by one.
-  // Spaces are kept as written, so languages without them stay unbroken.
-  const wrapWords = (text, em) => text.replace(/\S+/g, (w) => `<span class="w">${em ? `<em>${w}</em>` : w}</span>`);
-  function writeTitle(a) {
-    const h = a.copy.querySelector('h1');
-    h.innerHTML = t(`home.scene.${a.key}.title`).split(/(<em>.*?<\/em>)/).map((part) => {
-      const em = /^<em>(.*)<\/em>$/.exec(part);
-      return em ? wrapWords(em[1], true) : wrapWords(part, false);
-    }).join('');
-    a.copyParts = [a.copy.querySelector('.eyebrow'), ...h.querySelectorAll('.w'), a.copy.querySelector('.lede'), a.copy.querySelector('.row')];
+  /* ---------- layer 2: the title card ---------- */
+  function writeCard(i) {
+    const a = ACTS[i], c = a.card;
+    Object.entries({
+      '--card-ink': c.ink, '--card-accent': c.accent, '--card-body': c.body, '--card-cta': c.cta,
+      '--accent-scale': c.accentSize / 96, '--cta-size': c.ctaSize, '--cta-h': c.ctaH,
+    }).forEach(([k, v]) => card.style.setProperty(k, v));
+    card.dataset.key = a.key;
+    card.toggleAttribute('data-split', c.split);
+    // titles mark their coloured words with <em> in the language files
+    cardTitle.innerHTML = t(`home.scene.${a.key}.title`);
+    cardLede.textContent = t(`home.scene.${a.key}.lede`);
+    cardCtaText.textContent = t(`home.scene.${a.key}.cta`);
+    cardCta.setAttribute('href', a.href);
+    cardCta.dataset.open = String(i);
+    window.I18n.apply(card);                             // adds ?lang= to the link
   }
-  const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
+
+  /* ---------- layer 3: navigation ---------- */
   ACTS.forEach((a, i) => {
-    const c = a.c;
-    const art = document.createElement('article');
-    art.className = `copy pos-${a.pos}${a.compact ? ' compact' : ''}`;
-    art.id = `act-${a.key}`;
-    art.setAttribute('aria-labelledby', `h-${a.key}`);
-    art.style.cssText = `--c-ink:${c.ink};--c-accent:${c.accent};--c-cta:${c.cta};--c-cta-ink:${c.ctaInk};--c-haze:${c.haze || a.sky};--c-ink-ground:${c.inkGround};--c-accent-ground:${c.accentGround};--c-cta-ground:${c.ctaGround || c.cta};--c-cta-ground-ink:${c.ctaGroundInk || c.ctaInk}`;
-    art.innerHTML = `
-      <p class="eyebrow"><span class="num">0${i + 1} / 0${N}</span><span data-i18n="${a.name}"></span></p>
-      <h1 id="h-${a.key}"></h1>
-      <p class="lede" data-i18n="home.scene.${a.key}.lede"></p>
-      <div class="row"><a class="cta" href="${a.href}" data-open="${i}"><span data-i18n="home.scene.${a.key}.cta"></span>${arrow}</a></div>`;
-    copyLayer.appendChild(art);
-    a.copy = art;
-    writeTitle(a);
-
     const li = document.createElement('li');
-    li.innerHTML = `<button class="stop" data-go="${i}" aria-controls="act-${a.key}"><span class="n" aria-hidden="true">${i + 1}</span><span class="label" data-i18n="home.dock.${a.key}"></span></button>`;
-    stopsEl.appendChild(li);
+    li.innerHTML = `<button type="button" class="tab" data-go="${i}" aria-controls="titleCard"><span class="num" aria-hidden="true">${i + 1}</span><span class="label" data-i18n="home.dock.${a.key}"></span></button>`;
+    tabList.appendChild(li);
   });
-  const stops = [...stopsEl.querySelectorAll('.stop')];
-  // fill in everything marked with a language key; i18n.js keeps it current from here on
-  window.I18n.apply(document);
+  const tabs = [...tabList.querySelectorAll('.tab')];
+  window.I18n.apply(tabList);
 
-  function themeVars(i) {
+  // the indicator slides to the selected tab (a CSS transition on its transform and size)
+  function moveInk(i, animate) {
+    const b = tabs[i];
+    if (!animate) tabsInk.style.transition = 'none';
+    Object.entries({ '--ink-x': `${b.offsetLeft}px`, '--ink-y': `${b.offsetTop}px`, '--ink-w': `${b.offsetWidth}px`, '--ink-h': `${b.offsetHeight}px` })
+      .forEach(([k, v]) => tabsInk.style.setProperty(k, v));
+    if (!animate) { tabsInk.getBoundingClientRect(); tabsInk.style.transition = ''; }
+  }
+
+  function markCurrent(i) {
+    tabs.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false'));
+    document.title = `${t(ACTS[i].name)} — ThinkSecure`;
+    if (location.hash.slice(1) !== ACTS[i].key) history.replaceState(null, '', `#${ACTS[i].key}`);
+  }
+  function applyTheme(i) {
     const a = ACTS[i];
-    const dark = a.pos === 'bl';
-    return {
-      '--sky': a.sky,
-      '--ground': a.c.ground,
-      '--ink': a.c.ground,
-      '--brand-accent': a.c.brand,
-      '--dock-bg': dark ? 'rgba(255,255,255,.88)' : hexA(a.sky, 0.86),
-      '--dock-on': a.c.ground,
-      '--dock-on-ink': '#FFFFFF',
-    };
-  }
-  function hexA(hex, al) {
-    const h = hex.replace('#', '');
-    const n = parseInt(h.length === 3 ? h.split('').map((x) => x + x).join('') : h, 16);
-    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${al})`;
-  }
-  function applyTheme(i, dur) {
-    const v = themeVars(i);
-    if (!hasGsap || !dur) Object.entries(v).forEach(([k, val]) => root.style.setProperty(k, val));
-    else gsap.to(root, { ...v, duration: dur, ease: 'power2.inOut' });
+    root.style.setProperty('--sky', flatSky(a));
+    root.style.setProperty('--ground', a.ground);
+    root.style.setProperty('--brand-accent', a.card.accent);
   }
 
   /* ---------- state ---------- */
   const state = { index: 0, busy: false, queued: null, tl: null };
-  let zTop = 1;
 
-  function markCurrent(i) {
-    stops.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'step' : 'false'));
-    document.title = `${t(ACTS[i].name)} — ThinkSecure`;
-    if (location.hash.slice(1) !== ACTS[i].key) history.replaceState(null, '', `#${ACTS[i].key}`);
-  }
   function showStatic(i) {
     scenes.forEach((s, k) => {
-      s.el.classList.toggle('is-on', k === i);
-      s.pose.svg.classList.toggle('is-on', k === i);
-      ACTS[k].copy.classList.toggle('is-on', k === i);
+      s.back.el.classList.toggle('is-on', k === i);
+      s.front.el.classList.toggle('is-on', k === i);
     });
-    scenes[i].el.style.zIndex = String(++zTop);
+    scenes[i].back.el.style.zIndex = scenes[i].front.el.style.zIndex = String(++zTop);
+    writeCard(i);
     markCurrent(i);
-    applyTheme(i, 0);
+    applyTheme(i);
+    moveInk(i, false);
   }
 
-  /* idle life on the active pose: a slow float (upwards only, so masked edges never drift over the scene) */
-  let idleTweens = [];
-  function startIdle(i) {
-    stopIdle();
-    if (!hasGsap || reduced) return;
-    const { rigs } = scenes[i].pose;
-    idleTweens.push(gsap.to(rigs, { y: -7, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, onUpdate: drawRigs, onUpdateParams: [rigs] }));
-    idleTweens.push(gsap.to(rigs[0], { r: 1.2, duration: 3.1, ease: 'sine.inOut', yoyo: true, repeat: -1, onUpdate: drawRigs, onUpdateParams: [rigs] }));
-  }
-  function drawRigs(rigs) {
-    rigs.forEach((g) => g.el.setAttribute('transform',
-      `translate(0 ${g.y}) translate(${g.ox} ${g.oy}) rotate(${g.r}) scale(${g.sx} ${g.sy}) translate(${-g.ox} ${-g.oy})`));
-  }
-  function resetRigs(rigs) {
-    rigs.forEach((g) => Object.assign(g, { y: 0, r: 0, sx: 1, sy: 1 }));
-    drawRigs(rigs);
-  }
-  const squash = (rigs) => ({ onUpdate: drawRigs, onUpdateParams: [rigs] });
-  function stopIdle() {
-    idleTweens.forEach((t) => t.kill()); idleTweens = [];
+  function finish(from) {
+    const A = scenes[from], B = scenes[state.index];
+    [A.back.el, A.front.el].forEach((el) => el.classList.remove('is-on'));
+    if (hasGsap) {
+      gsap.set([A.back.el, A.front.el, B.back.el, B.front.el, ...A.rigs, ...B.rigs, card], { clearProps: 'transform,opacity' });
+      gsap.set(card, { '--shade': 0 });
+    }
+    state.busy = false; state.tl = null;
+    if (state.queued !== null) {
+      const q = state.queued; state.queued = null;
+      if (q !== state.index) go(q);
+    }
   }
 
   /* ---------- the transition ---------- */
-  function go(to) {
+  function go(to, dir) {
     to = mod(to, N);
-    if (to === state.index && !state.busy) return;
-    if (state.busy) {                                    // interrupted: finish quickly, then continue
+    if (state.busy) {                                    // already moving: finish quickly, then continue
       state.queued = to;
-      if (state.tl) state.tl.timeScale(3);
+      if (state.tl) state.tl.timeScale(2.6);
+      markCurrent(to);
+      moveInk(to, true);
       return;
     }
+    if (to === state.index) return;
     const from = state.index;
     state.index = to;
+    dir = dir || Math.sign(wrapDelta(to - from)) || 1;
     markCurrent(to);
-    if (!hasGsap || reduced) return quickSwap(from, to);
+    moveInk(to, true);
+    if (!hasGsap) { showStatic(to); return; }
 
     state.busy = true;
     const A = scenes[from], B = scenes[to];
-    const dir = Math.sign(wrapDelta(to - from)) || 1;
-    stopIdle();
-    resetRigs(A.pose.rigs);
-
-    // scene B sits above A, closed to a point at the mascot's landing spot
-    B.el.classList.add('is-on');
-    B.el.style.zIndex = String(++zTop);
-    const a = anchorBox(A), b = anchorBox(B);
-    const st = stage.getBoundingClientRect();
-    const R = Math.hypot(Math.max(b.cx, st.width - b.cx), Math.max(b.cy, st.height - b.cy)) + 40;
-    gsap.set(B.el, { clipPath: `circle(0px at ${b.cx}px ${b.cy}px)` });
-    B.layers.forEach((L) => gsap.set(L.tr, { y: 26 + L.depth * 90, opacity: 1 }));
-    const fa = flyerAt(a), fb = flyerAt(b);
-    const apex = Math.min(fa.y, fb.y) - Math.min(160, st.height * 0.18);
-
-    const tl = gsap.timeline({
-      defaults: { overwrite: 'auto' },
-      onComplete: () => {
-        A.el.classList.remove('is-on');
-        A.layers.forEach((L) => gsap.set(L.tr, { clearProps: 'all' }));
-        gsap.set(B.el, { clearProps: 'clipPath' });
-        A.pose.svg.classList.remove('is-on');
-        ACTS[from].copy.classList.remove('is-on');
-        state.busy = false; state.tl = null;
-        startIdle(to);
-        if (state.queued !== null) { const q = state.queued; state.queued = null; if (q !== state.index) go(q); }
-      },
-    });
+    // the incoming scene lies on top of the outgoing one, in both planes
+    zTop += 1;
+    [B.back.el, B.front.el].forEach((el) => { el.classList.add('is-on'); el.style.zIndex = String(zTop); });
+    const tl = gsap.timeline({ onComplete: () => finish(from) });
     state.tl = tl;
 
-    // 1. words leave first
-    tl.to(ACTS[from].copyParts, { y: -14, opacity: 0, duration: 0.28, ease: 'power2.in', stagger: 0.025 }, 0);
-    // 2. mascot gathers itself, then lifts off
-    tl.to(A.pose.rigs, { sy: 0.93, sx: 1.05, duration: 0.16, ease: 'power2.out', ...squash(A.pose.rigs) }, 0);
-    tl.set(flyer, { ...fa, rotation: 0, opacity: 1 }, 0.15);
-    tl.to(A.pose.svg, { opacity: 0, duration: 0.12, ease: 'none' }, 0.15);
-    tl.to(flyer, { x: fb.x, scale: fb.scale, duration: 0.8, ease: 'power2.inOut' }, 0.15);
-    tl.to(flyer, { y: apex, duration: 0.38, ease: 'power2.out' }, 0.15);
-    tl.to(flyer, { y: fb.y, duration: 0.46, ease: 'back.out(1.4)' }, 0.53);
-    tl.to(flyer, { rotation: dir * 11, duration: 0.3, ease: 'power2.out' }, 0.15);
-    tl.to(flyer, { rotation: 0, duration: 0.5, ease: 'back.out(2.2)' }, 0.5);
-    // 3. the old world recedes by depth, the new one opens around the landing spot
-    tl.to(A.layers.map((L) => L.tr), {
-      y: (k) => A.layers[k].depth * 70, opacity: (k) => (A.layers[k].depth > 0.7 ? 0 : 1),
-      duration: 0.7, ease: 'power2.in',
-    }, 0.06);
-    tl.to(B.el, { clipPath: `circle(${R}px at ${b.cx}px ${b.cy}px)`, duration: 0.85, ease: 'power3.inOut' }, 0.2);
-    tl.to(B.layers.map((L) => L.tr), { y: 0, duration: 0.7, ease: 'expo.out', stagger: { each: 0.012 } }, 0.24);
-    // theme (header ink, dock, ground) follows the new scene
-    tl.add(() => applyTheme(to, 0.6), 0.3);
-    // 4. landing: the scene's own pose takes over from the flyer
-    gsap.set(B.pose.svg, { opacity: 0 });
-    tl.add(() => B.pose.svg.classList.add('is-on'), 0.9);
-    tl.to(B.pose.svg, { opacity: 1, duration: 0.14, ease: 'none' }, 0.9);
-    tl.to(flyer, { opacity: 0, duration: 0.14, ease: 'none' }, 0.96);
-    tl.fromTo(B.pose.rigs, { sy: 1.07, sx: 0.96 }, { sy: 1, sx: 1, duration: 0.7, ease: 'elastic.out(1, 0.55)', ...squash(B.pose.rigs) }, 0.9);
-    tl.add(() => resetRigs(A.pose.rigs), 0.9);
-    // 5. then the words for the new activity
-    tl.add(() => { ACTS[to].copy.classList.add('is-on'); ACTS[from].copy.classList.remove('is-on'); }, 0.62);
-    tl.fromTo(ACTS[to].copyParts, { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out', stagger: 0.05 }, 0.66);
+    if (reduced) {
+      // low motion: a short cross-fade of the scenes and the card's words, nothing travels
+      tl.fromTo([B.back.el, B.front.el], { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'none' }, 0)
+        .to(A.front.el, { opacity: 0, duration: 0.3, ease: 'none' }, 0)
+        .to(card, { opacity: 0, duration: 0.12, ease: 'none' }, 0)
+        .add(() => { writeCard(to); applyTheme(to); }, 0.12)
+        .to(card, { opacity: 1, duration: 0.16, ease: 'none' }, 0.12);
+      return;
+    }
+
+    // depth: the front plane travels further than the back one. Each is scaled up while it moves,
+    // so no edge of the drawing is ever uncovered.
+    const shift = Math.min(36, innerWidth * 0.025);
+    gsap.set(B.back.el, { opacity: 0, x: dir * shift * 0.45, scale: 1.03 });
+    gsap.set(B.front.el, { opacity: 0, x: dir * shift, scale: 1.05 });
+
+    // 0–650ms: the old environment drifts away; the new one settles in over 150–650ms
+    tl.to(A.back.el, { x: -dir * shift * 0.45, scale: 1.03, duration: 0.65, ease: 'power2.inOut' }, 0)
+      .to(A.front.el, { x: -dir * shift, scale: 1.05, duration: 0.65, ease: 'power2.inOut' }, 0)
+      .to(B.back.el, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 0.15)
+      .to(B.back.el, { x: 0, scale: 1, duration: 0.55, ease: 'power3.out' }, 0.1)
+      .to(B.front.el, { opacity: 1, duration: 0.34, ease: 'power1.out' }, 0.14)
+      .to(B.front.el, { x: 0, scale: 1, duration: 0.5, ease: 'power3.out' }, 0.15)
+      // the old foreground leaves once the new one mostly covers the card's hidden lower half
+      .to(A.front.el, { opacity: 0, duration: 0.24, ease: 'power1.in' }, 0.26);
+
+    // the mascot leans a little towards where it stands next, and arrives from where it stood
+    if (A.centre && B.centre) {
+      const k = 0.16, cap = 90;
+      const dx = clamp((B.centre.x - A.centre.x) * k, -cap, cap), dy = clamp((B.centre.y - A.centre.y) * k, -cap, cap);
+      tl.to(A.rigs, { x: dx, y: dy, duration: 0.5, ease: 'power2.in' }, 0)
+        .fromTo(B.rigs, { x: -dx, y: -dy }, { x: 0, y: 0, duration: 0.55, ease: 'power3.out' }, 0.15);
+    }
+
+    // 50–500ms: the card turns away, changes its words edge-on, and turns back to face us
+    const turn = 90 * dir;
+    tl.to(card, { rotationX: -turn, '--shade': 0.22, duration: 0.2, ease: 'power2.in' }, 0.05)
+      .add(() => { writeCard(to); applyTheme(to); }, 0.25)
+      .fromTo(card, { rotationX: turn, '--shade': 0.22 }, { rotationX: 0, '--shade': 0, duration: 0.25, ease: 'back.out(1.4)', immediateRender: false }, 0.25);
   }
   const wrapDelta = (d) => mod(d + N / 2, N) - N / 2;
 
-  function quickSwap(from, to) {
-    // reduced motion: a short cross-fade, nothing travels
-    const A = scenes[from], B = scenes[to];
-    if (!hasGsap) { showStatic(to); return; }
-    state.busy = true;
-    B.el.classList.add('is-on'); B.el.style.zIndex = String(++zTop);
-    B.pose.svg.classList.add('is-on');
-    ACTS[to].copy.classList.add('is-on'); ACTS[from].copy.classList.remove('is-on');
-    applyTheme(to, 0);
-    gsap.timeline({ onComplete: () => { A.el.classList.remove('is-on'); A.pose.svg.classList.remove('is-on'); state.busy = false; if (state.queued !== null) { const q = state.queued; state.queued = null; go(q); } } })
-      .fromTo([B.el, B.pose.svg], { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'none' })
-      .to(A.pose.svg, { opacity: 0, duration: 0.2, ease: 'none' }, 0)
-      .set([A.pose.svg, B.el], { clearProps: 'opacity' });
-  }
-
-  /* ---------- pointer parallax on the far layers only ---------- */
-  const movers = scenes.map((s) => s.layers.filter((L) => L.depth > 0 && L.depth < 0.5).map((L) => ({
-    d: L.depth,
-    x: hasGsap ? gsap.quickTo(L.par, 'x', { duration: 1, ease: 'power3.out' }) : () => {},
-    y: hasGsap ? gsap.quickTo(L.par, 'y', { duration: 1, ease: 'power3.out' }) : () => {},
-  })));
-  if (!reduced && matchMedia('(hover: hover)').matches) {
-    addEventListener('pointermove', (e) => {
-      if (state.busy) return;
-      const nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
-      movers[state.index].forEach((m) => { m.x(-nx * 26 * (0.4 + m.d)); m.y(-ny * 14 * (0.4 + m.d)); });
-    });
-  }
-
   /* ---------- input ---------- */
   const locked = () => document.body.classList.contains('is-intro');
-  document.getElementById('next').addEventListener('click', () => go((state.queued ?? state.index) + 1));
-  document.getElementById('prev').addEventListener('click', () => go((state.queued ?? state.index) - 1));
-  stops.forEach((b, i) => b.addEventListener('click', () => go(i)));
+  const target = () => (state.queued ?? state.index);
+  tabs.forEach((b, i) => b.addEventListener('click', () => go(i)));
+  document.getElementById('tabPrev').addEventListener('click', () => go(target() - 1, -1));
+  document.getElementById('tabNext').addEventListener('click', () => go(target() + 1, 1));
   document.getElementById('brand').addEventListener('click', (e) => { e.preventDefault(); go(0); });
   addEventListener('keydown', (e) => {
-    if (locked() || e.target.closest('input, textarea, select')) return;
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go((state.queued ?? state.index) + 1); }
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go((state.queued ?? state.index) - 1); }
+    if (locked() || e.altKey || e.ctrlKey || e.metaKey || e.target.closest('input, textarea, select')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(target() + 1, 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(target() - 1, -1); }
     if (/^[1-4]$/.test(e.key)) go(+e.key - 1);
   });
   let wheelLock = 0;
@@ -457,8 +356,8 @@
     if (locked()) return;
     const v = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     if (Math.abs(v) < 14 || Date.now() < wheelLock) return;
-    wheelLock = Date.now() + 1100;
-    go(state.index + (v > 0 ? 1 : -1));
+    wheelLock = Date.now() + 1000;
+    go(target() + (v > 0 ? 1 : -1), v > 0 ? 1 : -1);
   }, { passive: true });
   // swipe anywhere on the illustration
   let sx = null, sy = 0;
@@ -466,7 +365,7 @@
   addEventListener('pointerup', (e) => {
     if (sx === null) return;
     const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) go(state.index + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) go(target() + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
   });
 
   let rz;
@@ -474,7 +373,8 @@
     clearTimeout(rz);
     rz = setTimeout(() => {
       if (state.tl) state.tl.progress(1);
-      applyCameras();
+      layout();
+      moveInk(target(), false);
     }, 120);
   });
 
@@ -482,18 +382,18 @@
   const curtainPath = document.getElementById('curtainPath');
   const curtain = { top: 100, bottom: 100 };
   const drawCurtain = () => {
-    const t = curtain.top, b = curtain.bottom;
-    const bt = Math.sin(Math.PI * (1 - t / 100)) * 14, bb = Math.sin(Math.PI * (b / 100)) * 14;
-    curtainPath.setAttribute('d', `M0 ${t} C30 ${t - bt} 70 ${t - bt} 100 ${t} V${b} C70 ${b + bb} 30 ${b + bb} 0 ${b}Z`);
+    const ct = curtain.top, cb = curtain.bottom;
+    const bt = Math.sin(Math.PI * (1 - ct / 100)) * 14, bb = Math.sin(Math.PI * (cb / 100)) * 14;
+    curtainPath.setAttribute('d', `M0 ${ct} C30 ${ct - bt} 70 ${ct - bt} 100 ${ct} V${cb} C70 ${cb + bb} 30 ${cb + bb} 0 ${cb}Z`);
   };
-  // The buttons are ordinary links. With motion on, the curtain rises first and the page follows.
-  copyLayer.addEventListener('click', (e) => {
-    const link = e.target.closest('a.cta');
-    if (!link || !hasGsap || reduced || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  // The button is an ordinary link. With motion on, the curtain rises first and the page follows.
+  cardCta.addEventListener('click', (e) => {
+    if (!hasGsap || reduced || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    curtainPath.style.fill = ACTS[+link.dataset.open].c.ground;
+    const href = cardCta.href;
+    curtainPath.style.fill = ACTS[+cardCta.dataset.open].card.accent;
     curtain.top = 100; curtain.bottom = 100;
-    gsap.to(curtain, { top: 0, duration: 0.6, ease: 'power3.inOut', onUpdate: drawCurtain, onComplete: () => { location.href = link.href; } });
+    gsap.to(curtain, { top: 0, duration: 0.6, ease: 'power3.inOut', onUpdate: drawCurtain, onComplete: () => { location.href = href; } });
   });
   // the browser's Back button can bring this page back exactly as it was left: lift the curtain again
   addEventListener('pageshow', (e) => {
@@ -502,39 +402,31 @@
   });
 
   /* ---------- language ---------- */
-  // i18n.js has already rewritten everything marked with a language key; the titles are built here
   addEventListener('languagechange', () => {
-    ACTS.forEach(writeTitle);
+    if (state.tl) state.tl.progress(1);
+    layout();                                            // the tall card fits the longest new text
+    writeCard(state.index);
     markCurrent(state.index);
+    requestAnimationFrame(() => moveInk(target(), false));
   });
 
-  /* ---------- start: intro, then the mascot flies into the first scene ---------- */
+  /* ---------- start ---------- */
   // deep links (#quiz, #password, #passphrase, #keychain) open that activity directly;
   // the keychain scene also answers to its artwork's name, #sticker
   const hash = location.hash.slice(1);
   const fromHash = ACTS.findIndex((a) => a.key === hash || a.art === hash);
   state.index = fromHash > 0 ? fromHash : 0;
-  showStatic(state.index);
-  window.TS_BUILD_MS = Math.round(performance.now() - t0);
+  layout();
+  showStatic(state.index);                               // the first activity simply appears
+  if (document.fonts) document.fonts.ready.then(() => { layout(); moveInk(target(), false); });
 
-  function enterWorld() {
+  function enterWorld(entrance) {
     document.body.classList.remove('is-intro');
-    if (!hasGsap || reduced) { startIdle(state.index); return; }
-    const S = scenes[state.index], st = stage.getBoundingClientRect();
-    const b = anchorBox(S), fb = flyerAt(b);
-    state.busy = true;
-    gsap.set(S.pose.svg, { opacity: 0 });
-    const I = state.index;
-    gsap.set(ACTS[I].copyParts, { opacity: 0, y: 22 });
-    const tl = gsap.timeline({ onComplete: () => { state.busy = false; startIdle(I); if (state.queued !== null) { const q = state.queued; state.queued = null; go(q); } } });
-    tl.from(S.layers.map((L) => L.tr), { y: (k) => 30 + S.layers[k].depth * 110, duration: 1.1, ease: 'expo.out', stagger: 0.012 }, 0)
-      .fromTo(flyer, { x: st.width * 0.5 - FLY.w / 2, y: st.height + 60, scale: fb.scale * 0.8, rotation: -8, opacity: 1 },
-        { x: fb.x, y: fb.y, scale: fb.scale, rotation: 0, duration: 0.95, ease: 'back.out(1.3)' }, 0.15)
-      .to(S.pose.svg, { opacity: 1, duration: 0.14, ease: 'none' }, 1.05)
-      .to(flyer, { opacity: 0, duration: 0.14, ease: 'none' }, 1.1)
-      .fromTo(S.pose.rigs, { sy: 1.07, sx: 0.96 }, { sy: 1, sx: 1, duration: 0.7, ease: 'elastic.out(1, 0.55)', ...squash(S.pose.rigs) }, 1.05)
-      .to(ACTS[I].copyParts, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', stagger: 0.06 }, 0.55)
-      .from('.top, .dock', { opacity: 0, y: (k) => (k ? 20 : -10), duration: 0.8, ease: 'expo.out' }, 0.7);
+    layout();
+    moveInk(target(), false);
+    if (!entrance || !hasGsap || reduced) return;
+    gsap.from('.card-slot', { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out', clearProps: 'all' });
+    gsap.from('.top', { opacity: 0, y: -12, duration: 0.8, ease: 'expo.out', delay: 0.15, clearProps: 'all' });
   }
 
   // The intro plays once per visit, so coming back from an activity goes straight to the scenes
@@ -545,7 +437,7 @@
   } catch (e) { /* storage unavailable: just play it */ }
 
   if (!hasGsap || reduced || introSeen || /[?&]skip/.test(location.search)) {
-    enterWorld();
+    enterWorld(false);
   } else {
     const L = document.getElementById('introLogo');
     gsap.set('.intro-hills .h', { yPercent: 100 });
@@ -557,7 +449,7 @@
       .to('.intro-sun', { scale: 1, duration: 1.1, ease: 'expo.out' }, '+=0.3')
       .to(L, { scale: 0.86, duration: 1.1, ease: 'expo.out' }, '<')
       .to('.intro-hills .h', { yPercent: -14, duration: 1, ease: 'expo.inOut', stagger: 0.1 }, '-=0.7')
-      .add(enterWorld);
+      .add(() => enterWorld(true));
     const skip = () => { if (intro.progress() < 0.85) intro.progress(1); };
     document.getElementById('intro').addEventListener('click', skip);
     addEventListener('keydown', function k() { skip(); removeEventListener('keydown', k); });

@@ -9,14 +9,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&display=swap">
 
     <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body class="is-intro">
 
-    <a class="skip" href="#copy" data-i18n="home.skipLink">Skip to the current activity</a>
+    <a class="skip" href="#titleCard" data-i18n="home.skipLink">Skip to the current activity</a>
 
 
     <!-- Intro: "Think" then "Secure", then a landscape sweep into the world -->
@@ -37,10 +37,19 @@
     </div>
 
 
-    <!-- Header: logo and language -->
+    <!-- Layer 3: logo, activity navigation (top centre) and language -->
     <header class="top">
 
         <a class="brand" href="#" aria-label="ThinkSecure, back to the first activity" data-i18n-aria-label="home.brandLabel" id="brand"></a>
+
+        <nav class="tabs" id="tabs" aria-label="Activities" data-i18n-aria-label="home.dock.label">
+            <button type="button" class="tabs-arrow" id="tabPrev" aria-label="Previous activity" data-i18n-aria-label="home.dock.prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg></button>
+            <div class="tabs-track">
+                <span class="tabs-ink" id="tabsInk" aria-hidden="true"></span>
+                <ul id="tabList"></ul>
+            </div>
+            <button type="button" class="tabs-arrow" id="tabNext" aria-label="Next activity" data-i18n-aria-label="home.dock.next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg></button>
+        </nav>
 
         <div class="language-control">
             <label for="languageSelect" data-i18n="common.language">Language</label>
@@ -57,31 +66,26 @@
     </header>
 
 
-    <!-- The world: four scenes share one stage; the mascot lives above them all -->
-    <div id="stage" class="stage" aria-hidden="true">
-        <div id="scenes"></div>
-        <div id="mascotLayer" class="mascot-layer"></div>
+    <!-- The world. Each scene is split at its drawn title card: the back plane is painted
+         before the card, the front plane (hills, people, mascot) after it -->
+    <div id="world" class="world">
+
+        <!-- Layer 1: the illustrated environment -->
+        <div id="planeBack" class="plane plane-back" aria-hidden="true"></div>
+        <div class="ground" aria-hidden="true"></div>
+
+        <!-- Layer 2: one persistent title card; home.js fills it and flips it -->
+        <main class="card-slot">
+            <article class="card" id="titleCard" tabindex="-1" aria-live="polite" aria-atomic="true" aria-labelledby="cardTitle">
+                <h1 class="card-title" id="cardTitle"></h1>
+                <p class="card-lede" id="cardLede"></p>
+                <a class="card-cta" id="cardCta" href="pages/cyber-quiz.html"><span id="cardCtaText"></span></a>
+            </article>
+        </main>
+
+        <div id="planeFront" class="plane plane-front" aria-hidden="true"></div>
+
     </div>
-
-
-    <!-- The words for each activity, built by home.js -->
-    <main id="copy" class="copy-layer" aria-live="polite"></main>
-
-
-    <!-- Dock: one stop per activity -->
-    <nav class="dock" aria-label="Activities" data-i18n-aria-label="home.dock.label">
-
-        <button class="step prev" id="prev" aria-label="Previous activity" data-i18n-aria-label="home.dock.prev">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
-        </button>
-
-        <ol class="stops" id="stops"></ol>
-
-        <button class="step next" id="next" aria-label="Next activity" data-i18n-aria-label="home.dock.next">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>
-        </button>
-
-    </nav>
 
 
     <!-- Rises over the page on the way into an activity -->
