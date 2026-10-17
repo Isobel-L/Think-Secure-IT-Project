@@ -61,9 +61,8 @@
   const cardLede = document.getElementById('cardLede');
   const cardCta = document.getElementById('cardCta');
   const cardCtaText = document.getElementById('cardCtaText');
-  const tabList = document.getElementById('tabList');
-  const tabsInk = document.getElementById('tabsInk');
-  const header = document.querySelector('.top');
+  const navInk = document.getElementById('navInk');
+  const header = document.querySelector('.il-header');
   document.getElementById('brand').innerHTML = SVG.logo;
   document.getElementById('introLogo').innerHTML = SVG.logo;
 
@@ -212,21 +211,17 @@
   }
 
   /* ---------- layer 3: navigation ---------- */
-  ACTS.forEach((a, i) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<button type="button" class="tab" data-go="${i}" aria-controls="titleCard"><span class="num" aria-hidden="true">${i + 1}</span><span class="label" data-i18n="home.dock.${a.key}"></span></button>`;
-    tabList.appendChild(li);
-  });
-  const tabs = [...tabList.querySelectorAll('.tab')];
-  window.I18n.apply(tabList);
+  // The stops are the same links as on every activity page. Here they choose a scene;
+  // the card's button is what goes in.
+  const tabs = [...document.querySelectorAll('.il-stop[data-go]')];
 
   // the indicator slides to the selected tab (a CSS transition on its transform and size)
   function moveInk(i, animate) {
     const b = tabs[i];
-    if (!animate) tabsInk.style.transition = 'none';
+    if (!animate) navInk.style.transition = 'none';
     Object.entries({ '--ink-x': `${b.offsetLeft}px`, '--ink-y': `${b.offsetTop}px`, '--ink-w': `${b.offsetWidth}px`, '--ink-h': `${b.offsetHeight}px` })
-      .forEach(([k, v]) => tabsInk.style.setProperty(k, v));
-    if (!animate) { tabsInk.getBoundingClientRect(); tabsInk.style.transition = ''; }
+      .forEach(([k, v]) => navInk.style.setProperty(k, v));
+    if (!animate) { navInk.getBoundingClientRect(); navInk.style.transition = ''; }
   }
 
   function markCurrent(i) {
@@ -341,10 +336,10 @@
   /* ---------- input ---------- */
   const locked = () => document.body.classList.contains('is-intro');
   const target = () => (state.queued ?? state.index);
-  tabs.forEach((b, i) => b.addEventListener('click', () => go(i)));
-  document.getElementById('tabPrev').addEventListener('click', () => go(target() - 1, -1));
-  document.getElementById('tabNext').addEventListener('click', () => go(target() + 1, 1));
-  document.getElementById('brand').addEventListener('click', (e) => { e.preventDefault(); go(0); });
+  // a plain click chooses the scene; Ctrl/Cmd-click still opens the activity itself
+  const plainClick = (e) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+  tabs.forEach((b, i) => b.addEventListener('click', (e) => { if (!plainClick(e)) return; e.preventDefault(); go(i); }));
+  ['brand', 'navHome'].forEach((id) => document.getElementById(id).addEventListener('click', (e) => { if (!plainClick(e)) return; e.preventDefault(); go(0); }));
   addEventListener('keydown', (e) => {
     if (locked() || e.altKey || e.ctrlKey || e.metaKey || e.target.closest('input, textarea, select')) return;
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(target() + 1, 1); }
@@ -426,7 +421,7 @@
     moveInk(target(), false);
     if (!entrance || !hasGsap || reduced) return;
     gsap.from('.card-slot', { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out', clearProps: 'all' });
-    gsap.from('.top', { opacity: 0, y: -12, duration: 0.8, ease: 'expo.out', delay: 0.15, clearProps: 'all' });
+    gsap.from('.il-header', { opacity: 0, y: -12, duration: 0.8, ease: 'expo.out', delay: 0.15, clearProps: 'all' });
   }
 
   // The intro plays once per visit, so coming back from an activity goes straight to the scenes

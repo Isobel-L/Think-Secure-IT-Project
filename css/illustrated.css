@@ -87,6 +87,11 @@ html[lang="vi"] .il-page {
    Base
 ------------------------------ */
 
+/* Room for a scrollbar is kept even on short screens, so the navigation never shifts sideways */
+html {
+    scrollbar-gutter: stable;
+}
+
 .il-page,
 .il-page *,
 .il-page *::before,
