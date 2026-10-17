@@ -1,0 +1,1884 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 1920 1080"
+   version="1.1"
+   id="vector-1"
+   xml:space="preserve"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   sodipodi:docname="Passphrase - new.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+   id="vector-2"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:document-units="px"
+   inkscape:zoom="0.36374886"
+   inkscape:cx="1006.1887"
+   inkscape:cy="1002.065"
+   inkscape:window-width="1920"
+   inkscape:window-height="1022"
+   inkscape:window-x="0"
+   inkscape:window-y="30"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="vector-171" />
+  <defs
+   id="vector-3"><linearGradient
+   id="linearGradient5"
+   x1="0.079999998"
+   y1="0"
+   x2="0.89999998"
+   y2="1"
+   gradientUnits="objectBoundingBox"
+   spreadMethod="pad">
+      <stop
+   offset="0"
+   stop-color="#f78537"
+   id="stop3"
+   style="stop-color:#f98f41;stop-opacity:1;" />
+      <stop
+   offset=".55"
+   stop-color="#f99042"
+   id="stop4" />
+      <stop
+   offset="1"
+   stop-color="#ffa24d"
+   id="stop5" />
+    </linearGradient>
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-4"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-5"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="perspective-envelope"
+   up_left_point="403.46937,201.21918"
+   up_right_point="1004.1531,102.94728"
+   down_left_point="353.80872,740.14176"
+   down_right_point="1013.0211,824.11956"
+   id="vector-6"
+   is_visible="true"
+   lpeversion="1"
+   deform_type="perspective"
+   horizontal_mirror="false"
+   vertical_mirror="false"
+   overflow_perspective="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-7"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-8"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-9"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-10"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-11"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-12"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-13"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-14"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-15"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-16"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-17"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-18"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-19"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-20"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-21"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-22"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-23"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <linearGradient
+   id="vector-24"
+   x1="0.2"
+   y1="0"
+   x2="0.75"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#ff4800"
+   id="vector-25" />
+      <stop
+   offset=".55"
+   stop-color="#ff6503"
+   id="vector-26" />
+      <stop
+   offset="1"
+   stop-color="#ff8106"
+   id="vector-27" />
+    </linearGradient>
+    <linearGradient
+   id="vector-28"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#0b1f47"
+   id="vector-29" />
+      <stop
+   offset=".52"
+   stop-color="#0f2857"
+   id="vector-30" />
+      <stop
+   offset="1"
+   stop-color="#102f65"
+   id="vector-31" />
+    </linearGradient>
+    <radialGradient
+   id="vector-32"
+   cx="621.8"
+   cy="362.04"
+   r="131.04"
+   fx="621.8"
+   fy="362.04"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#fffdfb"
+   id="vector-33" />
+      <stop
+   offset=".64"
+   stop-color="#fff4f2"
+   id="vector-34" />
+      <stop
+   offset="1"
+   stop-color="#f8d3d0"
+   id="vector-35" />
+    </radialGradient>
+    <linearGradient
+   id="vector-36"
+   x1="0.15000001"
+   y1="0"
+   x2="0.80000001"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#ff2425"
+   id="vector-37"
+   style="stop-color:#6399f6;stop-opacity:1;" />
+      <stop
+   offset=".55"
+   stop-color="#ff341d"
+   id="vector-38" />
+      <stop
+   offset="1"
+   stop-color="#ff6503"
+   id="vector-39" />
+    </linearGradient>
+    <linearGradient
+   id="vector-40"
+   x1="673.75393"
+   y1="68.251462"
+   x2="1370.8679"
+   y2="765.36548"
+   gradientTransform="scale(0.81335332,1.229478)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#0b1e43"
+   id="vector-41" />
+      <stop
+   offset=".48"
+   stop-color="#0f2a5c"
+   id="vector-42" />
+      <stop
+   offset="1"
+   stop-color="#0a1f49"
+   id="vector-43" />
+    </linearGradient>
+    <linearGradient
+   id="vector-44"
+   x1="777.04676"
+   y1="90.106492"
+   x2="1343.349"
+   y2="719.33123"
+   gradientTransform="scale(0.76443276,1.3081595)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#fffdf8"
+   id="vector-45" />
+      <stop
+   offset=".52"
+   stop-color="#fdf8ef"
+   id="vector-46" />
+      <stop
+   offset="1"
+   stop-color="#fffaf1"
+   id="vector-47" />
+    </linearGradient>
+    <linearGradient
+   id="vector-48"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#0b1e43"
+   id="vector-49" />
+      <stop
+   offset="0.47586659"
+   stop-color="#0f2a5c"
+   id="vector-50" />
+      <stop
+   offset="1"
+   stop-color="#0a1f49"
+   id="vector-51" />
+    </linearGradient>
+    <linearGradient
+   id="vector-52"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#e8ebee"
+   id="vector-53" />
+      <stop
+   offset="1"
+   stop-color="#d9dfe5"
+   id="vector-54" />
+    </linearGradient>
+    <linearGradient
+   id="vector-55"
+   x1="368.48838"
+   y1="528.37487"
+   x2="632.67582"
+   y2="792.5623"
+   gradientTransform="scale(1.601136,0.62455658)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#ffe3e1"
+   id="vector-56" />
+      <stop
+   offset="1"
+   stop-color="#f9c7c6"
+   id="vector-57" />
+    </linearGradient>
+    <linearGradient
+   id="vector-58"
+   x1="403.86419"
+   y1="1031.5695"
+   x2="582.37469"
+   y2="1210.0801"
+   gradientTransform="scale(1.579739,0.63301597)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#d7eafa"
+   id="vector-59" />
+      <stop
+   offset="1"
+   stop-color="#b9d8f6"
+   id="vector-60" />
+    </linearGradient>
+    <linearGradient
+   id="vector-61"
+   x1="2255.618"
+   y1="320.49975"
+   x2="2395.9675"
+   y2="460.84931"
+   gradientTransform="matrix(0.69825654,0,0,1.4321384,-1257.0007,358.37302)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#0b1f47"
+   id="vector-62" />
+      <stop
+   offset=".52"
+   stop-color="#0f2857"
+   id="vector-63" />
+      <stop
+   offset="1"
+   stop-color="#102f65"
+   id="vector-64" />
+    </linearGradient>
+    <linearGradient
+   id="vector-65"
+   x1="0.15000001"
+   y1="0"
+   x2="0.81999999"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#0b78f8"
+   id="vector-66" />
+      <stop
+   offset=".54"
+   stop-color="#086af5"
+   id="vector-67" />
+      <stop
+   offset="1"
+   stop-color="#0754e8"
+   id="vector-68" />
+    </linearGradient>
+    <inkscape:path-effect
+   effect="perspective-envelope"
+   up_left_point="983.2865,359.59777"
+   up_right_point="1650.7043,256.00242"
+   down_left_point="955.65797,1012.2727"
+   down_right_point="1641.4143,1058.8726"
+   id="vector-69"
+   is_visible="true"
+   lpeversion="1"
+   deform_type="perspective"
+   horizontal_mirror="false"
+   vertical_mirror="false"
+   overflow_perspective="false" />
+    <inkscape:path-effect
+   effect="bspline"
+   id="vector-70"
+   is_visible="true"
+   lpeversion="1.3"
+   weight="33.333333"
+   steps="2"
+   helper_size="0"
+   apply_no_weight="true"
+   apply_with_weight="true"
+   only_selected="false"
+   uniform="false" />
+    <linearGradient
+   id="vector-71"
+   x1="0.15000001"
+   y1="0"
+   x2="0.81999999"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#0b78f8"
+   id="vector-72" />
+      <stop
+   offset="0.52456063"
+   stop-color="#086af5"
+   id="vector-73" />
+      <stop
+   offset="1"
+   stop-color="#0754e8"
+   id="vector-74" />
+    </linearGradient>
+    <linearGradient
+   id="vector-75"
+   inkscape:collect="always">
+      <stop
+   style="stop-color:#01a18a;stop-opacity:1;"
+   offset="0"
+   id="vector-76" />
+      <stop
+   style="stop-color:#0132a1;stop-opacity:1;"
+   offset="1"
+   id="vector-77" />
+    </linearGradient>
+    <linearGradient
+   id="vector-78"
+   inkscape:collect="always">
+      <stop
+   style="stop-color:#01a18a;stop-opacity:1;"
+   offset="0"
+   id="vector-79" />
+      <stop
+   style="stop-color:#01a18a;stop-opacity:1"
+   offset="1"
+   id="vector-80" />
+    </linearGradient>
+    <linearGradient
+   id="vector-81"
+   x1=".08"
+   y1="0"
+   x2=".9"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#d96b31"
+   id="vector-82"
+   style="stop-color:#dd7433;stop-opacity:1;" />
+      <stop
+   offset=".55"
+   stop-color="#dc7333"
+   id="vector-83" />
+      <stop
+   offset="1"
+   stop-color="#e17d37"
+   id="vector-84" />
+    </linearGradient>
+    <clipPath
+   id="vector-85">
+      <rect
+   width="1672"
+   height="941"
+   id="vector-86"
+   inkscape:label="Artwork panel 1" />
+    </clipPath>
+    <linearGradient
+   id="vector-87"
+   x1="0"
+   y1="0"
+   x2="0"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#fdf8ed"
+   id="vector-88" />
+      <stop
+   offset="1"
+   stop-color="#faf4e6"
+   id="vector-89" />
+    </linearGradient>
+    <linearGradient
+   id="vector-90"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#031f47"
+   id="vector-91" />
+      <stop
+   offset=".55"
+   stop-color="#052852"
+   id="vector-92" />
+      <stop
+   offset="1"
+   stop-color="#035971"
+   id="vector-93" />
+    </linearGradient>
+    <linearGradient
+   id="vector-94"
+   x1=".1"
+   y1="0"
+   x2=".85"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#006afe"
+   id="vector-95" />
+      <stop
+   offset=".55"
+   stop-color="#006afd"
+   id="vector-96" />
+      <stop
+   offset="1"
+   stop-color="#0068fa"
+   id="vector-97" />
+    </linearGradient>
+    <linearGradient
+   id="vector-98"
+   x1=".08"
+   y1="0"
+   x2=".9"
+   y2="1"
+   xlink:href="#vector-81">
+      <stop
+   offset="0"
+   stop-color="#f78537"
+   id="vector-99" />
+      <stop
+   offset=".55"
+   stop-color="#f99042"
+   id="vector-100" />
+      <stop
+   offset="1"
+   stop-color="#ffa24d"
+   id="vector-101" />
+    </linearGradient>
+    <linearGradient
+   id="vector-102"
+   x1="375.27887"
+   y1="392.72476"
+   x2="498.98873"
+   y2="429.58053"
+   gradientTransform="matrix(1.2790009,0,0,0.78186028,0.99399886,1.9879977)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#dc7433"
+   id="vector-103" />
+      <stop
+   offset="1"
+   stop-color="#e8712d"
+   id="vector-104" />
+    </linearGradient>
+    <linearGradient
+   id="vector-105"
+   x1="441.92556"
+   y1="595.78391"
+   x2="536.78002"
+   y2="690.63837"
+   gradientTransform="matrix(1.5213241,0,0,0.85313815,-188.28265,7.2187611)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#dc7534"
+   id="vector-106" />
+      <stop
+   offset="1"
+   stop-color="#d87433"
+   id="vector-107" />
+    </linearGradient>
+    <linearGradient
+   id="vector-108"
+   x1=".15"
+   y1="0"
+   x2=".85"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#00aa90"
+   id="vector-109" />
+      <stop
+   offset=".55"
+   stop-color="#01a188"
+   id="vector-110" />
+      <stop
+   offset="1"
+   stop-color="#07967f"
+   id="vector-111" />
+    </linearGradient>
+    <linearGradient
+   id="vector-112"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#00aa90"
+   id="vector-113" />
+      <stop
+   offset="1"
+   stop-color="#01967f"
+   id="vector-114" />
+    </linearGradient>
+    <linearGradient
+   id="vector-115"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#9ddfc8"
+   id="vector-116" />
+      <stop
+   offset="1"
+   stop-color="#67cdb0"
+   id="vector-117" />
+    </linearGradient>
+    <linearGradient
+   id="vector-118"
+   x1="0"
+   y1="231.35452"
+   x2="451.75311"
+   y2="683.10763"
+   gradientTransform="matrix(1.0515044,0,0,1.0481511,101.94196,-64.872155)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#68b9fc"
+   id="vector-119" />
+      <stop
+   offset="1"
+   stop-color="#83c8fb"
+   id="vector-120"
+   style="stop-color:#05264e;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+   id="vector-121"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#fffefd"
+   id="vector-122" />
+      <stop
+   offset="1"
+   stop-color="#fefaf4"
+   id="vector-123" />
+    </linearGradient>
+    <linearGradient
+   id="vector-124"
+   x1="329.21009"
+   y1="230.78295"
+   x2="1270.4861"
+   y2="1172.059"
+   gradientTransform="matrix(1.1563098,0,0,0.85794898,11.765579,0)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#062a51"
+   id="vector-125" />
+      <stop
+   offset=".55"
+   stop-color="#072c57"
+   id="vector-126" />
+      <stop
+   offset="1"
+   stop-color="#064262"
+   id="vector-127" />
+    </linearGradient>
+    <linearGradient
+   id="vector-128"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#63cbae"
+   id="vector-129" />
+      <stop
+   offset="1"
+   stop-color="#3bb99d"
+   id="vector-130" />
+    </linearGradient>
+    <linearGradient
+   id="vector-131"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#019f89"
+   id="vector-132" />
+      <stop
+   offset="1"
+   stop-color="#018b7d"
+   id="vector-133" />
+    </linearGradient>
+    <linearGradient
+   id="vector-134"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#013058"
+   id="vector-135" />
+      <stop
+   offset="1"
+   stop-color="#02385e"
+   id="vector-136" />
+    </linearGradient>
+    <linearGradient
+   id="vector-137"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#6fd1b4"
+   id="vector-138" />
+      <stop
+   offset="1"
+   stop-color="#55bfa4"
+   id="vector-139" />
+    </linearGradient>
+    <linearGradient
+   id="vector-140"
+   x1="527.14101"
+   y1="389.26965"
+   x2="693.09281"
+   y2="555.22146"
+   gradientTransform="matrix(0.84142833,0,0,0.79987117,118.34415,94.686359)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#d7f4e8"
+   id="vector-141" />
+      <stop
+   offset="1"
+   stop-color="#bcebdc"
+   id="vector-142" />
+    </linearGradient>
+    <linearGradient
+   id="vector-143"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#d6ebfc"
+   id="vector-144" />
+      <stop
+   offset="1"
+   stop-color="#badcf8"
+   id="vector-145" />
+    </linearGradient>
+    <linearGradient
+   id="vector-146"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#e7e3fc"
+   id="vector-147" />
+      <stop
+   offset="1"
+   stop-color="#d9d2fa"
+   id="vector-148" />
+    </linearGradient>
+    <linearGradient
+   id="vector-149"
+   x1="0"
+   y1="0"
+   x2="1"
+   y2="1">
+      <stop
+   offset="0"
+   stop-color="#dcf5ec"
+   id="vector-150" />
+      <stop
+   offset="1"
+   stop-color="#c7ebdf"
+   id="vector-151" />
+    </linearGradient>
+    <symbol
+   id="vector-152"
+   viewBox="0 0 200 100">
+      <path
+   d="M14 98h176a32 32 0 0 0-4-64 44 44 0 0 0-50-14A58 58 0 0 0 28 42 40 40 0 0 0 14 98z"
+   fill="#fff"
+   id="vector-153"
+   inkscape:label="Artwork contour 1" />
+    </symbol>
+    <symbol
+   id="vector-154"
+   viewBox="-50 -50 100 100">
+      <path
+   d="M0-48C6-14 14-6 48 0 14 6 6 14 0 48-6 14-14 6-48 0-14-6-6-14 0-48z"
+   fill="#ffc22e"
+   id="vector-155"
+   inkscape:label="Artwork contour 1" />
+    </symbol>
+    <linearGradient
+   inkscape:collect="always"
+   xlink:href="#vector-112"
+   id="vector-156"
+   x1="579.35431"
+   y1="402.07124"
+   x2="679.33842"
+   y2="502.05535"
+   gradientTransform="matrix(0.81746999,-1.7622082e-4,-1.7791556e-4,0.82331373,118.32368,94.660845)"
+   gradientUnits="userSpaceOnUse" />
+    <linearGradient
+   inkscape:collect="always"
+   xlink:href="#vector-78"
+   id="vector-157"
+   x1="0"
+   y1="742.69229"
+   x2="503.91382"
+   y2="877.86688"
+   gradientUnits="userSpaceOnUse" />
+    <linearGradient
+   inkscape:collect="always"
+   xlink:href="#vector-75"
+   id="vector-158"
+   gradientUnits="userSpaceOnUse"
+   x1="0"
+   y1="742.69229"
+   x2="503.91382"
+   y2="877.86688"
+   gradientTransform="matrix(0.38384115,0.40427212,-0.35857371,0.43275976,254.03339,335.85893)" />
+    <linearGradient
+   id="vector-159"
+   x1="0"
+   y1="231.35452"
+   x2="451.75311"
+   y2="683.10763"
+   gradientTransform="matrix(0.76301707,0,0,1.0481511,448.56101,-76.532166)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0"
+   stop-color="#68b9fc"
+   id="vector-160" />
+      <stop
+   offset="1"
+   stop-color="#83c8fb"
+   id="vector-161" />
+    </linearGradient>
+    <linearGradient
+   inkscape:collect="always"
+   xlink:href="#vector-94"
+   id="vector-162"
+   x1="1203.4634"
+   y1="32.664887"
+   x2="1466.5697"
+   y2="418.39606"
+   gradientTransform="scale(0.99003979,1.0100604)"
+   gradientUnits="userSpaceOnUse" />
+    <linearGradient
+   x1="204.86102"
+   y1="1467.0671"
+   x2="432.61828"
+   y2="1792.4347"
+   id="vector-163"
+   gradientTransform="matrix(1.0512212,0,0,0.69958426,269.17362,-147.23967)"
+   gradientUnits="userSpaceOnUse">
+      <stop
+   offset="0%"
+   stop-color="#21c0aa"
+   id="vector-166" />
+      <stop
+   offset="100%"
+   stop-color="#1ab19e"
+   id="vector-167" />
+    </linearGradient>
+  <linearGradient
+   inkscape:collect="always"
+   xlink:href="#vector-94"
+   id="linearGradient1"
+   x1="854.15329"
+   y1="176.93926"
+   x2="946.02453"
+   y2="299.43424"
+   gradientTransform="matrix(1.2287448,0,0,0.81383862,3.2534223,34.974289)"
+   gradientUnits="userSpaceOnUse" /><linearGradient
+   inkscape:collect="always"
+   xlink:href="#linearGradient5"
+   id="linearGradient3"
+   x1="808.41949"
+   y1="624.53705"
+   x2="840.56612"
+   y2="695.60978"
+   gradientTransform="matrix(1.2421603,0,0,0.80504906,2.6019876,-1.2390611)"
+   gradientUnits="userSpaceOnUse" /></defs>
+  <g
+   id="vector-166-unique-165"
+   inkscape:label="Sky"
+   inkscape:groupmode="layer">
+    <rect
+   x="0"
+   y="0"
+   width="1920"
+   height="1080"
+   rx="0"
+   fill="#fcf8ee"
+   id="vector-167-unique-166"
+   inkscape:label="warm ivory sky" />
+    <path
+   d="M 0,310 C 20,275 48,278 70,301 C 85,250 156,248 171,300 C 213,275 247,319 226,346 H 0 Z"
+   fill="#fff"
+   id="vector-168"
+   inkscape:label="cloud" />
+    <path
+   d="M 872,257 C 883,239 907,243 918,252 C 930,177 1026,177 1041,250 C 1083,222 1110,273 1088,297 H 879 C 857,291 851,266 872,257Z"
+   fill="#fff"
+   id="vector-169"
+   inkscape:label="cloud" />
+    <path
+   d="M 1750,157 C 1745,127 1780,112 1801,131 C 1826,60 1920,71 1930,139 L 1940,193 H 1764 C 1747,191 1741,175 1750,157Z"
+   fill="#fff"
+   id="vector-170"
+   inkscape:label="cloud" />
+  </g>
+  <g
+   id="vector-171"
+   inkscape:label="Back land"
+   inkscape:groupmode="layer">
+    <path
+   d="M 0,490 Q 160,320 350,439 T 900,373 Q 1200,120 1400,275 T 1920,451 V1080 H0Z"
+   fill="#8bddcf"
+   id="vector-172"
+   inkscape:label="distant mint hill" />
+    <path
+   d="M 0,435 C 160,460 162,624 420,540 S 740,260 1040,402 S 1680,665 1820,510 Q1880,454 1920,444 V1080 H0Z"
+   fill="#afe4fb"
+   id="vector-173"
+   inkscape:label="blue hill" />
+    <path
+   d="M0,565 C150,570 205,811 415,758 S 760,634 958,484 Q1100,381 1250,520 T1920,643 V1080 H0Z"
+   fill="#79dccc"
+   id="vector-174"
+   inkscape:label="mint hill" />
+    <g
+   inkscape:groupmode="layer"
+   id="layer2"
+   inkscape:label="Title card"
+   style="display:inline">
+    <rect
+   style="fill:#ffffff;stroke:none;stroke-width:1.2497"
+   id="rect1"
+   width="838.19336"
+   height="866.77032"
+   x="82.433304"
+   y="206.4223"
+   ry="79.204483"
+   inkscape:label="Title card panel 1" />
+    <text
+   xml:space="preserve"
+   style="font-weight:600;font-size:96px;font-family:Fredoka;fill:#080b32"
+   x="140.30748"
+   y="347.17691"
+   id="text1"
+   inkscape:label="Title">Build a</text>
+    <text
+   xml:space="preserve"
+   style="font-weight:600;font-size:72px;font-family:Fredoka;fill:#008fbd"
+   x="142.10797"
+   y="435.01306"
+   id="text1-28"
+   inkscape:label="Title">Strong Passphrase</text>
+    <text
+   xml:space="preserve"
+   style="font-weight:400;font-size:29.3333px;font-family:Fredoka;fill:#365881"
+   x="142.10797"
+   y="494"
+   id="text1-2"
+   inkscape:label="description">       <tspan
+   x="142.10797"
+   y="494"
+   id="vector-293">Turn memorable words and symbols into a</tspan>       <tspan
+   x="142.10797"
+   y="532"
+   id="vector-294">passphrase that is longer, safer, and easier</tspan>       <tspan
+   x="142.10797"
+   y="570"
+   id="vector-295">to keep in mind.</tspan>    </text>
+    <rect
+   style="fill:#008fbd;fill-opacity:1;stroke:none;stroke-width:0.900269"
+   id="rect22"
+   width="394.30032"
+   height="79.541496"
+   x="128.49045"
+   y="636.64355"
+   ry="39.770748"
+   inkscape:label="button" />
+    <text
+   xml:space="preserve"
+   style="font-weight:600;font-size:34px;font-family:Fredoka;fill:#ffffff"
+   x="173.55495"
+   y="688.73993"
+   id="text1-9"
+   inkscape:label="button text">Build a passphrase</text>
+    
+  </g><path
+   d="m 0,709 q 230,126 446,127 216,1 554,96 l 920,-292 v 440 H 0 Z"
+   fill="#75d0e6"
+   id="vector-175"
+   inkscape:label="lower blue hill"
+   style="display:inline" />
+    <path
+   d="M0,812 C151,790 196,917 379,924 L650,1080 H0Z"
+   fill="#24b4a2"
+   id="vector-176"
+   inkscape:label="left green hill" />
+    
+    <path
+   d="M1620,737 Q1780,618 1920,601 V1080 H1600Z"
+   fill="#54cbb7"
+   id="vector-178"
+   inkscape:label="right mint hill" />
+    <g
+   id="vector-179"
+   inkscape:label="tree"
+   transform="translate(280,909) scale(1)">
+      <ellipse
+   cx="0"
+   cy="-65"
+   rx="59"
+   ry="66"
+   fill="#008b8d"
+   id="vector-180"
+   inkscape:label="tree crown" />
+      <path
+   d="M0,-42 V45"
+   fill="none"
+   stroke="#005475"
+   stroke-width="14"
+   stroke-linecap="round"
+   id="vector-181"
+   inkscape:label="trunk" />
+    </g>
+    <g
+   id="vector-182"
+   inkscape:label="tree"
+   transform="translate(370,950) scale(0.62)">
+      <ellipse
+   cx="0"
+   cy="-65"
+   rx="59"
+   ry="66"
+   fill="#008b8d"
+   id="vector-183"
+   inkscape:label="tree crown" />
+      <path
+   d="M0,-42 V45"
+   fill="none"
+   stroke="#005475"
+   stroke-width="14"
+   stroke-linecap="round"
+   id="vector-184"
+   inkscape:label="trunk" />
+    </g>
+    <g
+   id="vector-185"
+   inkscape:label="tree"
+   transform="matrix(1.05,0,0,1.05,1777.3886,715.51956)">
+      <ellipse
+   cx="0"
+   cy="-65"
+   rx="59"
+   ry="66"
+   fill="#008b8d"
+   id="vector-186"
+   inkscape:label="tree crown" />
+      <path
+   d="M 0,-42 V 45"
+   fill="none"
+   stroke="#005475"
+   stroke-width="14"
+   stroke-linecap="round"
+   id="vector-187"
+   inkscape:label="trunk" />
+    </g><g
+   id="vector-185-7"
+   inkscape:label="tree"
+   transform="matrix(1.05,0,0,1.05,1854.426,865.17893)">
+      <ellipse
+   cx="0"
+   cy="-65"
+   rx="59"
+   ry="66"
+   fill="#008b8d"
+   id="vector-186-3"
+   inkscape:label="tree crown" />
+      <path
+   d="M 0,-42 V 45"
+   fill="none"
+   stroke="#005475"
+   stroke-width="14"
+   stroke-linecap="round"
+   id="vector-187-1"
+   inkscape:label="trunk" />
+    </g>
+  </g>
+  
+  <g
+   id="vector-199"
+   inkscape:label="mascot"
+   inkscape:groupmode="layer">
+    <g
+   id="vector-200"
+   inkscape:label="body and face"
+   transform="translate(300,100) scale(.99)">
+      <g
+   class="ly mascot"
+   data-depth="0.7"
+   id="vector-201"
+   inkscape:label="body and face">
+        <path
+   d="m 1151,204 c 6,-91 54,-161 127,-170 81,-10 132,56 166,132 26,58 73,88 89,147 86.8315,32.3701 38.1815,123.6108 -28.6008,90.26078 10.0096,89.1632 -100.2267,63.00774 -103.4554,19.35306 C 1397.7151,378.95916 1393,259 1393,259 l -242,1 z"
+   fill="url(#vector-94)"
+   id="vector-202"
+   sodipodi:nodetypes="ccccczccc"
+   style="fill:url(#vector-162)"
+   inkscape:label="body and face contour 1" />
+        <circle
+   cx="1240"
+   cy="150"
+   r="12"
+   fill="#080d17"
+   id="vector-203"
+   inkscape:label="body and face round detail 2" />
+        <circle
+   cx="1313"
+   cy="130"
+   r="12"
+   fill="#080d17"
+   id="vector-204"
+   inkscape:label="body and face round detail 3" />
+        <path
+   d="M1260 176c11 16 25 20 36 14 8-4 12-13 12-25"
+   fill="none"
+   stroke="#080d17"
+   stroke-width="6"
+   stroke-linecap="round"
+   id="vector-205"
+   inkscape:label="body and face contour 4" />
+      </g>
+    </g>
+  </g>
+  <g
+   id="vector-206"
+   inkscape:label="Passphrase window"
+   transform="translate(480,154) scale(.88)"
+   inkscape:groupmode="layer">
+    <g
+   class="ly device"
+   data-depth="0.6"
+   id="vector-207"
+   inkscape:label="browser and passphrase">
+      <path
+   d="m 554.41955,198 h 774.79485 c 41.6663,0 58.5312,19 64.4835,54 L 1480.8411,949.95624 1444.2927,941 H 440.33325 L 392.43443,1005.5668 488.94394,252 c 2.97616,-35 24.80137,-54 65.47561,-54 z"
+   fill="url(#vector-124)"
+   id="vector-208"
+   sodipodi:nodetypes="ssccccccs"
+   style="fill:url(#vector-124);stroke-width:0.996019"
+   inkscape:label="browser and passphrase contour 1" />
+      <path
+   d="M539 272h811c17 0 24 10 26 27l76 642H428l82-642c1-17 10-27 29-27z"
+   fill="url(#vector-121)"
+   id="vector-209"
+   inkscape:label="browser and passphrase contour 2" />
+      <g
+   fill="#b3c0d4"
+   id="vector-210"
+   inkscape:label="browser and passphrase details 3">
+        <circle
+   cx="565"
+   cy="237"
+   r="15"
+   id="vector-211"
+   inkscape:label="browser and passphrase details 3 round detail 1" />
+        <circle
+   cx="616"
+   cy="237"
+   r="15"
+   id="vector-212"
+   inkscape:label="browser and passphrase details 3 round detail 2" />
+        <circle
+   cx="667"
+   cy="237"
+   r="15"
+   id="vector-213"
+   inkscape:label="browser and passphrase details 3 round detail 3" />
+      </g>
+      <g
+   class="tile"
+   id="vector-214"
+   inkscape:label="browser and passphrase details 4">
+        <rect
+   x="768"
+   y="405"
+   width="156"
+   height="162"
+   rx="20"
+   fill="url(#vector-143)"
+   id="vector-215"
+   inkscape:label="browser and passphrase details 4 panel 1" />
+        <g
+   fill="none"
+   stroke="#fdb707"
+   stroke-width="15"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   id="vector-216"
+   inkscape:label="browser and passphrase details 4 details 2">
+          <circle
+   cx="870"
+   cy="463"
+   r="25"
+   id="vector-217"
+   inkscape:label="browser and passphrase details 4 details 2 round detail 1" />
+          <path
+   d="m852 482-52 53"
+   id="vector-218"
+   inkscape:label="browser and passphrase details 4 details 2 contour 2" />
+          <path
+   d="m812 523 15 15m1-31 15 15"
+   id="vector-219"
+   inkscape:label="browser and passphrase details 4 details 2 contour 3" />
+        </g>
+      </g>
+      <g
+   class="tile"
+   id="vector-220"
+   inkscape:label="browser and passphrase details 5">
+        <rect
+   x="981"
+   y="404"
+   width="156"
+   height="163"
+   rx="20"
+   fill="url(#vector-146)"
+   id="vector-221"
+   inkscape:label="browser and passphrase details 5 panel 1" />
+        <path
+   d="m 1059.5584,443.87982 a 51.260416,50.245633 0 1 0 44.3099,68.98129 41.703389,40.877803 0 0 1 -44.3099,-68.98129 z"
+   fill="url(#vector-90)"
+   id="vector-222"
+   style="fill:#1d0d5c;fill-opacity:1;stroke-width:0.860178"
+   inkscape:label="browser and passphrase details 5 contour 2" />
+        <path
+   d="m1096 449 7 14 15 2-11 11 3 16-14-8-14 8 3-16-11-11 15-2z"
+   fill="#fbb506"
+   id="vector-223"
+   inkscape:label="browser and passphrase details 5 contour 3" />
+      </g>
+      <g
+   class="tile"
+   id="vector-224"
+   inkscape:label="browser and passphrase details 6">
+        <rect
+   x="1193"
+   y="404"
+   width="157"
+   height="163"
+   rx="20"
+   fill="url(#vector-149)"
+   id="vector-225"
+   inkscape:label="browser and passphrase details 6 panel 1" />
+        <path
+   d="M1213 457h97l-8 52c-3 18-13 27-31 27h-23c-17 0-27-10-30-28z"
+   fill="#087878"
+   id="vector-226"
+   inkscape:label="browser and passphrase details 6 contour 2" />
+        <path
+   d="M1304 475h9a20 20 0 0 1 0 40h-15"
+   fill="none"
+   stroke="#087878"
+   stroke-width="12"
+   id="vector-227"
+   inkscape:label="browser and passphrase details 6 contour 3" />
+      </g>
+      <g
+   fill="#9bafca"
+   id="vector-228"
+   inkscape:label="browser and passphrase details 7">
+        <rect
+   x="719"
+   y="484"
+   width="39"
+   height="10"
+   rx="5"
+   id="vector-229"
+   inkscape:label="browser and passphrase details 7 panel 1" />
+        <rect
+   x="734"
+   y="469"
+   width="10"
+   height="39"
+   rx="5"
+   id="vector-230"
+   inkscape:label="browser and passphrase details 7 panel 2" />
+        <rect
+   x="933"
+   y="484"
+   width="39"
+   height="10"
+   rx="5"
+   id="vector-231"
+   inkscape:label="browser and passphrase details 7 panel 3" />
+        <rect
+   x="948"
+   y="469"
+   width="10"
+   height="39"
+   rx="5"
+   id="vector-232"
+   inkscape:label="browser and passphrase details 7 panel 4" />
+        <rect
+   x="1145"
+   y="484"
+   width="39"
+   height="10"
+   rx="5"
+   id="vector-233"
+   inkscape:label="browser and passphrase details 7 panel 5" />
+        <rect
+   x="1160"
+   y="469"
+   width="10"
+   height="39"
+   rx="5"
+   id="vector-234"
+   inkscape:label="browser and passphrase details 7 panel 6" />
+      </g>
+      <path
+   d="M640 586v14c0 10 6 15 17 15h418c11 0 18-6 18-16v-23M906 615v42m-16-16 16 18 16-18"
+   fill="none"
+   stroke="#99afca"
+   stroke-width="7"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   id="vector-235"
+   inkscape:label="browser and passphrase contour 8" />
+      <rect
+   x="611"
+   y="673"
+   width="603"
+   height="110"
+   rx="28"
+   fill="#d5f2e7"
+   id="vector-236"
+   inkscape:label="browser and passphrase panel 9" />
+      <g
+   fill="url(#vector-112)"
+   id="vector-237"
+   inkscape:label="browser and passphrase details 10">
+        <circle
+   cx="671"
+   cy="729"
+   r="18"
+   id="vector-238"
+   inkscape:label="browser and passphrase details 10 round detail 1" />
+        <circle
+   cx="720"
+   cy="729"
+   r="18"
+   id="vector-239"
+   inkscape:label="browser and passphrase details 10 round detail 2" />
+        <circle
+   cx="769"
+   cy="729"
+   r="18"
+   id="vector-240"
+   inkscape:label="browser and passphrase details 10 round detail 3" />
+        <circle
+   cx="818"
+   cy="729"
+   r="18"
+   id="vector-241"
+   inkscape:label="browser and passphrase details 10 round detail 4" />
+        <circle
+   cx="867"
+   cy="729"
+   r="18"
+   id="vector-242"
+   inkscape:label="browser and passphrase details 10 round detail 5" />
+        <circle
+   cx="916"
+   cy="729"
+   r="18"
+   id="vector-243"
+   inkscape:label="browser and passphrase details 10 round detail 6" />
+        <circle
+   cx="965"
+   cy="729"
+   r="18"
+   id="vector-244"
+   inkscape:label="browser and passphrase details 10 round detail 7" />
+        <circle
+   cx="1014"
+   cy="729"
+   r="18"
+   id="vector-245"
+   inkscape:label="browser and passphrase details 10 round detail 8" />
+        <circle
+   cx="1063"
+   cy="729"
+   r="18"
+   id="vector-246"
+   inkscape:label="browser and passphrase details 10 round detail 9" />
+      </g>
+      <g
+   class="pop"
+   id="vector-247"
+   inkscape:label="browser and passphrase details 11">
+        <circle
+   cx="1196"
+   cy="727"
+   r="70"
+   fill="url(#vector-112)"
+   id="vector-248"
+   inkscape:label="browser and passphrase details 11 round detail 1" />
+        <path
+   d="m1165 729 23 23 42-47"
+   fill="none"
+   stroke="#fff"
+   stroke-width="15"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   id="vector-249"
+   inkscape:label="browser and passphrase details 11 contour 2" />
+        <g
+   fill="none"
+   stroke="#009e80"
+   stroke-width="11"
+   stroke-linecap="round"
+   id="vector-250"
+   inkscape:label="browser and passphrase details 11 details 3">
+          <path
+   d="m 1270.0664,659.81174 11,-21"
+   id="vector-251"
+   inkscape:label="browser and passphrase details 11 details 3 contour 1" />
+          <path
+   d="m1290 687 29-16"
+   id="vector-252"
+   inkscape:label="browser and passphrase details 11 details 3 contour 2" />
+          <path
+   d="m 1296.5424,716.23995 30,7"
+   id="vector-253"
+   inkscape:label="browser and passphrase details 11 details 3 contour 3" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <g
+   id="vector-254"
+   inkscape:label="mascot hands and shield"
+   transform="translate(300,100) scale(.99)"
+   inkscape:groupmode="layer">
+    <g
+   class="ly mascot"
+   data-depth="0.72"
+   id="vector-255"
+   inkscape:label="shield and hands">
+      <path
+   d="m 1038.2534,239.97429 c -5,-32 27,-61 70,-61 38,0 71,17 80,44 l -68,14 c -4,46 -50,50 -70,31 q -11,-11 -12,-28 z"
+   fill="url(#vector-94)"
+   id="vector-256"
+   sodipodi:nodetypes="cscccc"
+   inkscape:label="shield and hands contour 1"
+   style="fill:url(#linearGradient1)" />
+      <g
+   transform="rotate(3 1479 247)"
+   id="vector-257"
+   inkscape:label="shield and hands details 2">
+        <path
+   d="M1479 119c-34 28-69 42-101 44l4 84c8 61 39 99 97 124 58-25 89-63 98-124l5-84c-34-3-70-17-103-44z"
+   fill="#fff"
+   id="vector-258"
+   inkscape:label="shield and hands details 2 contour 1" />
+        <path
+   d="M1479 142c-29 23-57 35-82 38l4 67c7 49 32 79 78 101 46-22 71-52 78-101l5-67c-27-4-54-16-83-38z"
+   fill="url(#vector-137)"
+   id="vector-259"
+   inkscape:label="shield and hands details 2 contour 2" />
+        <path
+   d="M1457 239v-19a22 22 0 0 1 44 0v20"
+   fill="none"
+   stroke="url(#vector-90)"
+   stroke-width="15"
+   id="vector-260"
+   inkscape:label="shield and hands details 2 contour 3"
+   style="fill:none;fill-opacity:1;stroke:#032149;stroke-opacity:1" />
+        <rect
+   x="1437"
+   y="235"
+   width="85"
+   height="72"
+   rx="11"
+   fill="url(#vector-90)"
+   id="vector-261"
+   inkscape:label="shield and hands details 2 panel 4"
+   style="fill:#032149;fill-opacity:1" />
+        <circle
+   cx="1479"
+   cy="263"
+   r="10"
+   fill="#fff"
+   id="vector-262"
+   inkscape:label="shield and hands details 2 round detail 5" />
+        <path
+   d="m1475 268 8-1 3 19h-15z"
+   fill="#fff"
+   id="vector-263"
+   inkscape:label="shield and hands details 2 contour 6" />
+      </g>
+      <circle
+   cx="1562"
+   cy="272"
+   r="37"
+   fill="url(#vector-94)"
+   id="vector-264"
+   inkscape:label="shield and hands round detail 3" />
+    </g>
+  </g>
+  <g
+   id="vector-265"
+   inkscape:label="person"
+   inkscape:groupmode="layer">
+    <path
+   d="M 470.66107,1066.4351 C 438.66107,1025.4351 427,894 479,877 c -16,-51 23,-96 83,-126 -14,-63 28,-125 105,-133 29,-77 116,-86 149,-21 51,-13 81,46 36,88 l -54,111 c -7.33333,43.33333 -23.66667,83.33333 -49,120 l -94,104 z"
+   fill="url(#vector-90)"
+   id="vector-266"
+   inkscape:label="hair"
+   sodipodi:nodetypes="cccccccccc" />
+    <path
+   d="m 804,619 c 24,-59 76,-137 138,-136 28,-4 69,7 98,16 28,8 20,37 -1,45 -15,7 -42,-1 -58,-3 l -38,53 c -5,24 -0.4428,68.12018 15.5572,71.12018 l 54.9325,-22.53663 c 36,-9 61.5103,12.41645 41.5103,37.41645 -23,25 -68,53 -102,71 l -42,60 -84,-27 z"
+   fill="url(#vector-98)"
+   id="vector-267"
+   inkscape:label="raised arm and selecting hand"
+   style="fill:#f98f41;fill-opacity:1"
+   sodipodi:nodetypes="ccccccccccccc" />
+    <path
+   d="M880,555 Q932,495 969,488"
+   fill="none"
+   stroke="#ce6529"
+   stroke-width="6"
+   stroke-linecap="round"
+   id="vector-268"
+   inkscape:label="finger crease" />
+    <path
+   d="m 742,794 c 41.33333,-51.33333 78.33333,-66.66667 111,-46 29.33333,10.66667 54.66667,28.33333 76,53 21,26 -10.65307,201.306 -70.65307,272.306 L 729,1018 659,919 Z"
+   fill="url(#vector-108)"
+   id="vector-269"
+   inkscape:label="teal shirt"
+   sodipodi:nodetypes="ccccccc" />
+    <g
+   id="vector-270"
+   inkscape:label="face and body"
+   transform="translate(640,265) scale(1.03)">
+      <path
+   d="M84 510h31c0 49-13 99-38 140l-37-9c29-46 40-88 38-124z"
+   fill="url(#vector-98)"
+   id="vector-271"
+   inkscape:label="neck" />
+      <path
+   d="M171 368c34 22 51 65 48 110-4 51-38 88-94 99-42 8-68-14-67-45-16 7-27 1-25-23 1-25 17-41 39-38 42-18 79-51 99-103z"
+   fill="url(#vector-98)"
+   id="vector-272"
+   inkscape:label="face" />
+      <circle
+   cx="180"
+   cy="445"
+   r="11"
+   fill="#080d17"
+   id="vector-273"
+   inkscape:label="eye" />
+      <path
+   d="M171 488c10 14 24 19 38 12"
+   fill="none"
+   stroke="#080d17"
+   stroke-width="6"
+   stroke-linecap="round"
+   id="vector-274"
+   inkscape:label="mouth" />
+    </g>
+    <path
+   d="m 568,751 c -14,-66 35,-132 101,-133 32,-74 107,-75 139,-25 27,-5 59,6 60,38 -0.66667,18 -8.33333,35.66667 -23,53 l -32,-33 c -15.33333,42 -43.66667,74.33333 -85,97 -28.49669,12.08784 -53,3 -49,30 4,23 24,36 45,30 -1.33333,32.66667 -11.33333,62.33333 -30,89 l -101,23 z"
+   fill="url(#vector-90)"
+   id="vector-275"
+   inkscape:label="front hair silhouette"
+   sodipodi:nodetypes="cccccccccccc" />
+  </g>
+  <g
+   id="vector-276"
+   inkscape:label="Word tile in hand"
+   transform="translate(480,154) scale(.88)"
+   inkscape:groupmode="layer">
+    <g
+   transform="translate(-1,15) rotate(5 625 461)"
+   id="vector-277"
+   inkscape:label="leaf tile">
+      <rect
+   x="561.89551"
+   y="406.05191"
+   width="139.63655"
+   height="132.74007"
+   rx="16.42783"
+   fill="url(#vector-140)"
+   id="vector-278"
+   style="fill:url(#vector-140);stroke-width:0.820387"
+   transform="matrix(0.99999998,-2.1556854e-4,-2.1609692e-4,0.99999998,0,0)"
+   inkscape:label="leaf tile panel 1" />
+      <path
+   d="m 591.83914,507.79246 c 0.0103,-47.52422 29.10457,-82.20922 81.67362,-82.22055 1.63252,47.52386 -22.53396,84.66595 -81.67362,82.22055 z"
+   fill="url(#vector-112)"
+   id="vector-279"
+   sodipodi:nodetypes="ccc"
+   style="fill:url(#vector-156);stroke-width:0.820387"
+   inkscape:label="leaf tile contour 2" />
+      <path
+   d="m 582.31848,517.36247 84.62032,-78.67901 m -48.47148,43.43775 -2.45922,-22.9422 m 20.95092,8.30173 16.83114,0.70334"
+   fill="none"
+   stroke="#075b58"
+   stroke-width="5.74271"
+   stroke-linecap="round"
+   id="vector-280"
+   sodipodi:nodetypes="cccccc"
+   inkscape:label="leaf tile contour 3" />
+    </g>
+    <g
+   class="pop"
+   fill="none"
+   stroke="#009f82"
+   stroke-width="11"
+   stroke-linecap="round"
+   id="vector-281"
+   transform="matrix(0.75068136,0.27354655,-0.25523315,0.80454398,288.1266,-76.808486)"
+   inkscape:label="selection accents">
+      <path
+   d="m 667,344 6,-30"
+   id="vector-282"
+   inkscape:label="selection accents contour 1" />
+      <path
+   d="m 705,363 25,-23"
+   id="vector-283"
+   inkscape:label="selection accents contour 2" />
+    </g>
+  </g>
+  <g
+   id="vector-284"
+   inkscape:label="Thumb overlay"
+   transform="matrix(1,0,0,0.96122692,0,28.924715)">
+    <path
+   d="M 983.28149,660.52193 C 1012.2815,646.52193 1046,632 1058,650 c 16,26 -15,42 -39,58 l -64,38 -12,-49 z"
+   fill="url(#vector-98)"
+   id="vector-285"
+   inkscape:label="thumb"
+   style="fill:#f98f41;fill-opacity:1"
+   sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+   id="vector-286"
+   inkscape:label="Front land"
+   inkscape:groupmode="layer">
+    <path
+   d="M 642.81864,996.63224 C 882.81864,924.63224 1134,922 1390,1000 l 230,80 H 620 Z"
+   fill="#8ae0ce"
+   id="vector-287"
+   inkscape:label="mint rolling hill"
+   sodipodi:nodetypes="ccccc" />
+    <path
+   d="M670,996 C901,952 1045,1001 1183,1080 H500Z"
+   fill="#51cdb9"
+   id="vector-288"
+   inkscape:label="middle turquoise hill" />
+    <path
+   d="M0,979 C146,927 286,922 431,1007 L560,1080 H0Z"
+   fill="#008994"
+   id="vector-289"
+   inkscape:label="left foreground hill" />
+    <path
+   d="M1132,1080 C1391,941 1655,846 1920,916 V1080Z"
+   fill="#39b9ad"
+   id="vector-290"
+   inkscape:label="right foreground hill" />
+    <path
+   d="M1475,1080 C1640,966 1807,967 1920,982 V1080Z"
+   fill="#008b96"
+   id="vector-291"
+   inkscape:label="right dark hill" />
+    <path
+   d="m 484.52788,1106.7194 c 75.37399,-169.51665 200.54745,-271.21446 260.22467,-200.87584 59.67723,70.33863 62.80672,116.50454 81.80857,200.87584 z"
+   fill="url(#vector-163)"
+   id="vector-292"
+   inkscape:label="front green hill"
+   style="fill:url(#vector-163);stroke-width:0.857565"
+   sodipodi:nodetypes="czcc" />
+  </g>
+  <g
+   id="vector-293-unique-292"
+   inkscape:label="Selecting fingertips">
+    <path
+   d="m 942.60199,484.76094 c 28,-4 75.00001,5 101.00001,14 17,6 20,25 5,37 -14,13 -41,8 -64.00001,3 l -16,20 -23,-12 z"
+   fill="url(#vector-98)"
+   id="vector-294-unique-293"
+   inkscape:label="index fingertip"
+   style="fill:url(#linearGradient3)" />
+    
+  </g>
+</svg>
