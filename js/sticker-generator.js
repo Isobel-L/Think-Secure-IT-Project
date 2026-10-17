@@ -133,7 +133,7 @@ function loadPassphrase() {
 
 
     // Anything other than four complete words means starting again
-    if (!passphrase || typeof passphrase.phrase !== "string" || !Array.isArray(passphrase.words) || passphrase.words.length !== 4 || !passphrase.words.every(item => item && typeof item.word === "string" && item.word && typeof item.emoji === "string")) {
+    if (!passphrase || typeof passphrase.phrase !== "string" || !Array.isArray(passphrase.words) || passphrase.words.length !== 4 || !passphrase.words.every(item => item && typeof item.word === "string" && item.word && typeof item.emoji === "string" && (item.display === undefined || (typeof item.display === "string" && item.display)))) {
 
         noPhraseSection.classList.remove("hidden");
 
@@ -212,6 +212,17 @@ function tryPicture(index, word, typeIndex) {
 
 
 /*
+    How a word is spelled on the keychain: with any letters the user swapped
+    for symbols in the Passphrase Maker. The picture always follows the word.
+*/
+function spelling(item) {
+
+    return item.display || item.word;
+
+}
+
+
+/*
     Show the four words down the side of the panel, each with its picture
 */
 function drawWordList() {
@@ -253,7 +264,7 @@ function drawWordList() {
         const key = "passphrase.word." + item.word;
         const translated = window.ThinkSecureLocales[I18n.getLanguage()]?.[key];
 
-        label.textContent = I18n.getLanguage() !== "en" && translated ? translated + " " + item.word : item.word;
+        label.textContent = I18n.getLanguage() !== "en" && translated ? translated + " " + spelling(item) : spelling(item);
 
 
         row.append(thumb, label);
@@ -498,7 +509,7 @@ function drawStack(pen, area) {
     // The place is named at the top, in its own sky
     if (labels) {
 
-        drawTag(pen, passphrase.words[PLACE_INDEX].word, centreX, area.y + 62, 36, area.width - 56);
+        drawTag(pen, spelling(passphrase.words[PLACE_INDEX]), centreX, area.y + 62, 36, area.width - 56);
 
     }
 
@@ -533,7 +544,7 @@ function drawStack(pen, area) {
 
         if (labels) {
 
-            drawTag(pen, passphrase.words[wordIndex].word, centreX, centreY + (diameter / 2) + 38, 34, area.width - 56);
+            drawTag(pen, spelling(passphrase.words[wordIndex]), centreX, centreY + (diameter / 2) + 38, 34, area.width - 56);
 
         }
 
@@ -653,7 +664,7 @@ function drawTag(pen, word, x, y, fontSize, maxWidth) {
 function drawPhraseBlock(pen, area) {
 
     const words = passphrase.words.map(function (item) {
-        return item.word;
+        return spelling(item);
     });
 
     const lines = words.map(function (word, index) {
