@@ -35,6 +35,8 @@ const resultEmoji = document.getElementById("result-emoji");
 const passphraseText = document.getElementById("passphrase-text");
 const copyStatus = document.getElementById("copy-status");
 const statLength = document.getElementById("stat-length");
+const swapList = document.getElementById("swap-list");
+const swapReset = document.getElementById("swap-reset");
 
 
 // Where the finished passphrase is left for the Keychain Studio
@@ -165,6 +167,27 @@ const categories = [
 
 
 /* ------------------------------
+   Letter Swaps
+------------------------------ */
+
+// The symbols each letter can be swapped for. Only the spelling changes:
+// the pictures, and the keychain's pictures, always follow the original words.
+const SWAP_CHOICES = {
+    a: ["@", "4"],
+    b: ["8"],
+    e: ["3"],
+    g: ["9"],
+    i: ["!", "1", "|"],
+    l: ["1", "|"],
+    o: ["0", "()"],
+    s: ["$", "5"],
+    t: ["7", "+"],
+    v: ["()", "\\/"]
+};
+
+
+
+/* ------------------------------
    State
 ------------------------------ */
 
@@ -175,6 +198,9 @@ let copyVersion = 0;
 
 // The word chosen from each category so far
 const chosenWords = [];
+
+// The swaps the user has picked, as letter → symbol
+const swaps = {};
 
 
 
@@ -380,12 +406,12 @@ function showResult() {
     resultSection.classList.remove("hidden");
 
 
-    const phrase = buildPassphrase();
+    // A new passphrase starts with its letters as they are
+    clearSwaps();
 
+    drawSwaps();
 
-    passphraseText.textContent = phrase;
-
-    statLength.textContent = phrase.length;
+    showPhrase();
 
 
     // Big emoji row
@@ -401,6 +427,49 @@ function showResult() {
 
     });
 
+}
+
+
+/*
+    Write the passphrase out, marking the letters that became symbols,
+    and hand the new spelling on
+*/
+function showPhrase() {
+
+    passphraseText.innerHTML = "";
+
+
+    chosenWords.forEach(function (item, index) {
+
+        if (index > 0) {
+            passphraseText.append("-");
+        }
+
+        for (const character of item.word) {
+
+            const symbol = swaps[character.toLowerCase()];
+
+            if (symbol) {
+
+                const mark = document.createElement("mark");
+                mark.className = "pm-swapped";
+                mark.textContent = symbol;
+                passphraseText.appendChild(mark);
+
+            } else {
+
+                passphraseText.append(character);
+
+            }
+
+        }
+
+    });
+
+
+    statLength.textContent = buildPassphrase().length;
+
+    swapReset.disabled = Object.keys(swaps).length === 0;
 
     storePassphrase();
 
@@ -415,9 +484,13 @@ function showResult() {
 */
 function storePassphrase() {
 
+    // Each word keeps its own name, which picks its picture, and carries the
+    // spelling to print on the keychain
     sessionStorage.setItem(PHRASE_STORAGE_NAME, JSON.stringify({
         phrase: buildPassphrase(),
-        words: chosenWords
+        words: chosenWords.map(function (item) {
+            return { word: item.word, emoji: item.emoji, display: spell(item.word) };
+        })
     }));
 
 }
@@ -442,13 +515,142 @@ window.addEventListener("pageshow", function () {
 
 
 /*
-    Join the four words with hyphens
+    Join the four words with hyphens, as the user has spelled them
 */
 function buildPassphrase() {
 
     return chosenWords.map(function (item) {
-        return item.word;
+        return spell(item.word);
     }).join("-");
+
+}
+
+
+/*
+    A word with the chosen swaps applied, whatever the letter's case
+*/
+function spell(word) {
+
+    return word.replace(/[a-z]/gi, function (character) {
+        return swaps[character.toLowerCase()] || character;
+    });
+
+}
+
+
+/*
+    One choice for each swappable letter that appears in the passphrase
+*/
+function drawSwaps() {
+
+    swapList.innerHTML = "";
+
+
+    const letters = new Set();
+
+    chosenWords.forEach(function (item) {
+
+        for (const character of item.word.toLowerCase()) {
+
+            if (SWAP_CHOICES[character]) {
+                letters.add(character);
+            }
+
+        }
+
+    });
+
+
+    [...letters].sort().forEach(function (letter) {
+
+        const choice = document.createElement("label");
+        choice.className = "pm-swap";
+        choice.classList.toggle("is-on", Boolean(swaps[letter]));
+
+        const name = document.createElement("span");
+        name.className = "pm-swap-letter";
+        name.textContent = letter;
+
+        const arrow = document.createElement("span");
+        arrow.className = "pm-swap-arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "→";
+
+        const select = document.createElement("select");
+        select.dataset.letter = letter;
+        select.setAttribute("aria-label", I18n.t("passphrase.swapLabel", { letter: letter }));
+
+        const keep = document.createElement("option");
+        keep.value = "";
+        keep.textContent = I18n.t("passphrase.swapKeep", { letter: letter });
+        select.appendChild(keep);
+
+        SWAP_CHOICES[letter].forEach(function (symbol) {
+
+            const option = document.createElement("option");
+            option.value = symbol;
+            option.textContent = symbol;
+            select.appendChild(option);
+
+        });
+
+        select.value = swaps[letter] || "";
+
+        choice.append(name, arrow, select);
+
+        swapList.appendChild(choice);
+
+    });
+
+}
+
+
+/*
+    Use the symbol the user picked for a letter, or put the letter back
+*/
+swapList.addEventListener("change", function (event) {
+
+    const select = event.target.closest("select[data-letter]");
+
+    if (!select) {
+        return;
+    }
+
+
+    const letter = select.dataset.letter;
+
+    if (select.value) {
+        swaps[letter] = select.value;
+    } else {
+        delete swaps[letter];
+    }
+
+    select.closest(".pm-swap").classList.toggle("is-on", Boolean(select.value));
+
+    showPhrase();
+
+});
+
+
+/*
+    Put every letter back
+*/
+swapReset.addEventListener("click", function () {
+
+    clearSwaps();
+
+    drawSwaps();
+
+    showPhrase();
+
+});
+
+
+function clearSwaps() {
+
+    Object.keys(swaps).forEach(function (letter) {
+        delete swaps[letter];
+    });
 
 }
 
@@ -484,6 +686,7 @@ copyButton.addEventListener("click", async function () {
 restartButton.addEventListener("click", function () {
 
     chosenWords.length = 0;
+    clearSwaps();
     ++copyVersion; copyKey = "";
 
     sessionStorage.removeItem(PHRASE_STORAGE_NAME);
@@ -499,5 +702,5 @@ restartButton.addEventListener("click", function () {
 
 function displayWord(item) { const label = I18n.t("passphrase.word." + item.word); return I18n.getLanguage() === "en" ? item.word : label + " " + item.word; }
 function escapePhraseLabel(value) { return value.replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[char])); }
-window.addEventListener("languagechange", () => { if (!pickerSection.classList.contains("hidden")) showStep(currentStep); copyStatus.textContent = copyKey ? I18n.t(copyKey) : ""; });
+window.addEventListener("languagechange", () => { if (!pickerSection.classList.contains("hidden")) showStep(currentStep); if (!resultSection.classList.contains("hidden")) drawSwaps(); copyStatus.textContent = copyKey ? I18n.t(copyKey) : ""; });
 

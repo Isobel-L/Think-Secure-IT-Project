@@ -322,6 +322,29 @@
                 <p role="status" class="pm-copy-status" id="copy-status"></p>
 
 
+                <!-- Letters the user can swap for symbols -->
+                <section class="pm-swaps" aria-labelledby="swap-title">
+
+                    <h2 id="swap-title" data-i18n="passphrase.swapTitle">Swap letters for symbols</h2>
+
+                    <p class="pm-swaps-hint" data-i18n="passphrase.swapHint">
+                        Choose a symbol for any letter. Your pictures stay the
+                        same, and your keychain shows the new spelling.
+                    </p>
+
+                    <div class="pm-swap-list" id="swap-list"></div>
+
+                    <div class="pm-swaps-foot">
+
+                        <button type="button" id="swap-reset" class="il-btn il-btn-light il-btn-small" data-i18n="passphrase.swapReset" disabled>
+                            Undo all swaps
+                        </button>
+
+                    </div>
+
+                </section>
+
+
                 <div class="pm-stats">
 
                     <div class="pm-stat">

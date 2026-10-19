@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&display=swap">
 
+    <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/home.css">
 </head>
 
@@ -37,20 +38,32 @@
     </div>
 
 
-    <!-- Layer 3: logo, activity navigation (top centre) and language -->
-    <header class="top">
-
-        <a class="brand" href="#" aria-label="ThinkSecure, back to the first activity" data-i18n-aria-label="home.brandLabel" id="brand"></a>
-
-        <nav class="tabs" id="tabs" aria-label="Activities" data-i18n-aria-label="home.dock.label">
-            <button type="button" class="tabs-arrow" id="tabPrev" aria-label="Previous activity" data-i18n-aria-label="home.dock.prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg></button>
-            <div class="tabs-track">
-                <span class="tabs-ink" id="tabsInk" aria-hidden="true"></span>
-                <ul id="tabList"></ul>
-            </div>
-            <button type="button" class="tabs-arrow" id="tabNext" aria-label="Next activity" data-i18n-aria-label="home.dock.next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg></button>
+    <!-- Layer 3: the same navigation as every activity page (css/site-header.css), so the four
+         activities sit in exactly the same place before and after you go in -->
+    <header class="il-header home-header">
+        <a class="il-logo" id="brand" href="index.html" aria-label="ThinkSecure, back to the first activity" data-i18n-aria-label="home.brandLabel"></a>
+        <nav class="il-nav" aria-label="Main navigation">
+            <span class="il-ink" id="navInk" aria-hidden="true"></span>
+            <a class="il-stop il-stop-home" href="index.html" id="navHome">
+                <span class="il-stop-label" data-i18n="common.home">Home</span>
+            </a>
+            <a class="il-stop" href="pages/cyber-quiz.html" data-go="0" aria-controls="titleCard">
+                <span class="il-stop-n" aria-hidden="true">1</span>
+                <span class="il-stop-label" data-i18n="common.quiz">Cyber Safety Quiz</span>
+            </a>
+            <a class="il-stop" href="pages/password-checker.html" data-go="1" aria-controls="titleCard">
+                <span class="il-stop-n" aria-hidden="true">2</span>
+                <span class="il-stop-label" data-i18n="common.passwordChecker">Password Checker</span>
+            </a>
+            <a class="il-stop" href="pages/passphrase-maker.html" data-go="2" aria-controls="titleCard">
+                <span class="il-stop-n" aria-hidden="true">3</span>
+                <span class="il-stop-label" data-i18n="common.passphraseMaker">Passphrase Maker</span>
+            </a>
+            <a class="il-stop" href="pages/sticker-generator.html" data-go="3" aria-controls="titleCard">
+                <span class="il-stop-n" aria-hidden="true">4</span>
+                <span class="il-stop-label" data-i18n="common.stickerStudio">Keychain Studio</span>
+            </a>
         </nav>
-
         <div class="language-control">
             <label for="languageSelect" data-i18n="common.language">Language</label>
             <select id="languageSelect" data-language-select>
@@ -62,7 +75,6 @@
                 <option value="de" lang="de">Deutsch</option>
             </select>
         </div>
-
     </header>
 
 

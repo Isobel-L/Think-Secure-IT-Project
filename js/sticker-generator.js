@@ -2,10 +2,10 @@
     Keychain Studio
 
     Takes the four words picked in the Passphrase Maker and draws them as a
-    keychain on a canvas: a ring, a main charm showing the animal and the
-    fruit in their place, and a small round charm for the country. The user
-    can then download it as a PNG with a transparent background. No image
-    generation service is involved.
+    keychain on a canvas: a long acrylic bar hanging from a ring, with the
+    place as its picture and the animal, the fruit and the country stacked
+    down it. The user can then download it as a PNG with a transparent
+    background. No image generation service is involved.
 */
 
 
@@ -16,7 +16,6 @@ const studio = document.getElementById("studio");
 
 // Panel elements
 const studioWords = document.getElementById("studio-words");
-const layoutOptions = document.getElementById("layout-options");
 const showLabels = document.getElementById("show-labels");
 const showPhrase = document.getElementById("show-phrase");
 const downloadButton = document.getElementById("download-button");
@@ -64,23 +63,27 @@ const IMAGE_FOLDERS = [
 const IMAGE_TYPES = [".png", ".jpg"];
 
 
+// The three pictures down the bar, top to bottom
+const STACK_ORDER = [ANIMAL_INDEX, FRUIT_INDEX, COUNTRY_INDEX];
+
+
 // Canvas size, and where each piece of the keychain sits on it
-const CANVAS_WIDTH = 1200;
-const CANVAS_HEIGHT = 1240;
+const CANVAS_WIDTH = 760;
+const CANVAS_HEIGHT = 1720;
 
-const RING = { x: 560, y: 150, radius: 96, width: 26 };
+const RING = { x: 380, y: 118, radius: 86, width: 24 };
 
-// Each charm hangs from the hole in its tab, turned slightly about it
-const MAIN_CHARM = { size: 720, holeX: 480, holeY: 404, turn: -0.05 };
-const SIDE_CHARM = { radius: 162, holeX: 902, holeY: 448, turn: 0.17 };
-
-
-// Current options
-let shape = "square";
+// The bar hangs from the hole in its tab, turned slightly about it
+const BAR = { width: 460, height: 1250, holeX: 380, holeY: 344, turn: -0.03 };
 
 
 // The picture for each word, once it has loaded. Missing ones stay null.
 const wordImages = [null, null, null, null];
+
+
+// A JPG cannot be transparent, so it is a whole photograph rather than a
+// cut-out and fills its circle instead of sitting inside it.
+const wordImageFills = [false, false, false, false];
 
 
 // The words handed over by the Passphrase Maker
@@ -130,7 +133,7 @@ function loadPassphrase() {
 
 
     // Anything other than four complete words means starting again
-    if (!passphrase || typeof passphrase.phrase !== "string" || !Array.isArray(passphrase.words) || passphrase.words.length !== 4 || !passphrase.words.every(item => item && typeof item.word === "string" && item.word && typeof item.emoji === "string")) {
+    if (!passphrase || typeof passphrase.phrase !== "string" || !Array.isArray(passphrase.words) || passphrase.words.length !== 4 || !passphrase.words.every(item => item && typeof item.word === "string" && item.word && typeof item.emoji === "string" && (item.display === undefined || (typeof item.display === "string" && item.display)))) {
 
         noPhraseSection.classList.remove("hidden");
 
@@ -189,6 +192,7 @@ function tryPicture(index, word, typeIndex) {
     image.addEventListener("load", function () {
 
         wordImages[index] = image;
+        wordImageFills[index] = IMAGE_TYPES[typeIndex] === ".jpg";
 
         drawWordList();
 
@@ -203,6 +207,17 @@ function tryPicture(index, word, typeIndex) {
     });
 
     image.src = IMAGE_FOLDERS[index] + word + IMAGE_TYPES[typeIndex];
+
+}
+
+
+/*
+    How a word is spelled on the keychain: with any letters the user swapped
+    for symbols in the Passphrase Maker. The picture always follows the word.
+*/
+function spelling(item) {
+
+    return item.display || item.word;
 
 }
 
@@ -249,7 +264,7 @@ function drawWordList() {
         const key = "passphrase.word." + item.word;
         const translated = window.ThinkSecureLocales[I18n.getLanguage()]?.[key];
 
-        label.textContent = I18n.getLanguage() !== "en" && translated ? translated + " " + item.word : item.word;
+        label.textContent = I18n.getLanguage() !== "en" && translated ? translated + " " + spelling(item) : spelling(item);
 
 
         row.append(thumb, label);
@@ -265,43 +280,6 @@ function drawWordList() {
 /* ------------------------------
    Options
 ------------------------------ */
-
-/*
-    Square or round
-*/
-layoutOptions.addEventListener("click", function (event) {
-
-    const button = event.target.closest(".option-button");
-
-    if (!button) {
-        return;
-    }
-
-
-    selectOption(layoutOptions, button);
-
-    shape = button.dataset.layout;
-
-    drawKeychain();
-
-});
-
-
-/*
-    Move the highlight within a group of option buttons
-*/
-function selectOption(group, button) {
-
-    group.querySelectorAll(".option-button").forEach(function (item) {
-        item.classList.remove("selected");
-        item.setAttribute("aria-pressed", "false");
-    });
-
-    button.classList.add("selected");
-    button.setAttribute("aria-pressed", "true");
-
-}
-
 
 // Redraw whenever the text options change
 showLabels.addEventListener("change", drawKeychain);
@@ -324,16 +302,10 @@ function drawKeychain() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
 
-    const main = buildMainCharm();
-    const side = buildSideCharm();
+    // Back to front: the bar, the chain that reaches its tab, the ring
+    hangBar(buildBar());
 
-
-    // Back to front: the charms, the chains that reach their tabs, the ring
-    hangCharm(main, MAIN_CHARM);
-    hangCharm(side, SIDE_CHARM);
-
-    drawChain(MAIN_CHARM.holeX, MAIN_CHARM.holeY);
-    drawChain(SIDE_CHARM.holeX, SIDE_CHARM.holeY);
+    drawChain(BAR.holeX, BAR.holeY);
 
     drawRing();
 
@@ -356,21 +328,21 @@ function drawKeychain() {
 
 
 /*
-    Place a finished charm so its hole lands on the given point
+    Place the finished bar so its hole lands under the chain
 */
-function hangCharm(charm, place) {
+function hangBar(bar) {
 
     context.save();
 
-    context.translate(place.holeX, place.holeY);
-    context.rotate(place.turn);
+    context.translate(BAR.holeX, BAR.holeY);
+    context.rotate(BAR.turn);
 
-    // A soft shadow under the whole charm, as if it lay on a table
+    // A soft shadow under the whole bar, as if it lay on a table
     context.shadowColor = "rgba(30, 16, 90, 0.3)";
-    context.shadowBlur = 36;
-    context.shadowOffsetY = 18;
+    context.shadowBlur = 40;
+    context.shadowOffsetY = 20;
 
-    context.drawImage(charm.canvas, -charm.holeX, -charm.holeY);
+    context.drawImage(bar.canvas, -bar.holeX, -bar.holeY);
 
     context.restore();
 
@@ -379,52 +351,45 @@ function hangCharm(charm, place) {
 
 
 /* ------------------------------
-   The Main Charm
+   The Bar
 ------------------------------ */
 
 /*
-    The big charm: the place as a picture, with the animal and the fruit
-    standing in it. Drawn on its own canvas so the hole can be cut out.
+    The long acrylic bar: the place as its picture, with the animal, the
+    fruit and the country stacked down it. Drawn on its own canvas so the
+    hole can be cut out.
 */
-function buildMainCharm() {
+function buildBar() {
 
-    const size = MAIN_CHARM.size;
-    const round = shape === "round";
+    const width = BAR.width;
+    const height = BAR.height;
 
     const margin = 40;
-    const tabRise = 78;
+    const tabRise = 70;
 
-    const charm = document.createElement("canvas");
+    const bar = document.createElement("canvas");
 
-    charm.width = size + (margin * 2);
-    charm.height = size + tabRise + (margin * 2);
+    bar.width = width + (margin * 2);
+    bar.height = height + tabRise + (margin * 2);
 
-    const pen = charm.getContext("2d");
+    const pen = bar.getContext("2d");
 
     pen.translate(margin, margin + tabRise);
 
 
-    // Outline of the body, and of the picture set inside its white edge
-    const edge = 34;
+    // The picture sits inside a white acrylic edge
+    const edge = 26;
+    const radius = 80;
 
-    function bodyPath(inset) {
+    const inner = {
+        x: edge,
+        y: edge,
+        width: width - (edge * 2),
+        height: height - (edge * 2)
+    };
 
-        if (round) {
-
-            pen.beginPath();
-            pen.arc(size / 2, size / 2, (size / 2) - inset, 0, Math.PI * 2);
-            pen.closePath();
-
-        } else {
-
-            roundedRectangle(pen, inset, inset, size - (inset * 2), size - (inset * 2), 150 - inset);
-
-        }
-
-    }
-
-    const tab = { x: size / 2, y: -16, radius: 56 };
-    const hole = { x: size / 2, y: -26, radius: 19 };
+    const tab = { x: width / 2, y: -6, radius: 50 };
+    const hole = { x: width / 2, y: -14, radius: 18 };
 
 
     // White acrylic: outline first, then the fill hides the inner strokes
@@ -435,7 +400,7 @@ function buildMainCharm() {
     pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
     pen.stroke();
 
-    bodyPath(0);
+    roundedRectangle(pen, 0, 0, width, height, radius);
     pen.stroke();
 
     pen.fillStyle = "#ffffff";
@@ -444,21 +409,21 @@ function buildMainCharm() {
     pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
     pen.fill();
 
-    bodyPath(0);
+    roundedRectangle(pen, 0, 0, width, height, radius);
     pen.fill();
 
 
     // The picture
     pen.save();
 
-    bodyPath(edge);
+    roundedRectangle(pen, inner.x, inner.y, inner.width, inner.height, radius - edge);
     pen.clip();
 
-    drawPlace(pen, size);
+    drawPlace(pen, inner);
 
-    drawStandingPictures(pen, size, round);
+    drawStack(pen, inner);
 
-    drawGloss(pen, size);
+    drawGloss(pen, inner);
 
     pen.restore();
 
@@ -467,7 +432,7 @@ function buildMainCharm() {
     pen.lineWidth = 3;
     pen.strokeStyle = "rgba(6, 41, 82, 0.14)";
 
-    bodyPath(edge);
+    roundedRectangle(pen, inner.x, inner.y, inner.width, inner.height, radius - edge);
     pen.stroke();
 
 
@@ -475,7 +440,7 @@ function buildMainCharm() {
 
 
     return {
-        canvas: charm,
+        canvas: bar,
         holeX: margin + hole.x,
         holeY: margin + tabRise + hole.y
     };
@@ -484,159 +449,160 @@ function buildMainCharm() {
 
 
 /*
-    Fill the charm with the place, or a soft sky if there is no picture
+    Fill the bar with the place, or a soft sky if there is no picture
 */
-function drawPlace(pen, size) {
+function drawPlace(pen, area) {
 
     const picture = wordImages[PLACE_INDEX];
 
     if (picture) {
 
-        drawImageCover(pen, picture, 0, 0, size, size);
+        drawImageCover(pen, picture, area.x, area.y, area.width, area.height);
 
     } else {
 
-        const sky = pen.createLinearGradient(0, 0, 0, size);
+        const sky = pen.createLinearGradient(0, area.y, 0, area.y + area.height);
         sky.addColorStop(0, "#b9a7f0");
         sky.addColorStop(1, "#f7a182");
 
         pen.fillStyle = sky;
-        pen.fillRect(0, 0, size, size);
+        pen.fillRect(area.x, area.y, area.width, area.height);
 
         pen.textAlign = "center";
         pen.textBaseline = "middle";
-        pen.font = (size * 0.34) + "px " + EMOJI_FONT;
+        pen.font = (area.width * 0.3) + "px " + EMOJI_FONT;
 
-        pen.fillText(passphrase.words[PLACE_INDEX].emoji, size * 0.5, size * 0.3);
+        pen.fillText(passphrase.words[PLACE_INDEX].emoji, area.x + (area.width / 2), area.y + (area.height * 0.5));
 
     }
 
 
-    // Ground the standing pictures and keep any lettering readable
-    const shade = pen.createLinearGradient(0, size * 0.5, 0, size);
-    shade.addColorStop(0, "rgba(6, 20, 60, 0)");
-    shade.addColorStop(1, "rgba(6, 20, 60, 0.42)");
+    // Shade the top and bottom a little, so the white tags stay readable
+    const top = pen.createLinearGradient(0, area.y, 0, area.y + 220);
+    top.addColorStop(0, "rgba(6, 20, 60, 0.38)");
+    top.addColorStop(1, "rgba(6, 20, 60, 0)");
 
-    pen.fillStyle = shade;
-    pen.fillRect(0, size * 0.5, size, size * 0.5);
+    pen.fillStyle = top;
+    pen.fillRect(area.x, area.y, area.width, 220);
+
+    const bottom = pen.createLinearGradient(0, area.y + area.height - 320, 0, area.y + area.height);
+    bottom.addColorStop(0, "rgba(6, 20, 60, 0)");
+    bottom.addColorStop(1, "rgba(6, 20, 60, 0.42)");
+
+    pen.fillStyle = bottom;
+    pen.fillRect(area.x, area.y + area.height - 320, area.width, 320);
 
 }
 
 
 /*
-    The animal and the fruit standing in the place, with any lettering
+    The place's name, the three pictures and the passphrase, top to bottom
 */
-function drawStandingPictures(pen, size, round) {
+function drawStack(pen, area) {
 
     const labels = showLabels.checked;
     const phrase = showPhrase.checked;
 
-
-    // Work up from the bottom: the passphrase, the word tags, then the pictures
-    let labelY;
-    let baseline;
-
-    const band = round
-        ? { x: size * 0.23, y: size * 0.762, width: size * 0.54, height: size * 0.084 }
-        : { x: size * 0.1, y: size * 0.826, width: size * 0.8, height: size * 0.09 };
-
-    if (round) {
-
-        labelY = phrase ? size * 0.712 : size * 0.8;
-        baseline = labels ? labelY - (size * 0.042) : (phrase ? size * 0.745 : size * 0.86);
-
-    } else {
-
-        labelY = phrase ? size * 0.78 : size * 0.89;
-        baseline = labels ? labelY - (size * 0.042) : (phrase ? size * 0.81 : size * 0.915);
-
-    }
-
-    const crowded = labels && phrase;
-
-    const animal = {
-        x: size * (round ? 0.37 : 0.335),
-        size: size * (round ? (crowded ? 0.42 : 0.5) : (crowded ? 0.5 : 0.56))
-    };
-
-    const fruit = {
-        x: size * (round ? 0.68 : 0.74),
-        size: size * (round ? (crowded ? 0.25 : 0.3) : (crowded ? 0.3 : 0.34))
-    };
+    const centreX = area.x + (area.width / 2);
 
 
-    drawStanding(pen, ANIMAL_INDEX, animal.x, baseline, animal.size);
-    drawStanding(pen, FRUIT_INDEX, fruit.x, baseline, fruit.size);
-
-
+    // The place is named at the top, in its own sky
     if (labels) {
 
-        const tagSize = size * 0.05;
-        const tagWidth = size * (round ? 0.27 : 0.36);
-
-        drawTag(pen, passphrase.words[ANIMAL_INDEX].word, animal.x, labelY, tagSize, tagWidth);
-        drawTag(pen, passphrase.words[FRUIT_INDEX].word, fruit.x, labelY, tagSize, tagWidth);
-
-        // The place is named at the top, where the sky is
-        if (round) {
-
-            drawTag(pen, passphrase.words[PLACE_INDEX].word, size * 0.5, size * 0.16, tagSize, size * 0.4);
-
-        } else {
-
-            drawTag(pen, passphrase.words[PLACE_INDEX].word, size * 0.115, size * 0.135, tagSize, size * 0.5, "left");
-
-        }
+        drawTag(pen, spelling(passphrase.words[PLACE_INDEX]), centreX, area.y + 62, 36, area.width - 56);
 
     }
 
+
+    // The passphrase takes the bottom, one word to a line
+    let bottom = area.y + area.height - 40;
 
     if (phrase) {
 
-        drawPhraseBand(pen, band);
+        const block = drawPhraseBlock(pen, area);
+
+        bottom = block.top - 26;
 
     }
+
+
+    // The pictures share what is left equally
+    const top = area.y + (labels ? 124 : 52);
+    const slot = (bottom - top) / STACK_ORDER.length;
+
+    const labelSpace = labels ? 66 : 0;
+
+    const diameter = Math.min(slot - labelSpace - 26, area.width * 0.7, 300);
+
+    STACK_ORDER.forEach(function (wordIndex, position) {
+
+        const slotTop = top + (slot * position);
+
+        const centreY = slotTop + ((slot - labelSpace) / 2);
+
+        drawBadge(pen, wordIndex, centreX, centreY, diameter / 2);
+
+        if (labels) {
+
+            drawTag(pen, spelling(passphrase.words[wordIndex]), centreX, centreY + (diameter / 2) + 38, 34, area.width - 56);
+
+        }
+
+    });
 
 }
 
 
 /*
-    One cut-out standing on the ground, or its emoji
+    One picture on a round badge: a cut-out stands in front of a frosted
+    disc, a photograph fills it
 */
-function drawStanding(pen, wordIndex, centreX, baseline, box) {
+function drawBadge(pen, wordIndex, centreX, centreY, radius) {
 
-    // The shadow it stands on
+    const picture = wordImages[wordIndex];
+    const photo = picture && wordImageFills[wordIndex];
+
+
+    // The disc, lifted off the picture by its shadow
     pen.save();
 
-    pen.translate(centreX, baseline - (box * 0.06));
-    pen.scale(1, 0.2);
+    pen.shadowColor = "rgba(6, 20, 60, 0.35)";
+    pen.shadowBlur = 22;
+    pen.shadowOffsetY = 8;
 
-    const ground = pen.createRadialGradient(0, 0, 0, 0, 0, box * 0.38);
-    ground.addColorStop(0, "rgba(6, 20, 60, 0.42)");
-    ground.addColorStop(1, "rgba(6, 20, 60, 0)");
-
-    pen.fillStyle = ground;
+    pen.fillStyle = photo ? "#ffffff" : "rgba(255, 255, 255, 0.82)";
 
     pen.beginPath();
-    pen.arc(0, 0, box * 0.38, 0, Math.PI * 2);
+    pen.arc(centreX, centreY, radius, 0, Math.PI * 2);
     pen.fill();
 
     pen.restore();
 
 
-    const picture = wordImages[wordIndex];
+    if (photo) {
 
-    if (picture) {
+        pen.save();
 
-        drawImageContain(pen, picture, centreX, baseline - (box / 2), box);
+        pen.beginPath();
+        pen.arc(centreX, centreY, radius - 9, 0, Math.PI * 2);
+        pen.clip();
+
+        drawImageCover(pen, picture, centreX - radius, centreY - radius, radius * 2, radius * 2);
+
+        pen.restore();
+
+    } else if (picture) {
+
+        // A cut-out may reach a little past its disc, like a sticker
+        drawImageContain(pen, picture, centreX, centreY + (radius * 0.04), radius * 2.16);
 
     } else {
 
         pen.textAlign = "center";
         pen.textBaseline = "middle";
-        pen.font = (box * 0.78) + "px " + EMOJI_FONT;
+        pen.font = (radius * 1.15) + "px " + EMOJI_FONT;
 
-        pen.fillText(passphrase.words[wordIndex].emoji, centreX, baseline - (box * 0.46));
+        pen.fillText(passphrase.words[wordIndex].emoji, centreX, centreY + (radius * 0.06));
 
     }
 
@@ -646,7 +612,7 @@ function drawStanding(pen, wordIndex, centreX, baseline, box) {
 /*
     A word on a small white tag
 */
-function drawTag(pen, word, x, y, fontSize, maxWidth, align) {
+function drawTag(pen, word, x, y, fontSize, maxWidth) {
 
     const padding = fontSize * 0.62;
 
@@ -654,7 +620,7 @@ function drawTag(pen, word, x, y, fontSize, maxWidth, align) {
 
     pen.font = "600 " + size + "px " + TEXT_FONT;
 
-    // Long words shrink rather than run off the charm
+    // Long words shrink rather than run off the bar
     while (pen.measureText(word).width + (padding * 2) > maxWidth && size > 14) {
 
         size = size - 1;
@@ -667,8 +633,6 @@ function drawTag(pen, word, x, y, fontSize, maxWidth, align) {
     const width = pen.measureText(word).width + (padding * 2);
     const height = fontSize * 1.7;
 
-    const left = align === "left" ? x : x - (width / 2);
-
 
     pen.save();
 
@@ -678,7 +642,7 @@ function drawTag(pen, word, x, y, fontSize, maxWidth, align) {
 
     pen.fillStyle = "rgba(255, 255, 255, 0.96)";
 
-    roundedRectangle(pen, left, y - (height / 2), width, height, height / 2);
+    roundedRectangle(pen, x - (width / 2), y - (height / 2), width, height, height / 2);
     pen.fill();
 
     pen.restore();
@@ -688,30 +652,35 @@ function drawTag(pen, word, x, y, fontSize, maxWidth, align) {
     pen.textAlign = "center";
     pen.textBaseline = "middle";
 
-    pen.fillText(word, left + (width / 2), y + (size * 0.04));
+    pen.fillText(word, x, y + (size * 0.04));
 
 }
 
 
 /*
-    The full passphrase along the bottom, when the user asks for it
+    The full passphrase at the foot of the bar, one word to a line, when
+    the user asks for it. Returns where the block starts.
 */
-function drawPhraseBand(pen, band) {
+function drawPhraseBlock(pen, area) {
 
-    pen.fillStyle = NAVY;
+    const words = passphrase.words.map(function (item) {
+        return spelling(item);
+    });
 
-    roundedRectangle(pen, band.x, band.y, band.width, band.height, band.height / 2);
-    pen.fill();
+    const lines = words.map(function (word, index) {
+        return index < words.length - 1 ? word + "-" : word;
+    });
 
 
-    // Shrink the text until the passphrase fits inside the band
-    const maximum = band.width - (band.height * 0.9);
+    // Shrink the text until the longest line fits across the bar
+    const padding = 26;
+    const maximum = area.width - 40 - (padding * 2);
 
-    let size = band.height * 0.52;
+    let size = 40;
 
     pen.font = "600 " + size + "px " + TEXT_FONT;
 
-    while (pen.measureText(passphrase.phrase).width > maximum && size > 12) {
+    while (Math.max.apply(null, lines.map(function (line) { return pen.measureText(line).width; })) > maximum && size > 14) {
 
         size = size - 1;
 
@@ -720,133 +689,42 @@ function drawPhraseBand(pen, band) {
     }
 
 
+    const lineHeight = size * 1.24;
+
+    const block = {
+        x: area.x + 20,
+        width: area.width - 40,
+        height: (lineHeight * lines.length) + (padding * 2)
+    };
+
+    block.top = area.y + area.height - 26 - block.height;
+
+
+    pen.fillStyle = NAVY;
+
+    roundedRectangle(pen, block.x, block.top, block.width, block.height, 30);
+    pen.fill();
+
+
     pen.fillStyle = "#ffffff";
     pen.textAlign = "center";
     pen.textBaseline = "middle";
 
-    pen.fillText(passphrase.phrase, band.x + (band.width / 2), band.y + (band.height / 2) + (size * 0.04));
+    lines.forEach(function (line, index) {
+
+        pen.fillText(line, block.x + (block.width / 2), block.top + padding + (lineHeight * index) + (lineHeight / 2) + (size * 0.04));
+
+    });
+
+
+    return block;
 
 }
 
 
 
 /* ------------------------------
-   The Country Charm
------------------------------- */
-
-/*
-    The small round charm: the country's landmark, or its flag
-*/
-function buildSideCharm() {
-
-    const radius = SIDE_CHARM.radius;
-
-    const margin = 36;
-    const tabRise = 62;
-
-    const charm = document.createElement("canvas");
-
-    charm.width = (radius * 2) + (margin * 2);
-    charm.height = (radius * 2) + tabRise + (margin * 2);
-
-    const pen = charm.getContext("2d");
-
-    pen.translate(margin, margin + tabRise);
-
-
-    const edge = 24;
-
-    const tab = { x: radius, y: -10, radius: 46 };
-    const hole = { x: radius, y: -20, radius: 16 };
-
-
-    // White acrylic
-    pen.lineWidth = 6;
-    pen.strokeStyle = "rgba(46, 33, 119, 0.22)";
-
-    pen.beginPath();
-    pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
-    pen.stroke();
-
-    pen.beginPath();
-    pen.arc(radius, radius, radius, 0, Math.PI * 2);
-    pen.stroke();
-
-    pen.fillStyle = "#ffffff";
-
-    pen.beginPath();
-    pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
-    pen.fill();
-
-    pen.beginPath();
-    pen.arc(radius, radius, radius, 0, Math.PI * 2);
-    pen.fill();
-
-
-    // The picture
-    pen.save();
-
-    pen.beginPath();
-    pen.arc(radius, radius, radius - edge, 0, Math.PI * 2);
-    pen.clip();
-
-    const picture = wordImages[COUNTRY_INDEX];
-
-    if (picture) {
-
-        drawImageCover(pen, picture, 0, 0, radius * 2, radius * 2);
-
-    } else {
-
-        const sky = pen.createLinearGradient(0, 0, 0, radius * 2);
-        sky.addColorStop(0, "#d2e6fa");
-        sky.addColorStop(1, "#e4dcf8");
-
-        pen.fillStyle = sky;
-        pen.fillRect(0, 0, radius * 2, radius * 2);
-
-        pen.textAlign = "center";
-        pen.textBaseline = "middle";
-        pen.font = (radius * 0.95) + "px " + EMOJI_FONT;
-
-        pen.fillText(passphrase.words[COUNTRY_INDEX].emoji, radius, radius * 0.95);
-
-    }
-
-    if (showLabels.checked) {
-
-        drawTag(pen, passphrase.words[COUNTRY_INDEX].word, radius, radius * 1.56, radius * 0.19, radius * 1.3);
-
-    }
-
-    drawGloss(pen, radius * 2);
-
-    pen.restore();
-
-
-    pen.lineWidth = 3;
-    pen.strokeStyle = "rgba(6, 41, 82, 0.14)";
-
-    pen.beginPath();
-    pen.arc(radius, radius, radius - edge, 0, Math.PI * 2);
-    pen.stroke();
-
-
-    punchHole(pen, hole);
-
-
-    return {
-        canvas: charm,
-        holeX: margin + hole.x,
-        holeY: margin + tabRise + hole.y
-    };
-
-}
-
-
-
-/* ------------------------------
-   Ring And Chains
+   Ring And Chain
 ------------------------------ */
 
 /*
@@ -883,7 +761,7 @@ function drawRing() {
 
 
 /*
-    A short run of links from the ring down to a charm's hole
+    A short run of links from the ring down to the bar's hole
 */
 function drawChain(holeX, holeY) {
 
@@ -982,17 +860,17 @@ function strokeMetal(pen, width, from, to, path, across) {
 ------------------------------ */
 
 /*
-    A soft streak of light across a charm, so it reads as clear acrylic
+    A soft streak of light across the bar, so it reads as clear acrylic
 */
-function drawGloss(pen, size) {
+function drawGloss(pen, area) {
 
-    const gloss = pen.createLinearGradient(0, 0, size * 0.7, size * 0.7);
+    const gloss = pen.createLinearGradient(area.x, area.y, area.x + area.width, area.y + (area.width * 1.1));
     gloss.addColorStop(0, "rgba(255, 255, 255, 0.34)");
     gloss.addColorStop(0.32, "rgba(255, 255, 255, 0.08)");
     gloss.addColorStop(0.5, "rgba(255, 255, 255, 0)");
 
     pen.fillStyle = gloss;
-    pen.fillRect(0, 0, size, size);
+    pen.fillRect(area.x, area.y, area.width, area.height);
 
 }
 
