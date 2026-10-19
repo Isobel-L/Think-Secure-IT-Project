@@ -6,7 +6,8 @@
 // The artwork itself is not changed. The script only:
 //  - drops editor-only data (Inkscape/Sodipodi metadata, comments, hidden reference layers),
 //  - prefixes every id per scene, so four files can share one page without clashes,
-//  - tags the "Title card" layer and the mascot groups (data-ts="…") for js/home.js.
+//  - tags the "Title card" layer, the mascot groups and the small animated parts
+//    (clouds, trees, sparks, eyes…; data-ts="…") for js/home.js.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +20,17 @@ const SCENES = [
   { key: 'password', file: 'PassworChecker - new.svg', prefix: 'p-', mascot: ['g72'] },
   { key: 'passphrase', file: 'Passphrase - new.svg', prefix: 'f-', mascot: ['vector-199', 'vector-254'] },
   { key: 'sticker', file: 'Sticker studio - new.svg', prefix: 's-', mascot: ['vector-375'] },
+];
+
+// layer name → data-ts tag for the idle animations in js/home.js
+const LIFE = [
+  [/^(cloud|cloud right|soft cream cloud)$/, 'cloud'],
+  [/^(tree crown|tree bush)$/, 'sway'],
+  [/^spark$/, 'spark'],
+  [/^(eye|left eye|right eye)$/, 'eye'],
+  [/^pwDot\d$/, 'pw-dot'],
+  [/^strengthStatus\d$/, 'meter'],
+  [/^alert avatar$/, 'alert'],
 ];
 
 // index just past the element that starts at `start`, counting nested tags of the same name
@@ -55,6 +67,11 @@ function clean(svg, s) {
     const i = startOf(svg, ` id="${id}"`);
     if (i < 0 || !svg.startsWith('<g', i)) throw new Error(`${s.file}: no mascot group #${id}`);
     svg = svg.slice(0, i) + '<g data-ts="mascot"' + svg.slice(i + 2);
+  });
+  // the small things js/home.js brings to life, found by their layer names
+  svg = svg.replace(/<([\w:-]+)\b([^>]*?)\sinkscape:label="([^"]+)"/g, (tag, name, attrs, label) => {
+    const kind = LIFE.find(([re]) => re.test(label));
+    return kind && !attrs.includes('data-ts=') ? `<${name} data-ts="${kind[1]}"${attrs} inkscape:label="${label}"` : tag;
   });
 
   svg = svg

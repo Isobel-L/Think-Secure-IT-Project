@@ -106,6 +106,75 @@
     svg.insertBefore(r, defs ? defs.nextSibling : svg.firstChild);
   }
 
+  // put a fresh <g> where `el` is and `el` inside it; GSAP animates the <g>, the drawing keeps its own transform
+  function wrap(el) {
+    const g = document.createElementNS(NS, 'g');
+    el.replaceWith(g); g.appendChild(el);
+    return g;
+  }
+
+  /* ---------- life: each drawing keeps moving a little while it is on screen ---------- */
+  // The parts are tagged by tools/bundle-scenes.mjs from their layer names. One paused timeline
+  // per scene; only the scene(s) on screen play theirs.
+  const rand = (lo, hi) => lo + Math.random() * (hi - lo);
+  function buildLife(s) {
+    const tl = gsap.timeline({ paused: true });
+    const find = (tag) => [s.back.svg, s.front.svg].flatMap((svg) => [...svg.querySelectorAll(`[data-ts="${tag}"]`)]);
+    const byX = (gs) => gs.sort((p, q) => p.getBBox().x - q.getBBox().x);
+
+    // clouds drift, trees lean in the breeze, sparks twinkle
+    find('cloud').map(wrap).forEach((g, k) => {
+      tl.to(g, { x: (k % 2 ? -1 : 1) * rand(40, 80), duration: rand(5.5, 8.5), ease: 'sine.inOut', yoyo: true, repeat: -1 }, rand(0, 1.5));
+    });
+    find('sway').map(wrap).forEach((g) => {
+      gsap.set(g, { transformOrigin: '50% 100%' });
+      tl.fromTo(g, { rotation: -1.8 }, { rotation: 1.8, duration: rand(2.4, 3.4), ease: 'sine.inOut', yoyo: true, repeat: -1 }, rand(0, 1.5));
+    });
+    find('spark').map(wrap).forEach((g, k) => {
+      gsap.set(g, { transformOrigin: '50% 50%' });
+      tl.fromTo(g, { scale: 0.55, rotation: -14 }, { scale: 1.15, rotation: 14, duration: rand(0.8, 1.3), ease: 'sine.inOut', yoyo: true, repeat: -1 }, k * 0.35);
+    });
+
+    // the scam alert on the phone pings now and then
+    find('alert').map(wrap).forEach((g) => {
+      gsap.set(g, { transformOrigin: '50% 50%' });
+      tl.add(gsap.timeline({ repeat: -1, repeatDelay: 2.2 })
+        .to(g, { scale: 1.18, duration: 0.16, ease: 'power2.out' })
+        .to(g, { scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.35)' }), 0.8);
+    });
+
+    // eyes: an outer <g> glances towards the pointer, an inner one blinks.
+    // The mascot blinks on its own rhythm, the people on another.
+    const eyes = find('eye').map((e) => ({ blink: wrap(e), bot: !!e.closest('[data-ts="mascot"]') }));
+    s.looks = eyes.map((e) => wrap(e.blink));
+    [true, false].forEach((bot) => {
+      const lids = eyes.filter((e) => e.bot === bot).map((e) => e.blink);
+      if (!lids.length) return;
+      gsap.set(lids, { transformOrigin: '50% 50%' });
+      tl.add(gsap.timeline({ repeat: -1, repeatDelay: bot ? 3.1 : 4.3 })
+        .to(lids, { scaleY: 0.1, duration: 0.07, ease: 'power1.in' })
+        .to(lids, { scaleY: 1, duration: 0.13, ease: 'power1.out' }), bot ? 1.2 : 2.6);
+    });
+
+    // the mascot floats gently
+    if (s.bobs.length) tl.to(s.bobs, { y: -9, duration: 1.6, ease: 'sine.inOut', yoyo: true, repeat: -1 }, 0);
+
+    // the password checker types a password and its strength meter fills, then starts over
+    const dots = byX(find('pw-dot').map(wrap)), bars = byX(find('meter').map(wrap));
+    if (dots.length) {
+      gsap.set(dots, { transformOrigin: '50% 50%' });
+      gsap.set(bars, { transformOrigin: '0% 50%' });
+      tl.add(gsap.timeline({ repeat: -1, repeatDelay: 0.8 })
+        .set(dots, { opacity: 0 })
+        .set(bars, { scaleX: 0 })
+        .fromTo(dots, { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(3)', stagger: 0.17 }, 0.5)
+        .to(bars, { scaleX: 1, duration: 0.35, ease: 'power2.out', stagger: 0.22 }, '>-0.15')
+        .to(dots, { opacity: 0, duration: 0.2, stagger: { each: 0.04, from: 'end' } }, '+=2.4')
+        .to(bars, { scaleX: 0, duration: 0.3, ease: 'power2.in' }, '<'), 0);
+    }
+    return tl;
+  }
+
   const parser = new DOMParser();
   let zTop = 1;
   const scenes = ACTS.map((a) => {
@@ -124,13 +193,13 @@
       return { el, svg };
     });
     addSky(back.svg, a);
-    // the mascot gets a wrapper we can nudge between scenes, without touching the drawing
-    const rigs = [...front.svg.querySelectorAll('[data-ts="mascot"]')].map((m) => {
-      const g = document.createElementNS(NS, 'g');
-      m.replaceWith(g); g.appendChild(m);
-      return g;
-    });
-    return { a, back, front, rigs, centre: null };
+    // the mascot gets wrappers, so it can be animated without touching the drawing:
+    // rig (nudged between scenes) > hop (when poked) > bob (idle float) > the drawing
+    const bobs = [...front.svg.querySelectorAll('[data-ts="mascot"]')].map(wrap);
+    const hops = bobs.map(wrap);
+    const rigs = hops.map(wrap);
+    rigs.forEach((g) => g.classList.add('ts-poke'));
+    return { a, back, front, rigs, hops, bobs, looks: [], life: null, centre: null };
   });
 
   // where each mascot stands, in artwork units (measured once, while laid out)
@@ -142,6 +211,7 @@
       const x2 = Math.max(...boxes.map((b) => b.x + b.width)), y2 = Math.max(...boxes.map((b) => b.y + b.height));
       s.centre = { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
     }
+    if (hasGsap && !reduced) s.life = buildLife(s);
     s.back.el.classList.remove('is-on'); s.front.el.classList.remove('is-on');
   });
 
@@ -250,6 +320,7 @@
       s.front.el.classList.toggle('is-on', k === i);
     });
     scenes[i].back.el.style.zIndex = scenes[i].front.el.style.zIndex = String(++zTop);
+    scenes.forEach((s, k) => { if (s.life) (k === i ? s.life.restart() : s.life.pause()); });
     writeCard(i);
     markCurrent(i);
     applyTheme(i);
@@ -259,6 +330,7 @@
   function finish(from) {
     const A = scenes[from], B = scenes[state.index];
     [A.back.el, A.front.el].forEach((el) => el.classList.remove('is-on'));
+    if (A.life && A !== B) A.life.pause();
     if (hasGsap) {
       gsap.set([A.back.el, A.front.el, B.back.el, B.front.el, ...A.rigs, ...B.rigs, card], { clearProps: 'transform,opacity' });
       gsap.set(card, { '--shade': 0 });
@@ -283,6 +355,7 @@
     if (to === state.index) return;
     const from = state.index;
     state.index = to;
+    hush();
     dir = dir || Math.sign(wrapDelta(to - from)) || 1;
     markCurrent(to);
     moveInk(to, true);
@@ -293,6 +366,10 @@
     // the incoming scene lies on top of the outgoing one, in both planes
     zTop += 1;
     [B.back.el, B.front.el].forEach((el) => { el.classList.add('is-on'); el.style.zIndex = String(zTop); });
+    if (B.life) B.life.restart();
+    // the card stops leaning towards the pointer while it turns
+    tilt.x = tilt.y = tilt.tx = tilt.ty = 0;
+    gsap.set(card, { rotationY: 0 });
     const tl = gsap.timeline({ onComplete: () => finish(from) });
     state.tl = tl;
 
@@ -366,13 +443,132 @@
     if (sx === null) return;
     const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) go(target() + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+    else if (Math.hypot(dx, dy) < 8 && !e.target.closest('.card, .ts-poke')) burst(e.clientX, e.clientY);
   });
+
+  /* ---------- the pointer: depth between the planes, a glance from the eyes, a tilt of the card ---------- */
+  const parallax = hasGsap && !reduced && matchMedia('(hover: hover) and (pointer: fine)').matches;
+  root.dataset.motion = hasGsap && !reduced ? 'full' : 'reduced';
+  root.toggleAttribute('data-parallax', parallax);
+  const look = { x: 0, y: 0, tx: 0, ty: 0 };           // pointer from the screen centre, -1…1
+  const tilt = { x: 0, y: 0, tx: 0, ty: 0 };           // card lean, degrees
+  let raf = 0;
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  function frame() {
+    raf = 0;
+    let moving = false;
+    [look, tilt].forEach((o) => {
+      o.x += (o.tx - o.x) * 0.08; o.y += (o.ty - o.y) * 0.08;
+      if (Math.abs(o.tx - o.x) + Math.abs(o.ty - o.y) > 0.002) moving = true;
+      else { o.x = o.tx; o.y = o.ty; }
+    });
+    // the planes move against the pointer (see css), the front one the furthest
+    root.style.setProperty('--px', look.x.toFixed(4));
+    root.style.setProperty('--py', look.y.toFixed(4));
+    scenes[state.index].looks.forEach((g) => gsap.set(g, { x: look.x * 2.2, y: look.y * 1.6 }));
+    if (!state.busy) gsap.set(card, { rotationY: tilt.x, rotationX: tilt.y });
+    if (moving) kick();
+  }
+  if (parallax) {
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || locked()) return;
+      look.tx = clamp((e.clientX / innerWidth) * 2 - 1, -1, 1);
+      look.ty = clamp((e.clientY / innerHeight) * 2 - 1, -1, 1);
+      kick();
+    }, { passive: true });
+    document.addEventListener('mouseleave', () => { look.tx = look.ty = 0; kick(); });
+    // the card leans away from the pointer and a soft light follows it across
+    card.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || state.busy) return;
+      const r = card.getBoundingClientRect();
+      const mx = clamp((e.clientX - r.left) / r.width, 0, 1), my = clamp((e.clientY - r.top) / r.height, 0, 1);
+      card.style.setProperty('--mx', `${(mx * 100).toFixed(1)}%`);
+      card.style.setProperty('--my', `${(my * 100).toFixed(1)}%`);
+      tilt.tx = (mx - 0.5) * (wide ? 5 : 3);
+      tilt.ty = (0.5 - my) * (wide ? 4 : 2.5);
+      kick();
+    });
+    card.addEventListener('pointerleave', () => { tilt.tx = tilt.ty = 0; kick(); });
+  }
+
+  /* ---------- the mascot: poke it for a hop and a safety tip ---------- */
+  const bubble = document.getElementById('botBubble');
+  const bubbleText = document.getElementById('botBubbleText');
+  const TIPS = 3;
+  const told = {};                                     // the next tip for each activity
+  let bubbleTimer = 0, poked = false;
+  function hop(s) {
+    if (!hasGsap || reduced || !s.hops.length) return;
+    gsap.killTweensOf(s.hops);
+    gsap.timeline()
+      .to(s.hops, { scaleX: 1.07, scaleY: 0.9, transformOrigin: '50% 100%', duration: 0.1, ease: 'power2.in' })
+      .to(s.hops, { y: -44, scaleX: 0.96, scaleY: 1.06, duration: 0.24, ease: 'power2.out' })
+      .to(s.hops, { y: 0, scaleX: 1, scaleY: 1, duration: 0.55, ease: 'bounce.out' });
+  }
+  function poke(hint) {
+    const s = scenes[state.index];
+    if (state.busy || !s.rigs.length) return;
+    hop(s);
+    if (hint) { say(t('home.bot.hint')); return; }
+    poked = true;
+    const k = told[s.a.key] || 0;
+    told[s.a.key] = (k + 1) % TIPS;
+    say(t(`home.bot.${s.a.key}.${k + 1}`));
+  }
+  function say(text) {
+    bubbleText.textContent = text;
+    placeBubble();
+    bubble.classList.remove('is-on');
+    bubble.getBoundingClientRect();                    // restart the pop when the words change
+    bubble.classList.add('is-on');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(hush, 3800 + text.length * 35);
+  }
+  function hush() {
+    clearTimeout(bubbleTimer);
+    bubble.classList.remove('is-on');
+  }
+  // above the mascot's head, kept on screen; below it when the header is in the way
+  function placeBubble() {
+    const rs = scenes[state.index].rigs.map((g) => g.getBoundingClientRect()).filter((r) => r.width);
+    if (!rs.length) return;
+    const top = Math.min(...rs.map((r) => r.top)), bottom = Math.max(...rs.map((r) => r.bottom));
+    const cx = (Math.min(...rs.map((r) => r.left)) + Math.max(...rs.map((r) => r.right))) / 2;
+    const w = bubble.offsetWidth, h = bubble.offsetHeight, m = 12;
+    const below = top - h - 18 < header.getBoundingClientRect().bottom + m;
+    const left = clamp(cx, m + w / 2, innerWidth - m - w / 2);
+    bubble.classList.toggle('is-below', below);
+    bubble.style.left = `${left}px`;
+    bubble.style.top = `${below ? Math.min(bottom + 14, innerHeight - h - m) : top - 14}px`;
+    bubble.style.setProperty('--tail-x', `${clamp(cx - left, -w / 2 + 24, w / 2 - 24)}px`);
+  }
+  addEventListener('click', (e) => { if (!locked() && e.target.closest('.ts-poke')) poke(false); });
+
+  /* ---------- a little burst of sparkles wherever the illustration is tapped ---------- */
+  const fx = document.getElementById('fx');
+  function burst(x, y) {
+    if (!hasGsap || reduced || locked()) return;
+    const a = ACTS[state.index];
+    const colours = [a.card.accent, '#FCC237', a.ground, '#03A18B'];
+    for (let k = 0; k < 10; k++) {
+      const bit = document.createElement('i');
+      bit.className = k % 2 ? 'fx-bit' : 'fx-bit is-star';
+      bit.style.cssText = `left:${x}px;top:${y}px;color:${colours[k % colours.length]}`;
+      fx.appendChild(bit);
+      const ang = (k / 10) * Math.PI * 2 + rand(-0.3, 0.3), d = rand(34, 86);
+      gsap.fromTo(bit, { scale: rand(0.7, 1.2) }, {
+        x: Math.cos(ang) * d, y: Math.sin(ang) * d - 12, rotation: rand(-200, 200), scale: 0,
+        duration: rand(0.6, 0.95), ease: 'power3.out', onComplete: () => bit.remove(),
+      });
+    }
+  }
 
   let rz;
   addEventListener('resize', () => {
     clearTimeout(rz);
     rz = setTimeout(() => {
       if (state.tl) state.tl.progress(1);
+      hush();
       layout();
       moveInk(target(), false);
     }, 120);
@@ -404,6 +600,7 @@
   /* ---------- language ---------- */
   addEventListener('languagechange', () => {
     if (state.tl) state.tl.progress(1);
+    hush();
     layout();                                            // the tall card fits the longest new text
     writeCard(state.index);
     markCurrent(state.index);
@@ -422,9 +619,19 @@
     document.body.classList.remove('is-intro');
     layout();
     moveInk(target(), false);
+    inviteToPoke();
     if (!entrance || !hasGsap || reduced) return;
     gsap.from('.card-slot', { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out', clearProps: 'all' });
     gsap.from('.top', { opacity: 0, y: -12, duration: 0.8, ease: 'expo.out', delay: 0.15, clearProps: 'all' });
+  }
+
+  // once per visit, the mascot hops and asks to be poked, unless someone already found it
+  function inviteToPoke() {
+    try {
+      if (sessionStorage.getItem('thinksecure-bot-hint') === 'seen') return;
+      sessionStorage.setItem('thinksecure-bot-hint', 'seen');
+    } catch (e) { /* storage unavailable: invite anyway */ }
+    setTimeout(() => { if (!poked && !locked()) poke(true); }, 2600);
   }
 
   // The intro plays once per visit, so coming back from an activity goes straight to the scenes
