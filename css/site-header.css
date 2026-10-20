@@ -7,7 +7,7 @@
     gap: 12px 20px;
     flex-wrap: wrap;
     padding: 16px var(--gutter);
-    background: var(--cream);
+    background: transparent;
 }
 
 .il-header .il-logo {
@@ -30,6 +30,7 @@
 
 .il-header .il-logo .lg-secure {
     fill: var(--brand);
+    transition: fill 0.45s ease;
 }
 
 .il-header .il-nav {
@@ -160,7 +161,7 @@
 }
 /* Isolate the shared navigation from legacy page styles. */
 .il-header {
- --ink:#062952; --cream:#fdf8ed; --paper:#fff; --brand:#6446c7;
+ --ink:#062952; --cream:#fdf8ed; --paper:#fff; --brand:var(--ts-brand,#6446c7);
  --gutter:clamp(16px,4vw,56px);
  font-family:"Nunito",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
  font-size:17px; line-height:1.55; text-align:left;
@@ -192,4 +193,44 @@
  .il-header .language-control label { font-size:0; gap:0; }
  .il-header .language-control { padding-left:10px; }
 }
+
+/* The home page's sliding highlight, on every page: it sits behind the current stop
+   (js/home.js moves it on the home page, js/site-nav.js on the activity pages) */
+.il-header .il-nav.has-ink { position:relative; }
+.il-header .il-nav.has-ink .il-stop { position:relative; z-index:1; }
+.il-header .il-nav.has-ink .il-stop[aria-current="true"],
+.il-header .il-nav.has-ink .il-stop[aria-current="page"],
+.il-header .il-nav.has-ink .il-stop[aria-current="true"]:hover,
+.il-header .il-nav.has-ink .il-stop[aria-current="page"]:hover { background:transparent; color:var(--cream); }
+.il-header .il-nav.has-ink .il-stop[aria-current="true"] .il-stop-n,
+.il-header .il-nav.has-ink .il-stop[aria-current="page"] .il-stop-n { border-color:transparent; background:var(--cream); color:var(--ink); }
+.il-header .il-ink {
+ position:absolute; left:0; top:0; z-index:0;
+ width:var(--ink-w,0); height:var(--ink-h,40px);
+ transform:translate(var(--ink-x,0),var(--ink-y,0));
+ border-radius:999px; background:var(--ink); pointer-events:none;
+ transition:transform .45s cubic-bezier(.3,1.25,.5,1), width .45s cubic-bezier(.3,1.25,.5,1), height .45s ease;
+}
+@media(max-width:900px) {
+ /* the chosen stop keeps its name, the others show their number */
+ .il-header .il-nav .il-stop[aria-current="true"] { padding:0 14px 0 7px; min-width:0; }
+ .il-header .il-nav .il-stop[aria-current="true"] .il-stop-label { position:static; width:auto; height:auto; overflow:visible; clip-path:none; white-space:normal; }
+}
+
+/* numbers hop when pointed at and pop when chosen; stops dip when pressed */
+@media(prefers-reduced-motion:no-preference) {
+ .il-header .il-stop:not([aria-current="true"]):not([aria-current="page"]):hover .il-stop-n { animation:il-num-hop .5s cubic-bezier(.3,1.6,.5,1); }
+ .il-header .il-stop[aria-current="true"] .il-stop-n,
+ .il-header .il-stop[aria-current="page"] .il-stop-n { animation:il-num-pop .55s cubic-bezier(.3,1.8,.5,1); }
+ .il-header .il-stop:active { scale:.96; }
+}
+@keyframes il-num-hop { 40% { translate:0 -4px; rotate:-10deg; } }
+@keyframes il-num-pop { 0% { scale:.5; rotate:-90deg; } }
+
+/* The curtain between pages (js/site-nav.js). It covers the whole page, header included;
+   arriving, the page is covered before it paints. */
+.ts-curtain { position:fixed; inset:0; z-index:9998; pointer-events:none; }
+.ts-curtain svg { display:block; width:100%; height:100%; }
+html.ts-arriving::before { content:""; position:fixed; inset:0; z-index:9998; background:var(--ts-curtain); }
+
 @media(prefers-reduced-motion:reduce) { .il-header * { transition:none!important; } }

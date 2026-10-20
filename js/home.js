@@ -416,7 +416,7 @@
   // a plain click chooses the scene; Ctrl/Cmd-click still opens the activity itself
   const plainClick = (e) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
   tabs.forEach((b, i) => b.addEventListener('click', (e) => { if (!plainClick(e)) return; e.preventDefault(); go(i); }));
-  ['brand', 'navHome'].forEach((id) => document.getElementById(id).addEventListener('click', (e) => { if (!plainClick(e)) return; e.preventDefault(); go(0); }));
+  document.getElementById('brand').addEventListener('click', (e) => { if (!plainClick(e)) return; e.preventDefault(); go(0); });
   addEventListener('keydown', (e) => {
     if (locked() || e.altKey || e.ctrlKey || e.metaKey || e.target.closest('input, textarea, select')) return;
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(target() + 1, 1); }
@@ -569,28 +569,9 @@
     }, 120);
   });
 
-  /* ---------- curtain into an activity ---------- */
-  const curtainPath = document.getElementById('curtainPath');
-  const curtain = { top: 100, bottom: 100 };
-  const drawCurtain = () => {
-    const ct = curtain.top, cb = curtain.bottom;
-    const bt = Math.sin(Math.PI * (1 - ct / 100)) * 14, bb = Math.sin(Math.PI * (cb / 100)) * 14;
-    curtainPath.setAttribute('d', `M0 ${ct} C30 ${ct - bt} 70 ${ct - bt} 100 ${ct} V${cb} C70 ${cb + bb} 30 ${cb + bb} 0 ${cb}Z`);
-  };
-  // The button is an ordinary link. With motion on, the curtain rises first and the page follows.
-  cardCta.addEventListener('click', (e) => {
-    if (!hasGsap || reduced || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    e.preventDefault();
-    const href = cardCta.href;
-    curtainPath.style.fill = ACTS[+cardCta.dataset.open].card.accent;
-    curtain.top = 100; curtain.bottom = 100;
-    gsap.to(curtain, { top: 0, duration: 0.6, ease: 'power3.inOut', onUpdate: drawCurtain, onComplete: () => { location.href = href; } });
-  });
-  // the browser's Back button can bring this page back exactly as it was left: lift the curtain again
-  addEventListener('pageshow', (e) => {
-    if (!e.persisted) return;
-    curtain.top = 100; curtain.bottom = 100; drawCurtain();
-  });
+  /* ---------- into an activity ---------- */
+  // The button is an ordinary link; js/site-nav.js raises the curtain in the activity's colour
+  // and the activity page lifts it again.
 
   /* ---------- language ---------- */
   addEventListener('languagechange', () => {
@@ -604,7 +585,11 @@
 
   /* ---------- start ---------- */
   // deep links (#quiz, #password, #passphrase, #keychain) open that activity directly;
-  // the keychain scene also answers to its artwork's name, #sticker
+  // the keychain scene also answers to its artwork's name, #sticker. Refreshing the page is a
+  // fresh start instead: back to the first activity, with the intro played again
+  const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  const reloaded = nav ? nav.type === 'reload' : performance.navigation && performance.navigation.type === 1;
+  if (reloaded && location.hash) history.replaceState(null, '', location.pathname + location.search);
   const hash = location.hash.slice(1);
   const fromHash = ACTS.findIndex((a) => a.key === hash || a.art === hash);
   state.index = fromHash > 0 ? fromHash : 0;
@@ -618,8 +603,11 @@
     moveInk(target(), false);
     inviteToPoke();
     if (!entrance || !hasGsap || reduced) return;
-    gsap.from('.card-slot', { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out', clearProps: 'all' });
-    gsap.from('.il-header', { opacity: 0, y: -12, duration: 0.8, ease: 'expo.out', delay: 0.15, clearProps: 'all' });
+    // the hills carry on up and off the screen, uncovering it from the bottom: the card
+    // settles as the sand passes it, the header last
+    gsap.from('#world', { scale: 1.03, duration: 2, ease: 'power2.out', delay: 0.2, clearProps: 'transform' });
+    gsap.from('.card-slot', { opacity: 0, y: 24, duration: 1.2, ease: 'power3.out', delay: 0.6, clearProps: 'all' });
+    gsap.from('.il-header', { opacity: 0, y: -12, duration: 1, ease: 'power3.out', delay: 1.1, clearProps: 'all' });
   }
 
   // once per visit, the mascot hops and asks to be poked, unless someone already found it
@@ -631,10 +619,99 @@
     setTimeout(() => { if (!poked && !locked()) poke(true); }, 2600);
   }
 
+  // "Think" arrives a letter at a time. Its n is a padlock: it starts edge-on, so it looks like
+  // a thin bar, turns to face you while sliding left into its place, then clicks shut. The
+  // letters T, h and k are one drawn path, so they are split apart here
+  function buildThink(logo) {
+    // ---- "Think" speed: change these ----
+    const letterGap = 0.12;    // seconds between one letter popping in and the next
+    const lockTurn = 0.7;      // seconds the padlock takes to turn round and slide into place
+    const lockSlide = 40;      // how far right of its place the padlock starts (logo units)
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const word = logo.querySelector('.lg-think');
+    const joined = word.querySelector(':scope > path:not(.lg-star)');
+    const [T, h, k] = joined.getAttribute('d').split(/(?=M)/).map((d) => {
+      const el = document.createElementNS(NS, 'path');
+      el.setAttribute('d', d);
+      return el;
+    });
+    joined.replaceWith(T, h, k);
+    const stem = word.querySelector('rect');
+    const star = word.querySelector('.lg-star');
+    const lock = word.querySelector('.lg-lock');
+    const keyhole = lock.lastElementChild;
+    const turn = document.createElementNS(NS, 'g');     // moves the lock without touching its own placement
+    lock.replaceWith(turn);
+    turn.appendChild(lock);
+
+    const pop = { scale: 0.3, yPercent: 30, opacity: 0, duration: 0.8, ease: 'elastic.out(1.2, 0.8)', transformOrigin: '50% 100%' };
+    const at = (n) => n * letterGap;
+    return gsap.timeline()
+      .from(T, pop, at(0))
+      .from(h, pop, at(1))
+      .from(stem, pop, at(2))
+      .from(star, { scale: 0, rotation: -200, duration: 0.9, ease: 'elastic.out(1.2, 0.8)', transformOrigin: '50% 50%' }, at(2) + 0.1)
+      .from(k, pop, at(4))
+      // the padlock: edge-on bar, turning to face front as it slides left
+      .from(turn, { opacity: 0, duration: 0.12 }, at(3))
+      .from(turn, { scaleX: 0.06, x: lockSlide, duration: lockTurn, ease: 'power3.out', transformOrigin: '50% 50%' }, at(3))
+      // ...and the click: a small drop and a twitch of the keyhole, sprung back
+      .to(turn, { y: 6, duration: 0.07, ease: 'power2.in' })
+      .to(keyhole, { rotation: -25, duration: 0.07, ease: 'power2.in', transformOrigin: '50% 30%' }, '<')
+      .to(turn, { y: 0, duration: 0.35, ease: 'back.out(4)' })
+      .to(keyhole, { rotation: 0, duration: 0.35, ease: 'back.out(4)' }, '<');
+  }
+
+  // "SECURE" is typed in like a password: a caret blinks, the letters land one at a time with
+  // the caret riding after the last one, and it fades once the word is done. The word is one
+  // drawn path, so it is split into letters here (a letter's inner holes, like the R's, are
+  // the pieces that sit inside another piece)
+  function typeSecure(logo) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const word = logo.querySelector('.lg-secure');
+    const pieces = word.getAttribute('d').split(/(?=M)/).map((d) => {
+      const xs = d.match(/-?[\d.]+/g).map(Number).filter((n, k) => k % 2 === 0);
+      return { d, x0: Math.min(...xs), x1: Math.max(...xs) };
+    });
+    const inside = (p, q) => p !== q && p.x0 >= q.x0 && p.x1 <= q.x1;
+    const letters = pieces.filter((p) => !pieces.some((q) => inside(p, q))).sort((p, q) => p.x0 - q.x0);
+    pieces.forEach((p) => { const host = letters.find((q) => inside(p, q)); if (host) host.d += p.d; });
+
+    const group = document.createElementNS(NS, 'g');
+    group.setAttribute('class', 'lg-secure');
+    group.setAttribute('fill', word.getAttribute('fill'));
+    letters.forEach((l) => {
+      l.el = document.createElementNS(NS, 'path');
+      l.el.setAttribute('d', l.d);
+      group.appendChild(l.el);
+    });
+    const caret = document.createElementNS(NS, 'rect');
+    Object.entries({ y: 572, width: 9, height: 164, rx: 3 }).forEach(([k, v]) => caret.setAttribute(k, v));
+    group.appendChild(caret);
+    word.replaceWith(group);
+
+    gsap.set([caret, ...letters.map((l) => l.el)], { opacity: 0 });   // hidden until their turn
+    const tl = gsap.timeline();
+    // ---- typing speed: change these ----
+    // pause before each letter appears, in seconds, for S E C U R E (smaller = faster typing)
+    const gaps = [0.15, 0.14, 0.19, 0.12, 0.17, 0.15];
+    // how long the caret takes to fade away once the last letter is in
+    const caretFade = 0.2;
+    tl.set(caret, { opacity: 1, attr: { x: letters[0].x0 - 4 } }, 0);
+    letters.forEach((l, i) => {
+      tl.set(l.el, { opacity: 1 }, `+=${gaps[i % gaps.length]}`)
+        .set(caret, { attr: { x: l.x1 + 12 } }, '<');
+    });
+    tl.addLabel('typed');                                // the last letter is in; the intro moves on from here
+    tl.to(caret, { opacity: 0, duration: caretFade });
+    return tl;
+  }
+
   // The intro plays once per visit, so coming back from an activity goes straight to the scenes
   let introSeen = false;
   try {
-    introSeen = sessionStorage.getItem('thinksecure-intro') === 'seen';
+    introSeen = !reloaded && sessionStorage.getItem('thinksecure-intro') === 'seen';   // a refresh plays it again
     sessionStorage.setItem('thinksecure-intro', 'seen');
   } catch (e) { /* storage unavailable: just play it */ }
 
@@ -642,17 +719,33 @@
     enterWorld(false);
   } else {
     const L = document.getElementById('introLogo');
-    gsap.set('.intro-hills .h', { yPercent: 100 });
+    const sand = document.querySelector('.intro-hills');
+    const vh = (n) => () => innerHeight * n / 100;
+    let revealed = false;
+    // The page goes on underneath once the stripes cover the whole screen (the first stripe's
+    // top is above it, the last stripe's bottom below it), so what the last stripe uncovers
+    // as it rises is the page
+    const reveal = () => {
+      if (revealed || gsap.getProperty(sand, 'y') > -innerHeight * 0.18) return;
+      revealed = true;
+      document.body.classList.add('is-revealing');
+      enterWorld(true);
+      gsap.set('#intro', { backgroundColor: 'transparent', pointerEvents: 'none' });
+      gsap.set(['.intro-sun', L], { autoAlpha: 0 });
+    };
+    const typing = typeSecure(L);
+    // ---- pacing after the words are in: change these ----
+    const sunAfterTyping = 0.85;   // seconds from the last letter typed to the sun rising
+    const sandAfterSun = 0.5;      // seconds from the sun starting to the sand starting
     const intro = gsap.timeline({ delay: 0.3 });
-    intro.from(L.querySelector('.lg-think'), { scale: 0.3, yPercent: 30, opacity: 0, duration: 1, ease: 'elastic.out(1.2, 0.8)', transformOrigin: '50% 100%' })
-      .from(L.querySelector('.lg-star'), { scale: 0, rotation: -200, duration: 0.9, ease: 'elastic.out(1.2, 0.8)', transformOrigin: '50% 50%' }, '-=0.6')
-      .from(L.querySelector('.lg-lock'), { yPercent: 40, opacity: 0, duration: 0.6, ease: 'expo.out' }, '<')
-      .from(L.querySelector('.lg-secure'), { scale: 0.3, yPercent: 30, opacity: 0, duration: 1, ease: 'elastic.out(1.2, 0.8)', transformOrigin: '50% 100%' }, '+=0.15')
-      .to('.intro-sun', { scale: 1, duration: 1.1, ease: 'expo.out' }, '+=0.3')
+    intro.add(buildThink(L), 0)
+      .add(typing, 0)                                    // typed while "Think" lands
+      .to('.intro-sun', { scale: 0.85, duration: 1.1, ease: 'expo.out' }, typing.labels.typed + sunAfterTyping)
       .to(L, { scale: 0.86, duration: 1.1, ease: 'expo.out' }, '<')
-      .to('.intro-hills .h', { yPercent: -14, duration: 1, ease: 'expo.inOut', stagger: 0.1 }, '-=0.7')
-      .add(() => enterWorld(true));
-    const skip = () => { if (intro.progress() < 0.85) intro.progress(1); };
+      // one slow sweep: the stripes rise from below the screen and carry on off the top
+      .fromTo(sand, { y: vh(100) }, { y: vh(-145), duration: 1.5, ease: 'power1.inOut', onUpdate: reveal }, `<${sandAfterSun}`)
+      .add(() => document.body.classList.remove('is-revealing'));
+    const skip = () => { if (intro.progress() < 1) intro.progress(1); };
     document.getElementById('intro').addEventListener('click', skip);
     addEventListener('keydown', function k() { skip(); removeEventListener('keydown', k); });
   }

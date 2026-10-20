@@ -7229,3 +7229,8 @@ body.cyber-quiz-page .quiz-main,
     }
 }
 
+
+
+/* The shared navigation is see-through; the quiz paints its page dark, so the header keeps
+   the quiz scene's sky from the home page behind it */
+body.cyber-quiz-page > .il-header { background: #FBF3D7; }

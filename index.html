@@ -13,6 +13,9 @@
 
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/home.css">
+
+    <!-- the curtain between pages; in the head so a page arriving under it is covered from the start -->
+    <script src="js/site-nav.js"></script>
 </head>
 
 <body class="is-intro">
@@ -25,12 +28,12 @@
 
         <div class="intro-logo" id="introLogo"></div>
 
-        <svg class="intro-hills" viewBox="0 0 1600 1000" preserveAspectRatio="none">
-            <path class="h" fill="#FBE9BA" d="M0 140 C200 40 380 40 560 120 C760 210 900 60 1100 70 C1300 80 1420 160 1600 110 V1000 H0Z"/>
-            <path class="h" fill="#5445F0" d="M0 120 C160 180 320 40 520 70 C720 100 820 200 1040 150 C1240 100 1400 30 1600 90 V1000 H0Z"/>
-            <path class="h" fill="#03A18B" d="M0 90 C220 20 400 150 640 120 C860 90 980 20 1180 60 C1380 100 1480 170 1600 140 V1000 H0Z"/>
-            <path class="h" fill="#0F244C" d="M0 150 C180 70 420 60 600 140 C760 210 960 190 1120 110 C1280 40 1460 60 1600 130 V1000 H0Z"/>
-            <path class="h" fill="#FCEBB7" d="M0 110 C240 40 420 120 620 90 C840 60 960 160 1200 130 C1380 110 1480 50 1600 80 V1000 H0Z"/>
+        <svg class="intro-hills" viewBox="0 0 1600 1400" preserveAspectRatio="none">
+            <path class="h" fill="#FBE9BA" d="M0 80 C200 -20 380 -20 560 60 C760 150 900 0 1100 10 C1300 20 1420 100 1600 50 V1200 H0Z"/>
+            <path class="h" fill="#5445F0" d="M0 280 C160 340 320 200 520 230 C720 260 820 360 1040 310 C1240 260 1400 190 1600 250 V1200 H0Z"/>
+            <path class="h" fill="#03A18B" d="M0 470 C220 400 400 530 640 500 C860 470 980 400 1180 440 C1380 480 1480 550 1600 520 V1200 H0Z"/>
+            <path class="h" fill="#FCEBB7" d="M0 750 C180 670 420 660 600 740 C760 810 960 790 1120 710 C1280 640 1460 660 1600 730 V1200 H0Z"/>
+            <path class="h" fill="#0F244C" d="M0 930 C240 860 420 940 620 910 C840 880 960 980 1200 950 C1380 930 1480 870 1600 900 V1330 C1440 1290 1260 1370 1060 1330 C860 1290 700 1370 520 1330 C340 1290 160 1370 0 1330Z"/>
         </svg>
 
         <div class="intro-sun"></div>
@@ -39,14 +42,12 @@
 
 
     <!-- Layer 3: the same navigation as every activity page (css/site-header.css), so the four
-         activities sit in exactly the same place before and after you go in -->
+         activities sit in exactly the same place before and after you go in. Home is left out
+         here: this is home -->
     <header class="il-header home-header">
         <a class="il-logo" id="brand" href="index.html" aria-label="ThinkSecure, back to the first activity" data-i18n-aria-label="home.brandLabel"></a>
-        <nav class="il-nav" aria-label="Main navigation">
+        <nav class="il-nav has-ink" aria-label="Main navigation">
             <span class="il-ink" id="navInk" aria-hidden="true"></span>
-            <a class="il-stop il-stop-home" href="index.html" id="navHome">
-                <span class="il-stop-label" data-i18n="common.home">Home</span>
-            </a>
             <a class="il-stop" href="pages/cyber-quiz.html" data-go="0" aria-controls="titleCard">
                 <span class="il-stop-n" aria-hidden="true">1</span>
                 <span class="il-stop-label" data-i18n="common.quiz">Cyber Safety Quiz</span>
@@ -103,10 +104,6 @@
     <!-- The mascot's speech bubble (poke the mascot) and the sparkles from tapping the illustration -->
     <div class="bot-bubble" id="botBubble" role="status"><p id="botBubbleText"></p></div>
     <div id="fx" aria-hidden="true"></div>
-
-
-    <!-- Rises over the page on the way into an activity -->
-    <div id="curtain" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path id="curtainPath" d="M0 100 H100 V100 H0Z"/></svg></div>
 
 
     <script src="languages/en.js"></script>
