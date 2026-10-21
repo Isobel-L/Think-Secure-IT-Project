@@ -71,9 +71,19 @@
   // If all full-body art fails, retain a usable character using the avatar.
   lastImage=chosen?.src||avatar;el('.helper-figure img').src=lastImage;chooseInvite();setState('robot');
  }
- launch.addEventListener('click',()=>{if(state==='launcher')showRobot();else {chooseInvite();setState('robot');}});
+ launch.addEventListener('click',()=>{if(state==='closing')return;if(state==='launcher')showRobot();else {chooseInvite();setState('robot');}});
  invite.addEventListener('click',()=>{chooseTip();setState('speech');});
- function closeAssistant(){++request;launch.removeAttribute('aria-busy');setState('launcher');}
+ function closeAssistant(){
+  if(state==='closing')return;
+  ++request;launch.removeAttribute('aria-busy');
+  const finish=()=>{launch.removeAttribute('aria-busy');setState('launcher');};
+  if(state==='launcher'){finish();return;}
+  setState('closing',false);
+  launch.focus({preventScroll:true});launch.setAttribute('aria-busy','true');
+  // The animation adapter may defer the collapse until the full robot exits.
+  const closing=new CustomEvent('security-helper-close',{cancelable:true,detail:{finish}});
+  if(host.dispatchEvent(closing))finish();
+ }
  el('.helper-close').addEventListener('click',closeAssistant);
  dismiss.addEventListener('click',closeAssistant);
  el('.helper-next').addEventListener('click',()=>{chooseTip();render();});

@@ -72,3 +72,6 @@ All four activities now load security-bot-runtime.js, security-bot-art.js and se
 The collapsed animated launcher shows an enlarged head from the same SVG rig, with pointer tracking. Only the guidance adapter changes its viewBox and hides body artwork; the scoring mascot is unchanged. Expanding restores the full rig, and closing returns to the head. Reduced-motion preferences still disable pointer tracking.
 
 Activity navigation and the legacy activity menu use css/site-header.css, extracted from the illustrated Passphrase Maker header. Page headers keep static HTML links and i18n keys so local file navigation works without a build step.
+
+
+Guidance now reuses Tommy's existing pop_in and pop_out timelines. Opening the head launcher plays Pop In; closing the invitation or tips (including Escape) hides the speech immediately, waits for Pop Out to finish, then restores the head launcher. The shared engine exposes a cancelable security-helper-close event and falls back to immediate collapse without the animation adapter. Reduced motion and hidden/background pages collapse immediately. Repeated close/launch clicks during the exit are ignored, with a bounded timeout to recover if rendering stalls.

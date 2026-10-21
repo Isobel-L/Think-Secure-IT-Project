@@ -88,3 +88,6 @@
 .has-animated-model:not([data-state="launcher"]) .helper-model { animation:helper-appear .22s ease-out; }
 @media(max-width:640px) { .has-animated-model[data-state="launcher"] .helper-model { width:64px; height:58px; } }
 @media(prefers-reduced-motion:reduce) { .has-animated-model .helper-model { animation:none!important; } }
+
+/* Keep the full model on screen until Pop Out completes. */
+.has-animated-model[data-state="closing"] .helper-launch { cursor:default; }
