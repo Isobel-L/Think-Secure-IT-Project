@@ -137,7 +137,7 @@ window.ThinkSecureLocales["fr"]={
   "home.bot.passphrase.3": "Un gestionnaire de mots de passe peut retenir le reste pour vous.",
   "home.bot.keychain.1": "Gardez vos rappels près de vous. Un porte-clés vous suit partout !",
   "home.bot.keychain.2": "Ne partagez jamais un code à usage unique, même avec un ami.",
-  "home.bot.keychain.3": "Les autocollants, ça se partage. Les mots de passe, non !",
+  "home.bot.keychain.3": "Le porte-clés, ça se montre. Le mot de passe, non !",
   "menu.pageTitle": "Choisir une activité — ThinkSecure",
   "menu.intro": "Explorez des activités interactives pour mieux comprendre la cybersécurité et vous protéger en ligne. Choisissez une activité dans l’ordre qui vous convient.",
   "menu.title": "Choisir une activité",
