@@ -698,5 +698,18 @@ window.ThinkSecureLocales["de"]={
   "quiz.ui.see_my_score": "Mein Ergebnis ansehen",
   "quiz.progress": "Situation {current} von {total}",
   "quiz.ui.renderError": "Diese Situation konnte nicht angezeigt werden.",
-  "quiz.ui.reviewSituation": "Sieh dir die Situation oben an und entscheide, wie du handeln würdest."
+  "quiz.ui.reviewSituation": "Sieh dir die Situation oben an und entscheide, wie du handeln würdest.",
+  "password.basis.title": "Warum diese Bewertung?",
+  "password.basis.estimate": "Geschätzte Rateversuche: etwa {guesses}.",
+  "password.basis.scale": "Die fünf Stufen · Quellen",
+  "password.basis.method": "zxcvbn 4.4.2 schätzt den Rateaufwand anhand der Länge und erkennbarer Muster: häufige Passwörter, Wörter, Tastaturwege, Wiederholungen, Folgen und Datumsangaben. Großbuchstaben oder Symbole allein bestimmen den Wert nicht. g steht für die geschätzte Anzahl der Rateversuche.",
+  "password.basis.grade0": "Sehr leicht zu erraten: Die Schätzung liegt im niedrigsten Bereich.",
+  "password.basis.grade1": "Weiterhin leicht zu erraten: Die Schätzung steigt, bleibt aber im unteren Bereich.",
+  "password.basis.grade2": "Teilweise vorhersehbar: Mehr Versuche werden geschätzt, doch die mittlere Stufe garantiert keine Sicherheit.",
+  "password.basis.grade3": "Nach diesem Modell schwerer zu erraten: Die Schätzung erreicht den vierten Bereich.",
+  "password.basis.grade4": "Höchste Stufe dieses Modells: hoher geschätzter Rateaufwand, aber kein unknackbares Passwort.",
+  "password.basis.boundaries": "Die Bereiche entsprechen den exakten Schwellen der Bibliothek einschließlich ihrer Toleranz von fünf Versuchen. Die angezeigte Schätzung ist gerundet; die Bewertung nutzt das ungerundete Ergebnis.",
+  "password.basis.limit": "Dies sind Schätzungen, keine gemessenen Knackzeiten. Sie hängen von den Wörterbüchern und Mustern des Modells ab und können für andere Sprachen oder persönliche Daten weniger zuverlässig sein. Die Datenleckprüfung ist unabhängig und ändert diese Stufe nicht.",
+  "password.basis.references": "Quellen",
+  "password.basis.nist": "Die Empfehlungen betonen Länge und Prüfungen auf häufige oder kompromittierte Passwörter statt vorgeschriebener Zeichenmischungen. NIST definiert diese fünf Stufen nicht."
 };

@@ -20,7 +20,7 @@ passwordForm.addEventListener('submit',async event=>{
  if(typeof zxcvbn!=='function'){view={kind:'empty',message:'loadingError'};render();return;}
  const result=zxcvbn(password);
  // Do not retain zxcvbn's password or matched tokens just to translate the view.
- view={kind:'result',strength:{score:result.score,guesses_log10:result.guesses_log10,feedback:result.feedback},length:password.length,breach:{status:'checking'}};
+ view={kind:'result',strength:{score:result.score,guesses:result.guesses,guesses_log10:result.guesses_log10,feedback:result.feedback},length:password.length,breach:{status:'checking'}};
  render();
  try{
   const breach=await checkPwnedPassword(password);
@@ -71,13 +71,35 @@ function render(){
  advice.push(...(strength.feedback?.suggestions||[]).filter(Boolean).map(translateZxcvbn));
  if(length<14)advice.push(text('advice.length'));
  advice.push(text('advice.unique'),text('advice.manager'));
+ const basisOpen=resultPanel.querySelector('.strength-basis details')?.open;
  resultPanel.innerHTML=`
  <div class="result-header"><div><p class="score-label">${htmlText('strengthTitle')}</p><h2 class="strength-title">${escapeHtml(label)}</h2></div></div>
  <div class="meter" role="meter" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${score}" aria-label="${htmlText('strengthAria',{label})}" aria-valuetext="${escapeHtml(label)}"><div class="meter-fill" style="width:${(score+1)*20}%"></div></div>
  <section class="feedback-section"><h3>${htmlText('meaningTitle')}</h3><p>${htmlText('summary.'+summary)}</p></section>
+ ${renderStrengthBasis(strength)}
  <section class="feedback-section"><h3>${htmlText('breachTitle')}</h3>${renderBreachStatus(breach)}</section>
  <section class="feedback-section"><h3>${htmlText('adviceTitle')}</h3><ul>${[...new Set(advice)].slice(0,5).map(s=>'<li>'+escapeHtml(s)+'</li>').join('')}</ul></section>
  <section class="challenge-next"><h3>${score<4?'🛠️ '+htmlText('challenge.title'):'🏆 '+htmlText('complete.title')}</h3><p>${htmlText(score<4?'challenge.body':'complete.body')}</p>${score===4?'<p><a href="passphrase-maker.html" class="quiz-button">'+htmlText('complete.link')+'</a></p>':''}</section>`;
+ if(basisOpen)resultPanel.querySelector('.strength-basis details').open=true;
+}
+function renderStrengthBasis(strength){
+ // These are the exact guesses_to_score boundaries in the pinned zxcvbn 4.4.2
+ // (including its +5 tolerance). The displayed grade always uses result.score.
+ const bounds=[1005,1000005,100000005,10000000005];
+ const number=n=>new Intl.NumberFormat(I18n.getLanguage()).format(n);
+ const range=score=>score===0?`g < ${number(bounds[0])}`:score===4?`g ≥ ${number(bounds[3])}`:`${number(bounds[score-1])} ≤ g < ${number(bounds[score])}`;
+ const guesses=new Intl.NumberFormat(I18n.getLanguage(),{notation:strength.guesses>=1e6?'scientific':'standard',maximumSignificantDigits:3}).format(strength.guesses);
+ return `<section class="feedback-section strength-basis"><h3>${htmlText('basis.title')}</h3>
+ <p>${htmlText('basis.estimate',{guesses})} <strong>${htmlText('strength.'+strength.score)}</strong>: ${htmlText('basis.grade'+strength.score)}</p>
+ ${strength.feedback?.warning?'<p>'+escapeHtml(translateZxcvbn(strength.feedback.warning))+'</p>':''}
+ <details><summary>${htmlText('basis.scale')}</summary><p>${htmlText('basis.method')}</p>
+ <ol class="strength-scale">${[0,1,2,3,4].map(score=>`<li${score===strength.score?' class="is-current"':''}><strong>${htmlText('strength.'+score)}</strong><span class="strength-range">${escapeHtml(range(score))}</span><p>${htmlText('basis.grade'+score)}</p></li>`).join('')}</ol>
+ <p>${htmlText('basis.boundaries')}</p><p>${htmlText('basis.limit')}</p>
+ <h4>${htmlText('basis.references')}</h4><ul>
+ <li><a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener noreferrer">Wheeler (2016), zxcvbn: Low-Budget Password Strength Estimation, USENIX Security.</a></li>
+ <li><a href="https://github.com/dropbox/zxcvbn/blob/v4.4.2/src/time_estimates.coffee" target="_blank" rel="noopener noreferrer">zxcvbn 4.4.2 — guesses_to_score</a></li>
+ <li><a href="https://pages.nist.gov/800-63-4/sp800-63b.html#passwordver" target="_blank" rel="noopener noreferrer">NIST SP 800-63B-4 (2025), §3.1.1.2</a>: ${htmlText('basis.nist')}</li>
+ </ul></details></section>`;
 }
 function renderBreachStatus(breach){
  const key=breach.status==='checking'?'checking':breach.status==='error'?'error':breach.found?'found':'notFound';

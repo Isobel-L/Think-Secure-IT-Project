@@ -30,7 +30,7 @@ window.ThinkSecureLocales["zh-TW"]={
   "password.strength.1": "弱",
   "password.bot.message.1": "還有一些容易預測的規律。試著增加長度，再測一次吧。",
   "password.bot.alt.1": "關切的 ThinkSecure 安全機器人",
-  "password.strength.2": "一般",
+  "password.strength.2": "中等",
   "password.bot.message.2": "有進步！不過，我仍然能發現一些容易猜到的規律。",
   "password.bot.alt.2": "表情平靜的 ThinkSecure 安全機器人",
   "password.strength.3": "強",
@@ -698,5 +698,18 @@ window.ThinkSecureLocales["zh-TW"]={
   "quiz.ui.see_my_score": "查看我的得分",
   "quiz.progress": "第 {current} 題，共 {total} 題",
   "quiz.ui.renderError": "無法顯示此場景。",
-  "quiz.ui.reviewSituation": "查看上面的情況，然後選擇你的應對方式。"
+  "quiz.ui.reviewSituation": "查看上面的情況，然後選擇你的應對方式。",
+  "password.basis.title": "為什麼是這個等級？",
+  "password.basis.estimate": "預計猜測次數：約 {guesses} 次。",
+  "password.basis.scale": "五個等級的判斷規則與參考文獻",
+  "password.basis.method": "zxcvbn 4.4.2 根據長度，以及常見密碼、詞語、鍵盤路徑、重複、序列和日期等可辨識規律，估計猜測難度。僅加入大寫字母或符號並不能決定分數。下方 g 表示預計猜測次數。",
+  "password.basis.grade0": "極易猜中：預計猜測次數落在最低區間。",
+  "password.basis.grade1": "仍然容易猜中：預計猜測次數有所增加，但仍處於較低區間。",
+  "password.basis.grade2": "有一定可猜測性：預計需要更多嘗試，但中等等級不代表安全保證。",
+  "password.basis.grade3": "在此模型中較難猜中：預計猜測次數達到第四個區間。",
+  "password.basis.grade4": "此模型的最高等級：預計需要大量猜測，但不代表無法破解。",
+  "password.basis.boundaries": "以上區間與程式庫的實際閾值完全一致，包含其 5 次猜測的容差。顯示的估計值經過捨入，等級使用未捨入的結果。",
+  "password.basis.limit": "這是估計值，並非實際測得的破解時間。結果受模型詞典和規律涵蓋範圍影響，對其他語言或個人資訊的判斷可能不夠可靠。外洩檢查是獨立結果，不會改變此等級。",
+  "password.basis.references": "參考文獻",
+  "password.basis.nist": "指南強調長度和常見或已外洩密碼檢查，不要求強制混合字元類型。NIST 並未定義這裡的五個等級。"
 };

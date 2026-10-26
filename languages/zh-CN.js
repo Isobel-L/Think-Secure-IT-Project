@@ -30,7 +30,7 @@ window.ThinkSecureLocales["zh-CN"]={
   "password.strength.1": "弱",
   "password.bot.message.1": "还有一些容易预测的规律。试着增加长度，再测一次吧。",
   "password.bot.alt.1": "关切的 ThinkSecure 安全机器人",
-  "password.strength.2": "一般",
+  "password.strength.2": "中等",
   "password.bot.message.2": "有进步！不过，我仍然能发现一些容易猜到的规律。",
   "password.bot.alt.2": "表情平静的 ThinkSecure 安全机器人",
   "password.strength.3": "强",
@@ -698,5 +698,18 @@ window.ThinkSecureLocales["zh-CN"]={
   "quiz.ui.see_my_score": "查看我的得分",
   "quiz.progress": "第 {current} 题，共 {total} 题",
   "quiz.ui.renderError": "无法显示此场景。",
-  "quiz.ui.reviewSituation": "查看上面的情况，然后选择你的应对方式。"
+  "quiz.ui.reviewSituation": "查看上面的情况，然后选择你的应对方式。",
+  "password.basis.title": "为什么是这个等级？",
+  "password.basis.estimate": "预计猜测次数：约 {guesses} 次。",
+  "password.basis.scale": "五个等级的判断规则与参考文献",
+  "password.basis.method": "zxcvbn 4.4.2 根据长度，以及常见密码、词语、键盘路径、重复、序列和日期等可识别规律，估计猜测难度。仅添加大写字母或符号并不能决定分数。下方 g 表示预计猜测次数。",
+  "password.basis.grade0": "极易猜中：预计猜测次数落在最低区间。",
+  "password.basis.grade1": "仍然容易猜中：预计猜测次数有所增加，但仍处于较低区间。",
+  "password.basis.grade2": "有一定可猜测性：预计需要更多尝试，但中等等级不代表安全保证。",
+  "password.basis.grade3": "在此模型中较难猜中：预计猜测次数达到第四个区间。",
+  "password.basis.grade4": "此模型的最高等级：预计需要大量猜测，但不代表无法破解。",
+  "password.basis.boundaries": "以上区间与库的实际阈值完全一致，包含其 5 次猜测的容差。显示的估计值经过舍入，等级使用未舍入的结果。",
+  "password.basis.limit": "这是估计值，并非实际测得的破解时间。结果受模型词典和规律覆盖范围影响，对其他语言或个人信息的判断可能不够可靠。泄露检查是独立结果，不会改变此等级。",
+  "password.basis.references": "参考文献",
+  "password.basis.nist": "指南强调长度和常见或已泄露密码检查，不要求强制混合字符类型。NIST 并未定义这里的五个等级。"
 };
