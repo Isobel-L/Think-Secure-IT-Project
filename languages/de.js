@@ -137,7 +137,7 @@ window.ThinkSecureLocales["de"]={
   "home.bot.passphrase.3": "Den Rest kann sich ein Passwort-Manager für dich merken.",
   "home.bot.keychain.1": "Behalte deine Erinnerungen nah bei dir. Ein Schlüsselanhänger ist überall dabei!",
   "home.bot.keychain.2": "Teile niemals einen Einmalcode, nicht einmal mit Freunden.",
-  "home.bot.keychain.3": "Sticker sind zum Teilen da. Passwörter nicht!",
+  "home.bot.keychain.3": "Zeig deinen Schlüsselanhänger her, aber nie dein Passwort!",
   "menu.pageTitle": "Aktivität auswählen — ThinkSecure",
   "menu.intro": "Entdecke interaktive Aktivitäten für mehr Cybersicherheitswissen und Schutz im Netz. Wähle eine beliebige Aktivität in deiner gewünschten Reihenfolge.",
   "menu.title": "Aktivität auswählen",

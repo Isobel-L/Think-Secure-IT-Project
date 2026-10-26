@@ -137,7 +137,7 @@ window.ThinkSecureLocales["zh-CN"]={
   "home.bot.passphrase.3": "其余的交给密码管理器来记住吧。",
   "home.bot.keychain.1": "把安全提醒带在身边，钥匙扣随你去任何地方！",
   "home.bot.keychain.2": "永远不要分享一次性验证码，朋友也不行。",
-  "home.bot.keychain.3": "贴纸可以分享，密码可不行！",
+  "home.bot.keychain.3": "钥匙扣可以秀给别人看，密码可不行！",
   "menu.pageTitle": "选择活动 | ThinkSecure",
   "menu.intro": "通过互动活动提升网络安全意识，学习如何更安全地上网。你可以自由选择下方任意活动，无需按顺序进行。",
   "menu.title": "选择活动",

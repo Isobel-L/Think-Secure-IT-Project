@@ -47,6 +47,10 @@ body:not(.is-intro):not(.is-revealing) #intro { display: none; }
    (moved by home.js) marks the activity you are about to enter. */
 html { scrollbar-gutter: stable; }   /* the activity pages scroll; keep the same width here */
 .home-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; --brand: var(--brand-accent); }
+/* Home is left out here, but where the bar spans a whole row (1180px and narrower) an invisible
+   copy keeps its space, so the numbered stops line up with the activity pages at every width */
+.home-header .il-stop-spacer { visibility: hidden; pointer-events: none; }
+@media (min-width: 1181px) { .home-header .il-stop-spacer { display: none; } }
 
 /* ---------- layer 1: the illustrated environment (back plane < card < front plane) ---------- */
 .world { position: fixed; inset: 0; z-index: 1; overflow: hidden; }

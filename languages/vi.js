@@ -137,7 +137,7 @@ window.ThinkSecureLocales["vi"]={
   "home.bot.passphrase.3": "Phần còn lại, trình quản lý mật khẩu có thể nhớ giúp bạn.",
   "home.bot.keychain.1": "Giữ lời nhắc an toàn bên mình. Móc khóa đi theo bạn khắp nơi!",
   "home.bot.keychain.2": "Đừng bao giờ chia sẻ mã dùng một lần, kể cả với bạn bè.",
-  "home.bot.keychain.3": "Hình dán thì để chia sẻ. Mật khẩu thì không!",
+  "home.bot.keychain.3": "Móc khóa thì cứ khoe. Mật khẩu thì không!",
   "menu.pageTitle": "Chọn hoạt động | ThinkSecure",
   "menu.intro": "Khám phá các hoạt động tương tác giúp nâng cao nhận thức về an toàn mạng và bảo vệ bạn khi trực tuyến. Chọn bất kỳ hoạt động nào bên dưới, theo thứ tự bạn muốn.",
   "menu.title": "Chọn một hoạt động",
