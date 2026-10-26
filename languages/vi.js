@@ -698,5 +698,18 @@ window.ThinkSecureLocales["vi"]={
   "quiz.ui.see_my_score": "Xem điểm của tôi",
   "quiz.progress": "Tình huống {current} / {total}",
   "quiz.ui.renderError": "Không thể hiển thị tình huống này.",
-  "quiz.ui.reviewSituation": "Xem tình huống ở trên rồi chọn cách xử lý."
+  "quiz.ui.reviewSituation": "Xem tình huống ở trên rồi chọn cách xử lý.",
+  "password.basis.title": "Vì sao có mức này?",
+  "password.basis.estimate": "Số lần đoán ước tính: khoảng {guesses}.",
+  "password.basis.scale": "Cách xác định năm mức · tài liệu tham khảo",
+  "password.basis.method": "zxcvbn 4.4.2 ước tính độ khó dựa trên độ dài và các mẫu như mật khẩu phổ biến, từ ngữ, đường phím, lặp lại, chuỗi và ngày tháng. Chỉ thêm chữ hoa hoặc ký hiệu không quyết định điểm. g là số lần đoán ước tính.",
+  "password.basis.grade0": "Rất dễ đoán: ước tính thuộc khoảng thấp nhất.",
+  "password.basis.grade1": "Vẫn dễ đoán: số lần đoán tăng nhưng vẫn trong khoảng thấp.",
+  "password.basis.grade2": "Có thể đoán được: cần nhiều lần thử hơn, nhưng mức trung bình không bảo đảm an toàn.",
+  "password.basis.grade3": "Khó đoán hơn theo mô hình này: ước tính đạt khoảng thứ tư.",
+  "password.basis.grade4": "Mức cao nhất của mô hình: cần nhiều lần đoán, nhưng không có nghĩa là không thể phá được.",
+  "password.basis.boundaries": "Các khoảng khớp chính xác với ngưỡng của thư viện, gồm dung sai 5 lần đoán. Số hiển thị được làm tròn; mức đánh giá dùng kết quả chưa làm tròn.",
+  "password.basis.limit": "Đây là ước tính, không phải thời gian phá mật khẩu đo được. Kết quả phụ thuộc vào từ điển và mẫu của mô hình, có thể kém tin cậy với ngôn ngữ khác hoặc thông tin cá nhân. Kiểm tra rò rỉ độc lập và không thay đổi mức này.",
+  "password.basis.references": "Tài liệu tham khảo",
+  "password.basis.nist": "Hướng dẫn nhấn mạnh độ dài và kiểm tra mật khẩu phổ biến hoặc bị lộ, thay vì bắt buộc trộn loại ký tự. NIST không định nghĩa năm mức này."
 };

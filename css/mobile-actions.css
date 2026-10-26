@@ -1,0 +1,46 @@
+/* Loaded last so the same mobile controls work across activity themes. */
+.mobile-next { display:none; }
+@media(max-width:640px) {
+ body.has-mobile-actions { padding-bottom:calc(88px + env(safe-area-inset-bottom,0px)); }
+ body.has-mobile-actions > .next-step { display:none; }
+ .mobile-next:not([hidden]) {
+  position:fixed; z-index:29; right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  display:grid; place-items:center; width:56px; height:56px; padding:0;
+  border:2px solid #fff; border-radius:50%; background:var(--ts-brand,#163e70);
+  color:#fff; box-shadow:0 5px 18px #112a4938; text-decoration:none;
+ }
+ .mobile-next svg { width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+ .mobile-next:focus-visible { outline:3px solid #367bf5; outline-offset:4px; }
+ body.has-mobile-actions .security-helper,
+ body.has-mobile-actions .security-helper[data-state="launcher"] {
+  position:fixed; right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(84px + env(safe-area-inset-bottom,0px)); margin:0; width:auto;
+  --helper-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+ }
+ .security-helper[data-state="launcher"] .helper-launch,
+ .has-animated-model[data-state="launcher"] .helper-launch {
+  display:grid; place-items:center; width:56px; height:56px; padding:0; gap:0;
+  border-radius:50%; overflow:hidden;
+ }
+ .security-helper[data-state="launcher"] .helper-label { display:none; }
+ .has-animated-model[data-state="launcher"] .helper-model { width:54px; height:50px; }
+ .helper-close,.helper-dismiss { min-width:44px; width:44px; height:44px; }
+ .helper-panel,.helper-invite { overflow-wrap:anywhere; }
+ .has-mobile-actions main :is(h1,h2,h3,p,button,a) { overflow-wrap:anywhere; }
+ .helper-footer { flex-wrap:wrap; }
+ .il-header .il-stop { min-width:44px; min-height:44px; justify-content:center; }
+ .il-header .language-control select { min-height:44px; font-size:16px; }
+ .il-header .il-nav { gap:2px; flex-wrap:nowrap; }
+ .il-header .il-stop[aria-current="page"] { flex:1; min-width:0; padding:4px 7px; gap:5px; }
+ .il-header .il-stop[aria-current="page"] .il-stop-label { min-width:0; white-space:normal; font-size:12px; }
+ .password-form .input-row { min-width:0; }
+ .password-form input { width:100%; min-width:0; }
+ .password-form .actions { flex-wrap:wrap; }
+ .password-form .actions button { white-space:normal; overflow-wrap:anywhere; }
+}
+@media(max-width:640px) and (max-height:520px) {
+ .security-helper.has-animated-model:not([data-state="launcher"]) .helper-launch { width:70px; height:80px; }
+ .has-animated-model .helper-speech { bottom:94px; }
+ .has-animated-model .helper-panel { max-height:calc(100dvh - 194px - env(safe-area-inset-bottom,0px)); }
+}

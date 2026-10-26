@@ -698,5 +698,18 @@ window.ThinkSecureLocales["fr"]={
   "quiz.ui.see_my_score": "Voir mon score",
   "quiz.progress": "Situation {current} sur {total}",
   "quiz.ui.renderError": "Impossible d’afficher cette situation.",
-  "quiz.ui.reviewSituation": "Examinez la situation ci-dessus, puis choisissez votre réaction."
+  "quiz.ui.reviewSituation": "Examinez la situation ci-dessus, puis choisissez votre réaction.",
+  "password.basis.title": "Pourquoi ce niveau ?",
+  "password.basis.estimate": "Nombre de tentatives estimé : environ {guesses}.",
+  "password.basis.scale": "Les cinq niveaux · références",
+  "password.basis.method": "zxcvbn 4.4.2 estime la difficulté à partir de la longueur et de motifs reconnaissables : mots de passe courants, mots, parcours de clavier, répétitions, suites et dates. Ajouter des majuscules ou des symboles ne suffit pas à déterminer le score. g désigne le nombre de tentatives estimé.",
+  "password.basis.grade0": "Très facile à deviner : l’estimation se situe dans la plage la plus basse.",
+  "password.basis.grade1": "Encore facile à deviner : l’estimation augmente, mais reste dans une plage basse.",
+  "password.basis.grade2": "Assez prévisible : davantage de tentatives sont estimées, mais le niveau moyen ne garantit pas la sécurité.",
+  "password.basis.grade3": "Plus difficile à deviner selon ce modèle : l’estimation atteint la quatrième plage.",
+  "password.basis.grade4": "Niveau maximal de ce modèle : beaucoup de tentatives estimées, sans garantie d’inviolabilité.",
+  "password.basis.boundaries": "Les plages reproduisent les seuils exacts de la bibliothèque, y compris sa tolérance de cinq tentatives. L’estimation affichée est arrondie ; le niveau utilise le résultat non arrondi.",
+  "password.basis.limit": "Ce sont des estimations, pas des durées de cassage mesurées. Elles dépendent des dictionnaires et motifs du modèle, et peuvent être moins fiables pour d’autres langues ou des données personnelles. La recherche de fuites est indépendante et ne change pas ce niveau.",
+  "password.basis.references": "Références",
+  "password.basis.nist": "Les recommandations privilégient la longueur et la détection des mots de passe courants ou compromis, sans mélange obligatoire de types de caractères. Le NIST ne définit pas ces cinq niveaux."
 };
