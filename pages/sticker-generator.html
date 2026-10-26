@@ -136,7 +136,16 @@
             <!-- The studio window, as drawn in the scene -->
             <div class="kc-window">
 
-                <div class="kc-window-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+                <div class="kc-window-bar">
+                    <span class="kc-window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+
+                    <!-- Countdown for customising; sticker-generator.js runs it -->
+                    <div class="kc-timer" id="kc-timer" role="timer" aria-atomic="true">
+                        <svg class="kc-timer-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span class="kc-timer-label" data-i18n="sticker.timer.label">Time left</span>
+                        <b class="kc-timer-time" id="kc-timer-time">3:00</b>
+                    </div>
+                </div>
 
                 <div class="kc-window-body">
 
@@ -218,6 +227,56 @@
             </div>
 
         </div>
+
+
+        <!-- Pops up when the countdown is nearly over -->
+        <div class="kc-toast" id="kc-toast" role="status" aria-live="polite" hidden>
+            <svg class="kc-toast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p id="kc-toast-text"></p>
+            <button type="button" class="kc-toast-close" id="kc-toast-close" aria-label="Dismiss" data-i18n-aria-label="sticker.timer.dismiss">×</button>
+        </div>
+
+
+        <!-- What to do with the keychain once time is up -->
+        <dialog class="kc-timeup" id="kc-timeup" aria-labelledby="kc-timeup-title">
+
+            <img class="kc-timeup-preview" id="kc-timeup-preview" alt="Your finished keychain" data-i18n-alt="sticker.timeup.previewAlt">
+
+            <div class="kc-timeup-copy">
+
+                <h2 id="kc-timeup-title" data-i18n="sticker.timeup.title">Time's up!</h2>
+
+                <p data-i18n="sticker.timeup.body">Your keychain design is finished. What would you like to do with it?</p>
+
+                <div class="kc-timeup-options">
+
+                    <a href="#" class="kc-option kc-option-download" id="kc-timeup-download" download="thinksecure-keychain.png">
+                        <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="kc-option-text"><b data-i18n="sticker.timeup.download">Download</b><small data-i18n="sticker.timeup.downloadHint">Save it as a PNG</small></span>
+                    </a>
+
+                    <button type="button" class="kc-option kc-option-keychain" data-coming-soon>
+                        <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="8" cy="6" r="3.5" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="9" y="9" width="10" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>
+                        <span class="kc-option-text"><b data-i18n="sticker.timeup.keychain">Make a keychain</b><small data-i18n="sticker.timeup.keychainHint">Turn it into a real keychain</small></span>
+                    </button>
+
+                    <button type="button" class="kc-option kc-option-pin" data-coming-soon>
+                        <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 8.5l1.1 2.2 2.4.4-1.7 1.7.4 2.4-2.2-1.1-2.2 1.1.4-2.4-1.7-1.7 2.4-.4z" fill="currentColor"/></svg></span>
+                        <span class="kc-option-text"><b data-i18n="sticker.timeup.pin">Make a pin</b><small data-i18n="sticker.timeup.pinHint">Turn it into a badge pin</small></span>
+                    </button>
+
+                </div>
+
+                <p class="kc-timeup-note" id="kc-timeup-note" role="status" data-i18n="sticker.timeup.soon" hidden>This option is still under development. Check back soon!</p>
+
+                <div class="kc-timeup-links">
+                    <a href="passphrase-maker.html" class="il-btn il-btn-light il-btn-small" data-i18n="sticker.change">Change My Words</a>
+                    <a href="../index.html#keychain" class="il-btn il-btn-light il-btn-small" data-i18n="sticker.home">Back to Start</a>
+                </div>
+
+            </div>
+
+        </dialog>
 
 
         <!-- Hills along the bottom of the page -->

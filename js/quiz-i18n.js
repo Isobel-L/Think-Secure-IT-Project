@@ -40,7 +40,14 @@
       if(current!==value)el.setAttribute(attr,value);
     }
   }
+  // The start title carries an <em> accent word, so it is rendered whole rather than per text node.
+  const title=document.querySelector('[data-quiz-title]');
+  function renderTitle(){
+    const value=I18n.t('quiz.ui.cyber_safety_challenge_title');
+    if(title && title.innerHTML!==value)title.innerHTML=value;
+  }
   function apply(){
+    renderTitle();
     const walker=document.createTreeWalker(document.documentElement,NodeFilter.SHOW_TEXT);
     let node;while(node=walker.nextNode())updateText(node);
     document.querySelectorAll('[aria-label],[title],[placeholder],[alt]').forEach(updateAttributes);

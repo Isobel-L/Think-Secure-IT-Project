@@ -4130,10 +4130,17 @@ function tsShowReviewOnScreen(question, correct) {
     review.className = 'ts-visual-feedback ' + (correct ? 'ts-review-correct' : 'ts-review-incorrect');
     review.setAttribute('aria-live','polite');
     const intro = correct ? 'Good decision!' : 'There was a safer response.';
+    // A browser window with a tick for a good decision, a warning mark otherwise.
+    const art = `<svg class="ts-review-art" viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+        <path d="M44 62c8-30 46-42 70-28 26-14 66 0 70 34 14 12 12 48-14 58-12 22-58 24-78 12-32 8-62-6-66-30-14-14-8-40 18-46z" fill="${correct?'#CDEBDA':'#FAD6CB'}"/>
+        <g transform="rotate(-8 112 88)"><rect x="56" y="40" width="116" height="96" rx="12" fill="#fff"/><path d="M68 40h92a12 12 0 0 1 12 12v6H56v-6a12 12 0 0 1 12-12z" fill="#15264C"/><circle cx="150" cy="49" r="3.5" fill="#fff"/><circle cx="161" cy="49" r="3.5" fill="#fff"/></g>
+        <circle cx="114" cy="96" r="26" fill="${correct?'#1E8C62':'#E8402A'}"/>
+        ${correct ? '<path d="M102 96l8 8 16-17" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>' : '<path d="M114 83v15" stroke="#fff" stroke-width="7" stroke-linecap="round"/><circle cx="114" cy="109" r="4.5" fill="#fff"/>'}
+      </svg>`;
     review.innerHTML = `<div class="ts-visual-feedback-head"><span class="ts-review-result ${correct?'is-correct':'needs-review'}">${correct?'✓':'!'} ${intro}</span>
       <h3>${correct ? (question.safe ? 'You recognised a legitimate situation.' : 'You chose the safer response.') : 'Review the evidence on the screen above.'}</h3>
-      <p>${escapeHTML(question.feedback)}</p></div>
-      <div class="ts-visual-feedback-instruction"><span>↑</span><b>${question.safe?'Safety clues revealed':'All red flags revealed'}</b><p>Every numbered point is attached to something in the simulated screen. You can inspect the highlighted parts again before continuing.</p></div>
+      <p>${escapeHTML(question.feedback)}</p>${art}</div>
+      <div class="ts-visual-feedback-instruction"><span aria-hidden="true">i</span><b>${question.safe?'Safety clues revealed':'All red flags revealed'}</b><p>Every numbered point is attached to something in the simulated screen. You can inspect the highlighted parts again before continuing.</p></div>
       <div class="ts-review-anchor-list" aria-label="All ${question.safe ? 'safety clues' : 'red flags'}">${(tsClues[question.id]||[]).map((clue,index)=>`<button type="button" class="ts-review-jump ts-review-explanation" data-index="${index}" aria-label="Find clue ${index+1} on the simulation"><span class="ts-review-number">${index+1}</span><span class="ts-review-copy"><strong>${escapeHTML(clue[1])}</strong><small>${escapeHTML(clue[2])}</small></span><span class="ts-review-arrow" aria-hidden="true">↗</span></button>`).join('')}</div>
       <div class="ts-review-next"></div>`;
     const previous = scenarioSection.querySelector('.ts-visual-feedback');

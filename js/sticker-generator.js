@@ -21,6 +21,18 @@ const showPhrase = document.getElementById("show-phrase");
 const downloadButton = document.getElementById("download-button");
 
 
+// Countdown elements
+const timerBox = document.getElementById("kc-timer");
+const timerTime = document.getElementById("kc-timer-time");
+const toast = document.getElementById("kc-toast");
+const toastText = document.getElementById("kc-toast-text");
+const toastClose = document.getElementById("kc-toast-close");
+const timeUpDialog = document.getElementById("kc-timeup");
+const timeUpPreview = document.getElementById("kc-timeup-preview");
+const timeUpDownload = document.getElementById("kc-timeup-download");
+const timeUpNote = document.getElementById("kc-timeup-note");
+
+
 // Canvas
 const canvas = document.getElementById("sticker-canvas");
 const context = canvas.getContext("2d");
@@ -90,6 +102,19 @@ const wordImageFills = [false, false, false, false];
 let passphrase = null;
 
 
+// How long there is to customise the keychain, when the warning pops up,
+// and how long that warning stays on screen
+const COUNTDOWN_SECONDS = 45;
+const WARNING_SECONDS = 30;
+const TOAST_SECONDS = 6;
+
+let countdownEnd = 0;
+let countdownTicker = null;
+let countdownWarned = false;
+let toastSeconds = 0;
+let toastTimer = null;
+
+
 
 /* ------------------------------
    Start Up
@@ -148,6 +173,8 @@ function loadPassphrase() {
     drawKeychain();
 
     loadWordPictures();
+
+    startCountdown();
 
 
     // The lettering is drawn again once the display face has arrived
@@ -993,4 +1020,147 @@ function buildFileName() {
 
 }
 
-window.addEventListener("languagechange", () => { if (!studio.classList.contains("hidden")) { drawWordList(); drawKeychain(); } });
+
+
+/* ------------------------------
+   Countdown
+------------------------------ */
+
+/*
+    Give the user a set time to customise the keychain. The end time is fixed
+    up front, so a tab left in the background still runs out on time.
+*/
+function startCountdown() {
+
+    countdownEnd = Date.now() + COUNTDOWN_SECONDS * 1000;
+
+    tickCountdown();
+
+    countdownTicker = setInterval(tickCountdown, 250);
+
+}
+
+
+function tickCountdown() {
+
+    const left = Math.max(0, Math.ceil((countdownEnd - Date.now()) / 1000));
+
+    const text = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0");
+
+    if (timerTime.textContent !== text) {
+        timerTime.textContent = text;
+    }
+
+
+    if (left <= WARNING_SECONDS && !countdownWarned) {
+
+        countdownWarned = true;
+
+        timerBox.classList.add("kc-timer-low");
+
+        showToast(left);
+
+    }
+
+
+    if (left === 0) {
+        finishCountdown();
+    }
+
+}
+
+
+/*
+    The small pop-up saying how many seconds are left
+*/
+function showToast(seconds) {
+
+    toastSeconds = seconds;
+
+    toastText.textContent = I18n.t("sticker.timer.warning", { seconds: seconds });
+
+    toast.hidden = false;
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(hideToast, TOAST_SECONDS * 1000);
+
+}
+
+
+function hideToast() {
+
+    clearTimeout(toastTimer);
+
+    toast.hidden = true;
+
+}
+
+toastClose.addEventListener("click", hideToast);
+
+
+/*
+    Time is up: the options are locked and the user picks what happens next
+*/
+function finishCountdown() {
+
+    clearInterval(countdownTicker);
+
+    hideToast();
+
+    timerBox.classList.add("kc-timer-done");
+
+    studio.classList.add("kc-locked");
+
+    showLabels.disabled = true;
+    showPhrase.disabled = true;
+
+
+    // The dialog shows and offers the keychain exactly as it was left
+    const picture = downloadButton.getAttribute("href");
+
+    if (picture && picture !== "#") {
+
+        timeUpPreview.src = picture;
+
+        timeUpDownload.href = picture;
+        timeUpDownload.download = downloadButton.download;
+
+    } else {
+
+        // Served from disk the canvas cannot be exported, as with the panel's button
+        timeUpPreview.hidden = true;
+
+        timeUpDownload.removeAttribute("href");
+        timeUpDownload.setAttribute("aria-disabled", "true");
+
+    }
+
+
+    timeUpDialog.showModal();
+
+}
+
+
+// Making a real keychain or pin is still being built, so those say so for now
+timeUpDialog.querySelectorAll("[data-coming-soon]").forEach(function (option) {
+
+    option.addEventListener("click", function () {
+
+        timeUpDialog.querySelectorAll("[data-coming-soon]").forEach(function (other) {
+            other.setAttribute("aria-pressed", String(other === option));
+        });
+
+        timeUpNote.hidden = false;
+
+    });
+
+});
+
+
+// The dialog is the end of the activity, so Escape does not close it
+timeUpDialog.addEventListener("cancel", function (event) {
+    event.preventDefault();
+});
+
+window.addEventListener("languagechange", () => { if (!studio.classList.contains("hidden")) { drawWordList(); drawKeychain(); } if (!toast.hidden) { showToast(toastSeconds); } });
