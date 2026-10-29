@@ -1,11 +1,14 @@
 /*
     Keychain Studio
 
-    Takes the four words picked in the Passphrase Maker and draws them as a
-    keychain on a canvas: a long acrylic bar hanging from a ring, with the
-    place as its picture and the animal, the fruit and the country stacked
-    down it. The user can then download it as a PNG with a transparent
-    background. No image generation service is involved.
+    Takes the four words picked in the Passphrase Maker and draws them as one
+    round picture: the place fills it, the country's flag flies at the top,
+    and the animal and the fruit stand in the middle. The flag, the animal
+    and the fruit can be dragged anywhere on it. The
+    user then picks a keychain or a badge pin. Both print this same design,
+    so only the preview changes: the print slips into a keychain casing, or
+    is pressed into a button badge. The download is the flat design itself.
+    No image generation service is involved.
 */
 
 
@@ -16,8 +19,8 @@ const studio = document.getElementById("studio");
 
 // Panel elements
 const studioWords = document.getElementById("studio-words");
-const showLabels = document.getElementById("show-labels");
-const showPhrase = document.getElementById("show-phrase");
+const productInputs = document.querySelectorAll("input[name='product']");
+const resetButton = document.getElementById("reset-positions");
 const downloadButton = document.getElementById("download-button");
 
 
@@ -33,9 +36,12 @@ const timeUpDownload = document.getElementById("kc-timeup-download");
 const timeUpNote = document.getElementById("kc-timeup-note");
 
 
-// Canvas
+// The preview canvas, and the design drawn off screen for printing
 const canvas = document.getElementById("sticker-canvas");
 const context = canvas.getContext("2d");
+
+const design = document.createElement("canvas");
+const designPen = design.getContext("2d");
 
 
 // Where the Passphrase Maker leaves the chosen words
@@ -45,13 +51,6 @@ const PHRASE_STORAGE_NAME = "thinksecure-passphrase";
 // Fonts that cover colour emoji across the common platforms
 const EMOJI_FONT = "\"Apple Color Emoji\", \"Segoe UI Emoji\", "
     + "\"Noto Color Emoji\", sans-serif";
-
-// The words on the keychain are always English, so the display face covers them
-const TEXT_FONT = '"Fredoka", "Nunito", Arial, sans-serif';
-
-
-// Colours, kept in step with the stylesheet
-const NAVY = "#062952";
 
 
 // The Passphrase Maker hands the words over in category order
@@ -75,18 +74,48 @@ const IMAGE_FOLDERS = [
 const IMAGE_TYPES = [".png", ".jpg"];
 
 
-// The three pictures down the bar, top to bottom
-const STACK_ORDER = [ANIMAL_INDEX, FRUIT_INDEX, COUNTRY_INDEX];
+// The design is square, with the place running right to the edge. Whoever
+// prints it sizes it to their keychain inserts and badge blanks.
+const DESIGN_SIZE = 1200;
+
+design.width = DESIGN_SIZE;
+design.height = DESIGN_SIZE;
+
+// How far out from the middle shows on the front of the keychain or badge.
+// The rest is spare picture, for a badge to wrap round its edge.
+const FACE = 0.44;
+
+// How far from the middle a piece can be dragged, so none is lost off the front
+const REACH = 0.38;
 
 
-// Canvas size, and where each piece of the keychain sits on it
-const CANVAS_WIDTH = 760;
-const CANVAS_HEIGHT = 1720;
+// The pieces the user can drag about, bottom to top: the fruit, the animal
+// over it, and the flag over both. Each starts at home, in fractions of the
+// design's side, and x and y follow it wherever it is dragged.
+const pieces = [
+    { word: FRUIT_INDEX, home: { x: 0.64, y: 0.72 }, box: 0.28, turn: 0 },
+    { word: ANIMAL_INDEX, home: { x: 0.42, y: 0.5 }, box: 0.44, turn: 0 },
+    { word: COUNTRY_INDEX, home: { x: 0.5, y: 0.19 }, box: 0.25, turn: -0.08 }
+];
+
+pieces.forEach(function (piece) {
+    piece.x = piece.home.x;
+    piece.y = piece.home.y;
+});
+
+
+// Each picture is shrunk to this many pixels a side to tell which parts of
+// it can be grabbed and which are see-through
+const MASK_SIZE = 128;
+
+
+// The preview canvas for each product, and where its pieces sit on it
+const PREVIEW_WIDTH = 760;
+const PREVIEW_HEIGHT = { keychain: 1080, badge: 760 };
 
 const RING = { x: 380, y: 118, radius: 86, width: 24 };
-
-// The bar hangs from the hole in its tab, turned slightly about it
-const BAR = { width: 460, height: 1250, holeX: 380, holeY: 344, turn: -0.03 };
+const CASING = { x: 380, y: 680, radius: 300, rim: 34 };
+const BADGE = { x: 380, y: 368, radius: 318 };
 
 
 // The picture for each word, once it has loaded. Missing ones stay null.
@@ -94,15 +123,28 @@ const wordImages = [null, null, null, null];
 
 
 // A JPG cannot be transparent, so it is a whole photograph rather than a
-// cut-out and fills its circle instead of sitting inside it.
+// cut-out, and is shown as a round snapshot instead of standing free.
 const wordImageFills = [false, false, false, false];
+
+
+// The see-through parts of each picture, once it has loaded
+const wordMasks = [null, null, null, null];
+
+
+// The piece being dragged, and the frame waiting to show it moved
+let drag = null;
+let dragFrame = 0;
 
 
 // The words handed over by the Passphrase Maker
 let passphrase = null;
 
 
-// How long there is to customise the keychain, when the warning pops up,
+// What the design is being made into: "keychain" or "badge"
+let product = "keychain";
+
+
+// How long there is to customise the design, when the warning pops up,
 // and how long that warning stays on screen
 const COUNTDOWN_SECONDS = 45;
 const WARNING_SECONDS = 30;
@@ -131,7 +173,7 @@ function loadPassphrase() {
     const stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
 
 
-    // A passphrase is good for one keychain. Clearing it as soon as it is
+    // A passphrase is good for one design. Clearing it as soon as it is
     // read means leaving this page and coming back always needs a freshly
     // built passphrase rather than quietly reusing the last one.
     sessionStorage.removeItem(PHRASE_STORAGE_NAME);
@@ -170,19 +212,15 @@ function loadPassphrase() {
 
     drawWordList();
 
-    drawKeychain();
+
+    // A browser coming back to the page may have kept the last choice
+    chooseProduct(document.querySelector("input[name='product']:checked").value);
+
+    drawStudio();
 
     loadWordPictures();
 
     startCountdown();
-
-
-    // The lettering is drawn again once the display face has arrived
-    if (document.fonts && document.fonts.load) {
-
-        document.fonts.load("600 40px Fredoka").then(drawKeychain, function () {});
-
-    }
 
 }
 
@@ -220,10 +258,11 @@ function tryPicture(index, word, typeIndex) {
 
         wordImages[index] = image;
         wordImageFills[index] = IMAGE_TYPES[typeIndex] === ".jpg";
+        wordMasks[index] = buildMask(image);
 
         drawWordList();
 
-        drawKeychain();
+        drawStudio();
 
     });
 
@@ -239,7 +278,7 @@ function tryPicture(index, word, typeIndex) {
 
 
 /*
-    How a word is spelled on the keychain: with any letters the user swapped
+    How a word is spelled in the list: with any letters the user swapped
     for symbols in the Passphrase Maker. The picture always follows the word.
 */
 function spelling(item) {
@@ -305,42 +344,387 @@ function drawWordList() {
 
 
 /* ------------------------------
-   Options
+   Keychain Or Badge
 ------------------------------ */
 
-// Redraw whenever the text options change
-showLabels.addEventListener("change", drawKeychain);
-showPhrase.addEventListener("change", drawKeychain);
+// Both print the same design, so a change only redraws the preview
+productInputs.forEach(function (input) {
+
+    input.addEventListener("change", function () {
+
+        chooseProduct(input.value);
+
+        drawPreview();
+
+    });
+
+});
+
+
+/*
+    Remember what the design is being made into, and keep the panel, the
+    preview's description and the download's name in step with it
+*/
+function chooseProduct(value) {
+
+    product = value;
+
+    productInputs.forEach(function (input) {
+        input.checked = input.value === value;
+    });
+
+
+    const label = value === "badge" ? "sticker.canvasAltBadge" : "sticker.canvasAlt";
+
+    canvas.setAttribute("data-i18n-aria-label", label);
+    canvas.setAttribute("aria-label", I18n.t(label));
+
+    canvas.dataset.product = value;
+
+    downloadButton.download = buildFileName();
+
+}
 
 
 
 /* ------------------------------
-   Drawing The Keychain
+   Moving The Pictures
+------------------------------ */
+
+canvas.addEventListener("pointerdown", function (event) {
+
+    if (drag || event.button !== 0 || studio.classList.contains("kc-locked")) {
+        return;
+    }
+
+
+    const point = designPoint(event);
+    const piece = point.inside ? pieceAt(point) : null;
+
+    if (!piece) {
+        return;
+    }
+
+
+    // Hold the piece by the spot that was grabbed, not by its middle
+    drag = {
+        piece: piece,
+        pointer: event.pointerId,
+        offsetX: piece.x - (point.x / DESIGN_SIZE),
+        offsetY: piece.y - (point.y / DESIGN_SIZE)
+    };
+
+    canvas.setPointerCapture(event.pointerId);
+    canvas.classList.add("kc-dragging");
+
+    event.preventDefault();
+
+});
+
+
+// A touch that lands on a piece moves the piece rather than the page.
+// Pointer events arrive first, so the drag has already begun by now.
+canvas.addEventListener("touchstart", function (event) {
+
+    if (drag) {
+        event.preventDefault();
+    }
+
+}, { passive: false });
+
+
+canvas.addEventListener("pointermove", function (event) {
+
+    const point = designPoint(event);
+
+
+    // A mouse shows a hand over anything that can be picked up
+    if (!drag) {
+
+        if (event.pointerType === "mouse") {
+
+            const free = !studio.classList.contains("kc-locked") && point.inside && pieceAt(point) !== null;
+
+            canvas.classList.toggle("kc-grab", free);
+
+        }
+
+        return;
+    }
+
+
+    if (event.pointerId !== drag.pointer) {
+        return;
+    }
+
+    placePiece(drag.piece, (point.x / DESIGN_SIZE) + drag.offsetX, (point.y / DESIGN_SIZE) + drag.offsetY);
+
+
+    // Redraw at most once a frame however fast the pointer moves
+    if (!dragFrame) {
+
+        dragFrame = requestAnimationFrame(function () {
+
+            dragFrame = 0;
+
+            buildDesign();
+
+            drawPreview();
+
+        });
+
+    }
+
+});
+
+canvas.addEventListener("pointerup", endDrag);
+canvas.addEventListener("pointercancel", endDrag);
+canvas.addEventListener("lostpointercapture", endDrag);
+
+
+/*
+    Let go of the piece, and offer the design with it in its new place
+*/
+function endDrag() {
+
+    if (!drag) {
+        return;
+    }
+
+    drag = null;
+
+    canvas.classList.remove("kc-dragging");
+
+    cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
+
+
+    buildDesign();
+
+    drawPreview();
+
+    offerDownload();
+
+    resetButton.disabled = piecesAtHome();
+
+}
+
+
+// Put every piece back where the design started it
+resetButton.addEventListener("click", function () {
+
+    pieces.forEach(function (piece) {
+        piece.x = piece.home.x;
+        piece.y = piece.home.y;
+    });
+
+    resetButton.disabled = true;
+
+    buildDesign();
+
+    drawPreview();
+
+    offerDownload();
+
+});
+
+
+function piecesAtHome() {
+
+    return pieces.every(function (piece) {
+        return piece.x === piece.home.x && piece.y === piece.home.y;
+    });
+
+}
+
+
+/*
+    Move a piece, keeping its middle within reach of the middle of the design
+*/
+function placePiece(piece, x, y) {
+
+    const deltaX = x - 0.5;
+    const deltaY = y - 0.5;
+
+    const distance = Math.hypot(deltaX, deltaY);
+    const pull = distance > REACH ? REACH / distance : 1;
+
+    piece.x = 0.5 + (deltaX * pull);
+    piece.y = 0.5 + (deltaY * pull);
+
+}
+
+
+/*
+    Where a pointer is on the design, in design pixels, and whether it is
+    over the part of the print that shows
+*/
+function designPoint(event) {
+
+    // offsetX and offsetY follow the canvas as it sways, unlike clientX
+    const scale = canvas.width / canvas.clientWidth;
+
+    const x = event.offsetX * scale;
+    const y = event.offsetY * scale;
+
+    const holder = product === "badge" ? BADGE : CASING;
+    const shown = holder.radius / (FACE * DESIGN_SIZE);
+
+    return {
+        x: ((x - holder.x) / shown) + (DESIGN_SIZE / 2),
+        y: ((y - holder.y) / shown) + (DESIGN_SIZE / 2),
+        inside: Math.hypot(x - holder.x, y - holder.y) <= holder.radius
+    };
+
+}
+
+
+/*
+    The top piece under a point on the design, or null
+*/
+function pieceAt(point) {
+
+    for (let layer = pieces.length - 1; layer >= 0; layer = layer - 1) {
+
+        if (covers(pieces[layer], point)) {
+            return pieces[layer];
+        }
+
+    }
+
+    return null;
+
+}
+
+
+/*
+    Whether a piece covers a point. A cut-out counts only where it is solid,
+    so a see-through corner never hides the piece underneath.
+*/
+function covers(piece, point) {
+
+    const box = piece.box * DESIGN_SIZE;
+
+
+    // The point as the piece sees it: from its middle, turned with it
+    const deltaX = point.x - (piece.x * DESIGN_SIZE);
+    const deltaY = point.y - (piece.y * DESIGN_SIZE);
+
+    const cos = Math.cos(-piece.turn);
+    const sin = Math.sin(-piece.turn);
+
+    const localX = (deltaX * cos) - (deltaY * sin);
+    const localY = (deltaX * sin) + (deltaY * cos);
+
+
+    const picture = wordImages[piece.word];
+
+    // An emoji or a round snapshot is near enough a circle
+    if (!picture || wordImageFills[piece.word]) {
+
+        return Math.hypot(localX, localY) < box * 0.4;
+
+    }
+
+
+    const scale = Math.min(box / picture.naturalWidth, box / picture.naturalHeight);
+
+    const across = (localX / (picture.naturalWidth * scale)) + 0.5;
+    const down = (localY / (picture.naturalHeight * scale)) + 0.5;
+
+    if (across < 0 || across > 1 || down < 0 || down > 1) {
+        return false;
+    }
+
+    const mask = wordMasks[piece.word];
+
+    return !mask || solidNear(mask, across, down);
+
+}
+
+
+/*
+    Whether a picture is solid at a spot, or a hair away from it, so thin
+    parts like legs and stems can still be grabbed
+*/
+function solidNear(mask, across, down) {
+
+    const middleX = Math.floor(across * (MASK_SIZE - 1));
+    const middleY = Math.floor(down * (MASK_SIZE - 1));
+
+    for (let y = Math.max(0, middleY - 2); y <= Math.min(MASK_SIZE - 1, middleY + 2); y = y + 1) {
+
+        for (let x = Math.max(0, middleX - 2); x <= Math.min(MASK_SIZE - 1, middleX + 2); x = x + 1) {
+
+            if (mask[(((y * MASK_SIZE) + x) * 4) + 3] > 40) {
+                return true;
+            }
+
+        }
+
+    }
+
+    return false;
+
+}
+
+
+/*
+    A small copy of a picture to read its see-through parts from. Pictures
+    loaded straight from disk cannot be read, and then any part grabs.
+*/
+function buildMask(image) {
+
+    const mask = document.createElement("canvas");
+
+    mask.width = MASK_SIZE;
+    mask.height = MASK_SIZE;
+
+    const pen = mask.getContext("2d", { willReadFrequently: true });
+
+    pen.drawImage(image, 0, 0, MASK_SIZE, MASK_SIZE);
+
+    try {
+
+        return pen.getImageData(0, 0, MASK_SIZE, MASK_SIZE).data;
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+
+/* ------------------------------
+   The Printed Design
 ------------------------------ */
 
 /*
-    Redraw the whole canvas from the current options
+    Draw the design from the pictures loaded so far, offer it for download,
+    and show it in the preview
 */
-function drawKeychain() {
+function drawStudio() {
 
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
+    buildDesign();
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    offerDownload();
 
+    drawPreview();
 
-    // Back to front: the bar, the chain that reaches its tab, the ring
-    hangBar(buildBar());
-
-    drawChain(BAR.holeX, BAR.holeY);
-
-    drawRing();
+}
 
 
-    // Point the download link at the picture just drawn
+/*
+    Point the download link at the design as it stands
+*/
+function offerDownload() {
+
     try {
 
-        downloadButton.href = canvas.toDataURL("image/png");
+        downloadButton.href = design.toDataURL("image/png");
         downloadButton.download = buildFileName();
 
     } catch (error) {
@@ -355,223 +739,24 @@ function drawKeychain() {
 
 
 /*
-    Place the finished bar so its hole lands under the chain
+    The square that gets printed: the place, then the pieces wherever they
+    have been dragged, the fruit first and the flag last, on top
 */
-function hangBar(bar) {
+function buildDesign() {
 
-    context.save();
+    designPen.clearRect(0, 0, DESIGN_SIZE, DESIGN_SIZE);
 
-    context.translate(BAR.holeX, BAR.holeY);
-    context.rotate(BAR.turn);
+    drawPlace(designPen, DESIGN_SIZE);
 
-    // A soft shadow under the whole bar, as if it lay on a table
-    context.shadowColor = "rgba(30, 16, 90, 0.3)";
-    context.shadowBlur = 40;
-    context.shadowOffsetY = 20;
+    pieces.forEach(function (piece) {
 
-    context.drawImage(bar.canvas, -bar.holeX, -bar.holeY);
+        if (piece.word === COUNTRY_INDEX) {
 
-    context.restore();
+            drawFlag(designPen, piece, DESIGN_SIZE);
 
-}
+        } else {
 
-
-
-/* ------------------------------
-   The Bar
------------------------------- */
-
-/*
-    The long acrylic bar: the place as its picture, with the animal, the
-    fruit and the country stacked down it. Drawn on its own canvas so the
-    hole can be cut out.
-*/
-function buildBar() {
-
-    const width = BAR.width;
-    const height = BAR.height;
-
-    const margin = 40;
-    const tabRise = 70;
-
-    const bar = document.createElement("canvas");
-
-    bar.width = width + (margin * 2);
-    bar.height = height + tabRise + (margin * 2);
-
-    const pen = bar.getContext("2d");
-
-    pen.translate(margin, margin + tabRise);
-
-
-    // The picture sits inside a white acrylic edge
-    const edge = 26;
-    const radius = 80;
-
-    const inner = {
-        x: edge,
-        y: edge,
-        width: width - (edge * 2),
-        height: height - (edge * 2)
-    };
-
-    const tab = { x: width / 2, y: -6, radius: 50 };
-    const hole = { x: width / 2, y: -14, radius: 18 };
-
-
-    // White acrylic: outline first, then the fill hides the inner strokes
-    pen.lineWidth = 6;
-    pen.strokeStyle = "rgba(46, 33, 119, 0.22)";
-
-    pen.beginPath();
-    pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
-    pen.stroke();
-
-    roundedRectangle(pen, 0, 0, width, height, radius);
-    pen.stroke();
-
-    pen.fillStyle = "#ffffff";
-
-    pen.beginPath();
-    pen.arc(tab.x, tab.y, tab.radius, 0, Math.PI * 2);
-    pen.fill();
-
-    roundedRectangle(pen, 0, 0, width, height, radius);
-    pen.fill();
-
-
-    // The picture
-    pen.save();
-
-    roundedRectangle(pen, inner.x, inner.y, inner.width, inner.height, radius - edge);
-    pen.clip();
-
-    drawPlace(pen, inner);
-
-    drawStack(pen, inner);
-
-    drawGloss(pen, inner);
-
-    pen.restore();
-
-
-    // A fine line where the picture meets the white edge
-    pen.lineWidth = 3;
-    pen.strokeStyle = "rgba(6, 41, 82, 0.14)";
-
-    roundedRectangle(pen, inner.x, inner.y, inner.width, inner.height, radius - edge);
-    pen.stroke();
-
-
-    punchHole(pen, hole);
-
-
-    return {
-        canvas: bar,
-        holeX: margin + hole.x,
-        holeY: margin + tabRise + hole.y
-    };
-
-}
-
-
-/*
-    Fill the bar with the place, or a soft sky if there is no picture
-*/
-function drawPlace(pen, area) {
-
-    const picture = wordImages[PLACE_INDEX];
-
-    if (picture) {
-
-        drawImageCover(pen, picture, area.x, area.y, area.width, area.height);
-
-    } else {
-
-        const sky = pen.createLinearGradient(0, area.y, 0, area.y + area.height);
-        sky.addColorStop(0, "#b9a7f0");
-        sky.addColorStop(1, "#f7a182");
-
-        pen.fillStyle = sky;
-        pen.fillRect(area.x, area.y, area.width, area.height);
-
-        pen.textAlign = "center";
-        pen.textBaseline = "middle";
-        pen.font = (area.width * 0.3) + "px " + EMOJI_FONT;
-
-        pen.fillText(passphrase.words[PLACE_INDEX].emoji, area.x + (area.width / 2), area.y + (area.height * 0.5));
-
-    }
-
-
-    // Shade the top and bottom a little, so the white tags stay readable
-    const top = pen.createLinearGradient(0, area.y, 0, area.y + 220);
-    top.addColorStop(0, "rgba(6, 20, 60, 0.38)");
-    top.addColorStop(1, "rgba(6, 20, 60, 0)");
-
-    pen.fillStyle = top;
-    pen.fillRect(area.x, area.y, area.width, 220);
-
-    const bottom = pen.createLinearGradient(0, area.y + area.height - 320, 0, area.y + area.height);
-    bottom.addColorStop(0, "rgba(6, 20, 60, 0)");
-    bottom.addColorStop(1, "rgba(6, 20, 60, 0.42)");
-
-    pen.fillStyle = bottom;
-    pen.fillRect(area.x, area.y + area.height - 320, area.width, 320);
-
-}
-
-
-/*
-    The place's name, the three pictures and the passphrase, top to bottom
-*/
-function drawStack(pen, area) {
-
-    const labels = showLabels.checked;
-    const phrase = showPhrase.checked;
-
-    const centreX = area.x + (area.width / 2);
-
-
-    // The place is named at the top, in its own sky
-    if (labels) {
-
-        drawTag(pen, spelling(passphrase.words[PLACE_INDEX]), centreX, area.y + 62, 36, area.width - 56);
-
-    }
-
-
-    // The passphrase takes the bottom, one word to a line
-    let bottom = area.y + area.height - 40;
-
-    if (phrase) {
-
-        const block = drawPhraseBlock(pen, area);
-
-        bottom = block.top - 26;
-
-    }
-
-
-    // The pictures share what is left equally
-    const top = area.y + (labels ? 124 : 52);
-    const slot = (bottom - top) / STACK_ORDER.length;
-
-    const labelSpace = labels ? 66 : 0;
-
-    const diameter = Math.min(slot - labelSpace - 26, area.width * 0.7, 300);
-
-    STACK_ORDER.forEach(function (wordIndex, position) {
-
-        const slotTop = top + (slot * position);
-
-        const centreY = slotTop + ((slot - labelSpace) / 2);
-
-        drawBadge(pen, wordIndex, centreX, centreY, diameter / 2);
-
-        if (labels) {
-
-            drawTag(pen, spelling(passphrase.words[wordIndex]), centreX, centreY + (diameter / 2) + 38, 34, area.width - 56);
+            drawCutOut(designPen, piece, DESIGN_SIZE);
 
         }
 
@@ -581,170 +766,401 @@ function drawStack(pen, area) {
 
 
 /*
-    One picture on a round badge: a cut-out stands in front of a frosted
-    disc, a photograph fills it
+    Fill the design with the place, or a soft sky if there is no picture
 */
-function drawBadge(pen, wordIndex, centreX, centreY, radius) {
+function drawPlace(pen, size) {
 
-    const picture = wordImages[wordIndex];
-    const photo = picture && wordImageFills[wordIndex];
+    const picture = wordImages[PLACE_INDEX];
+
+    if (picture) {
+
+        drawImageCover(pen, picture, 0, 0, size, size);
+
+        return;
+    }
 
 
-    // The disc, lifted off the picture by its shadow
+    const sky = pen.createLinearGradient(0, 0, 0, size);
+    sky.addColorStop(0, "#b9a7f0");
+    sky.addColorStop(1, "#f7a182");
+
+    pen.fillStyle = sky;
+    pen.fillRect(0, 0, size, size);
+
+
+    // The place's emoji, large and faint behind everything else
     pen.save();
 
-    pen.shadowColor = "rgba(6, 20, 60, 0.35)";
-    pen.shadowBlur = 22;
-    pen.shadowOffsetY = 8;
+    pen.globalAlpha = 0.35;
+    pen.textAlign = "center";
+    pen.textBaseline = "middle";
+    pen.font = (size * 0.7) + "px " + EMOJI_FONT;
 
-    pen.fillStyle = photo ? "#ffffff" : "rgba(255, 255, 255, 0.82)";
-
-    pen.beginPath();
-    pen.arc(centreX, centreY, radius, 0, Math.PI * 2);
-    pen.fill();
+    pen.fillText(passphrase.words[PLACE_INDEX].emoji, size / 2, size * 0.54);
 
     pen.restore();
 
+}
 
-    if (photo) {
 
-        pen.save();
+/*
+    The country's flag on a little pole
+*/
+function drawFlag(pen, piece, size) {
+
+    const picture = wordImages[COUNTRY_INDEX];
+    const box = piece.box * size;
+
+    pen.save();
+
+    pen.translate(piece.x * size, piece.y * size);
+    pen.rotate(piece.turn);
+
+    liftOff(pen, size);
+
+
+    if (!picture) {
+
+        pen.textAlign = "center";
+        pen.textBaseline = "middle";
+        pen.font = (box * 0.62) + "px " + EMOJI_FONT;
+
+        pen.fillText(passphrase.words[COUNTRY_INDEX].emoji, 0, 0);
+
+    } else if (wordImageFills[COUNTRY_INDEX]) {
+
+        drawSnapshot(pen, picture, 0, 0, box * 0.34);
+
+    } else {
+
+        drawImageContain(pen, picture, 0, 0, box);
+
+
+        // The pole runs up the flag's near edge, a little past it each end
+        const poleX = -box * 0.45;
+        const poleWidth = box * 0.036;
+
+        pen.fillStyle = "#7b4a25";
+
+        roundedRectangle(pen, poleX - (poleWidth / 2), -box * 0.38, poleWidth, box * 0.82, poleWidth / 2);
+        pen.fill();
+
+        pen.fillStyle = "#ffc94a";
 
         pen.beginPath();
-        pen.arc(centreX, centreY, radius - 9, 0, Math.PI * 2);
-        pen.clip();
+        pen.arc(poleX, -box * 0.4, box * 0.036, 0, Math.PI * 2);
+        pen.fill();
 
-        drawImageCover(pen, picture, centreX - radius, centreY - radius, radius * 2, radius * 2);
+    }
 
-        pen.restore();
+    pen.restore();
+
+}
+
+
+/*
+    The animal or the fruit, standing free on the design
+*/
+function drawCutOut(pen, piece, size) {
+
+    const wordIndex = piece.word;
+    const picture = wordImages[wordIndex];
+
+    const x = piece.x * size;
+    const y = piece.y * size;
+    const box = piece.box * size;
+
+    pen.save();
+
+    liftOff(pen, size);
+
+
+    if (picture && wordImageFills[wordIndex]) {
+
+        drawSnapshot(pen, picture, x, y, box * 0.42);
 
     } else if (picture) {
 
-        // A cut-out may reach a little past its disc, like a sticker
-        drawImageContain(pen, picture, centreX, centreY + (radius * 0.04), radius * 2.16);
+        drawImageContain(pen, picture, x, y, box);
 
     } else {
 
         pen.textAlign = "center";
         pen.textBaseline = "middle";
-        pen.font = (radius * 1.15) + "px " + EMOJI_FONT;
+        pen.font = (box * 0.7) + "px " + EMOJI_FONT;
 
-        pen.fillText(passphrase.words[wordIndex].emoji, centreX, centreY + (radius * 0.06));
+        pen.fillText(passphrase.words[wordIndex].emoji, x, y);
 
     }
+
+    pen.restore();
 
 }
 
 
 /*
-    A word on a small white tag
+    A soft shadow under whatever is drawn next, lifting it off the place
 */
-function drawTag(pen, word, x, y, fontSize, maxWidth) {
+function liftOff(pen, size) {
 
-    const padding = fontSize * 0.62;
+    pen.shadowColor = "rgba(14, 10, 50, 0.4)";
+    pen.shadowBlur = size * 0.022;
+    pen.shadowOffsetY = size * 0.01;
 
-    let size = fontSize;
-
-    pen.font = "600 " + size + "px " + TEXT_FONT;
-
-    // Long words shrink rather than run off the bar
-    while (pen.measureText(word).width + (padding * 2) > maxWidth && size > 14) {
-
-        size = size - 1;
-
-        pen.font = "600 " + size + "px " + TEXT_FONT;
-
-    }
+}
 
 
-    const width = pen.measureText(word).width + (padding * 2);
-    const height = fontSize * 1.7;
+/*
+    A photograph cannot stand free, so it sits in a round white frame
+*/
+function drawSnapshot(pen, picture, x, y, radius) {
+
+    pen.fillStyle = "#ffffff";
+
+    pen.beginPath();
+    pen.arc(x, y, radius, 0, Math.PI * 2);
+    pen.fill();
 
 
     pen.save();
 
-    pen.shadowColor = "rgba(6, 20, 60, 0.28)";
-    pen.shadowBlur = 10;
-    pen.shadowOffsetY = 4;
+    pen.shadowColor = "transparent";
 
-    pen.fillStyle = "rgba(255, 255, 255, 0.96)";
+    pen.beginPath();
+    pen.arc(x, y, radius * 0.93, 0, Math.PI * 2);
+    pen.clip();
 
-    roundedRectangle(pen, x - (width / 2), y - (height / 2), width, height, height / 2);
-    pen.fill();
+    drawImageCover(pen, picture, x - radius, y - radius, radius * 2, radius * 2);
 
     pen.restore();
 
+}
 
-    pen.fillStyle = NAVY;
-    pen.textAlign = "center";
-    pen.textBaseline = "middle";
 
-    pen.fillText(word, x, y + (size * 0.04));
+
+/* ------------------------------
+   The Preview
+------------------------------ */
+
+/*
+    Show the design made up as the chosen product
+*/
+function drawPreview() {
+
+    // Resizing a canvas is slow, and this runs on every frame of a drag
+    if (canvas.width !== PREVIEW_WIDTH || canvas.height !== PREVIEW_HEIGHT[product]) {
+
+        canvas.width = PREVIEW_WIDTH;
+        canvas.height = PREVIEW_HEIGHT[product];
+
+    }
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.imageSmoothingQuality = "high";
+
+
+    if (product === "badge") {
+
+        drawBadge();
+
+    } else {
+
+        drawKeychain();
+
+    }
 
 }
 
 
 /*
-    The full passphrase at the foot of the bar, one word to a line, when
-    the user asks for it. Returns where the block starts.
+    A round metal casing with the print under a clear dome, hanging from a
+    short chain and a split ring
 */
-function drawPhraseBlock(pen, area) {
+function drawKeychain() {
 
-    const words = passphrase.words.map(function (item) {
-        return spelling(item);
+    const loop = {
+        x: CASING.x,
+        y: CASING.y - CASING.radius - CASING.rim - 14,
+        radius: 22
+    };
+
+
+    // Back to front: the casing and its loop, the chain, the ring
+    drawCasing(loop);
+
+    drawChain(loop.x, loop.y - loop.radius + 6);
+
+    drawRing();
+
+}
+
+
+/*
+    The casing: a polished rim round the print, with a loop on top for the
+    chain to go through
+*/
+function drawCasing(loop) {
+
+    const outer = CASING.radius + CASING.rim;
+
+
+    // A soft shadow under the casing, as if it lay on a table
+    context.save();
+
+    context.shadowColor = "rgba(30, 16, 90, 0.3)";
+    context.shadowBlur = 40;
+    context.shadowOffsetY = 20;
+
+    context.fillStyle = "#a9b3c6";
+
+    context.beginPath();
+    context.arc(CASING.x, CASING.y, outer, 0, Math.PI * 2);
+    context.fill();
+
+    context.restore();
+
+
+    strokeMetal(context, 12, loop.x - loop.radius, loop.x + loop.radius, function () {
+
+        context.beginPath();
+        context.arc(loop.x, loop.y, loop.radius, 0, Math.PI * 2);
+
     });
 
-    const lines = words.map(function (word, index) {
-        return index < words.length - 1 ? word + "-" : word;
+    strokeMetal(context, CASING.rim, CASING.x - outer, CASING.x + outer, function () {
+
+        context.beginPath();
+        context.arc(CASING.x, CASING.y, CASING.radius + (CASING.rim / 2), 0, Math.PI * 2);
+
     });
 
 
-    // Shrink the text until the longest line fits across the bar
-    const padding = 26;
-    const maximum = area.width - 40 - (padding * 2);
+    showDesign(CASING.x, CASING.y, CASING.radius);
 
-    let size = 40;
+    drawDome(CASING.x, CASING.y, CASING.radius);
 
-    pen.font = "600 " + size + "px " + TEXT_FONT;
+}
 
-    while (Math.max.apply(null, lines.map(function (line) { return pen.measureText(line).width; })) > maximum && size > 14) {
 
-        size = size - 1;
+/*
+    A button badge: the print pressed over a domed shell, its edge rolled
+    under out of sight
+*/
+function drawBadge() {
 
-        pen.font = "600 " + size + "px " + TEXT_FONT;
+    context.save();
+
+    context.shadowColor = "rgba(30, 16, 90, 0.32)";
+    context.shadowBlur = 40;
+    context.shadowOffsetY = 20;
+
+    context.fillStyle = "#ffffff";
+
+    context.beginPath();
+    context.arc(BADGE.x, BADGE.y, BADGE.radius, 0, Math.PI * 2);
+    context.fill();
+
+    context.restore();
+
+
+    showDesign(BADGE.x, BADGE.y, BADGE.radius);
+
+    drawDome(BADGE.x, BADGE.y, BADGE.radius, true);
+
+}
+
+
+/*
+    The middle of the design, as much as shows on the front, filling a circle
+*/
+function showDesign(x, y, radius) {
+
+    const size = DESIGN_SIZE * (radius / (FACE * DESIGN_SIZE));
+
+    context.save();
+
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.clip();
+
+    context.drawImage(design, x - (size / 2), y - (size / 2), size, size);
+
+    context.restore();
+
+}
+
+
+/*
+    The clear dome over the print: shaded where it curves away at the edge,
+    with light caught across the top. A badge's edge is rolled, so it turns
+    away more sharply and catches a line of light.
+*/
+function drawDome(x, y, radius, rolled) {
+
+    const edge = context.createRadialGradient(x, y, radius * 0.78, x, y, radius);
+    edge.addColorStop(0, "rgba(14, 10, 50, 0)");
+
+    if (rolled) {
+        edge.addColorStop(0.6, "rgba(14, 10, 50, 0.1)");
+        edge.addColorStop(1, "rgba(14, 10, 50, 0.5)");
+    } else {
+        edge.addColorStop(1, "rgba(14, 10, 50, 0.32)");
+    }
+
+    context.fillStyle = edge;
+
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.fill();
+
+
+    context.save();
+
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.clip();
+
+    const shine = context.createLinearGradient(x - radius, y - radius, x + (radius * 0.3), y + (radius * 0.3));
+    shine.addColorStop(0, "rgba(255, 255, 255, 0.5)");
+    shine.addColorStop(0.3, "rgba(255, 255, 255, 0.14)");
+    shine.addColorStop(0.46, "rgba(255, 255, 255, 0)");
+
+    context.fillStyle = shine;
+    context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+
+    context.restore();
+
+
+    // A short glint near the top left
+    context.strokeStyle = "rgba(255, 255, 255, 0.5)";
+    context.lineWidth = radius * 0.016;
+    context.lineCap = "round";
+
+    context.beginPath();
+    context.arc(x, y, radius * 0.88, Math.PI * 1.17, Math.PI * 1.33);
+    context.stroke();
+
+
+    if (rolled) {
+
+        context.strokeStyle = "rgba(255, 255, 255, 0.55)";
+        context.lineWidth = radius * 0.012;
+
+        context.beginPath();
+        context.arc(x, y, radius * 0.975, Math.PI * 0.9, Math.PI * 1.6);
+        context.stroke();
 
     }
 
 
-    const lineHeight = size * 1.24;
+    // A fine line where the dome meets whatever holds it
+    context.strokeStyle = "rgba(14, 10, 50, 0.35)";
+    context.lineWidth = 3;
 
-    const block = {
-        x: area.x + 20,
-        width: area.width - 40,
-        height: (lineHeight * lines.length) + (padding * 2)
-    };
-
-    block.top = area.y + area.height - 26 - block.height;
-
-
-    pen.fillStyle = NAVY;
-
-    roundedRectangle(pen, block.x, block.top, block.width, block.height, 30);
-    pen.fill();
-
-
-    pen.fillStyle = "#ffffff";
-    pen.textAlign = "center";
-    pen.textBaseline = "middle";
-
-    lines.forEach(function (line, index) {
-
-        pen.fillText(line, block.x + (block.width / 2), block.top + padding + (lineHeight * index) + (lineHeight / 2) + (size * 0.04));
-
-    });
-
-
-    return block;
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.stroke();
 
 }
 
@@ -788,7 +1204,7 @@ function drawRing() {
 
 
 /*
-    A short run of links from the ring down to the bar's hole
+    A short run of links from the ring down through the casing's loop
 */
 function drawChain(holeX, holeY) {
 
@@ -887,48 +1303,6 @@ function strokeMetal(pen, width, from, to, path, across) {
 ------------------------------ */
 
 /*
-    A soft streak of light across the bar, so it reads as clear acrylic
-*/
-function drawGloss(pen, area) {
-
-    const gloss = pen.createLinearGradient(area.x, area.y, area.x + area.width, area.y + (area.width * 1.1));
-    gloss.addColorStop(0, "rgba(255, 255, 255, 0.34)");
-    gloss.addColorStop(0.32, "rgba(255, 255, 255, 0.08)");
-    gloss.addColorStop(0.5, "rgba(255, 255, 255, 0)");
-
-    pen.fillStyle = gloss;
-    pen.fillRect(area.x, area.y, area.width, area.height);
-
-}
-
-
-/*
-    Cut the hole the chain passes through, and give it a rim
-*/
-function punchHole(pen, hole) {
-
-    pen.save();
-
-    pen.globalCompositeOperation = "destination-out";
-
-    pen.beginPath();
-    pen.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
-    pen.fill();
-
-    pen.restore();
-
-
-    pen.lineWidth = 4;
-    pen.strokeStyle = "rgba(46, 33, 119, 0.26)";
-
-    pen.beginPath();
-    pen.arc(hole.x, hole.y, hole.radius + 1, 0, Math.PI * 2);
-    pen.stroke();
-
-}
-
-
-/*
     Scale a picture to fill a box, cropping the overflow evenly
 */
 function drawImageCover(pen, image, x, y, width, height) {
@@ -1008,7 +1382,8 @@ function roundedRectangle(pen, x, y, width, height, radius) {
 
 
 /*
-    Name the download after the words on the keychain
+    Name the download after what it is for and the words in it, so whoever
+    prints it can tell keychains from badges at a glance
 */
 function buildFileName() {
 
@@ -1016,7 +1391,7 @@ function buildFileName() {
         return item.word.toLowerCase();
     }).join("-");
 
-    return "thinksecure-keychain-" + words + ".png";
+    return "thinksecure-" + product + "-" + words + ".png";
 
 }
 
@@ -1027,7 +1402,7 @@ function buildFileName() {
 ------------------------------ */
 
 /*
-    Give the user a set time to customise the keychain. The end time is fixed
+    Give the user a set time to customise the design. The end time is fixed
     up front, so a tab left in the background still runs out on time.
 */
 function startCountdown() {
@@ -1108,23 +1483,28 @@ function finishCountdown() {
 
     hideToast();
 
+    // A piece still held is dropped where it is, and counts
+    endDrag();
+
     timerBox.classList.add("kc-timer-done");
 
     studio.classList.add("kc-locked");
 
-    showLabels.disabled = true;
-    showPhrase.disabled = true;
+    canvas.classList.remove("kc-grab");
+
+    productInputs.forEach(function (input) {
+        input.disabled = true;
+    });
+
+    resetButton.disabled = true;
 
 
-    // The dialog shows and offers the keychain exactly as it was left
+    // The dialog offers the design exactly as it was left
     const picture = downloadButton.getAttribute("href");
 
     if (picture && picture !== "#") {
 
-        timeUpPreview.src = picture;
-
         timeUpDownload.href = picture;
-        timeUpDownload.download = downloadButton.download;
 
     } else {
 
@@ -1137,21 +1517,50 @@ function finishCountdown() {
     }
 
 
+    showChoice();
+
     timeUpDialog.showModal();
 
 }
 
 
-// Making a real keychain or pin is still being built, so those say so for now
-timeUpDialog.querySelectorAll("[data-coming-soon]").forEach(function (option) {
+/*
+    Mark what the design is being made into, show it made up, and say what
+    happens to the print next
+*/
+function showChoice() {
+
+    timeUpDialog.querySelectorAll("[data-product]").forEach(function (option) {
+        option.setAttribute("aria-pressed", String(option.dataset.product === product));
+    });
+
+
+    const note = product === "badge" ? "sticker.timeup.pinNote" : "sticker.timeup.keychainNote";
+
+    timeUpNote.setAttribute("data-i18n", note);
+    timeUpNote.textContent = I18n.t(note);
+    timeUpNote.hidden = false;
+
+
+    timeUpDownload.download = buildFileName();
+
+    if (!timeUpPreview.hidden) {
+        timeUpPreview.src = canvas.toDataURL("image/png");
+    }
+
+}
+
+
+// The other product can still be picked here. The print stays the same.
+timeUpDialog.querySelectorAll("[data-product]").forEach(function (option) {
 
     option.addEventListener("click", function () {
 
-        timeUpDialog.querySelectorAll("[data-coming-soon]").forEach(function (other) {
-            other.setAttribute("aria-pressed", String(other === option));
-        });
+        chooseProduct(option.dataset.product);
 
-        timeUpNote.hidden = false;
+        drawPreview();
+
+        showChoice();
 
     });
 
@@ -1163,4 +1572,4 @@ timeUpDialog.addEventListener("cancel", function (event) {
     event.preventDefault();
 });
 
-window.addEventListener("languagechange", () => { if (!studio.classList.contains("hidden")) { drawWordList(); drawKeychain(); } if (!toast.hidden) { showToast(toastSeconds); } });
+window.addEventListener("languagechange", () => { if (!studio.classList.contains("hidden")) { drawWordList(); } if (!toast.hidden) { showToast(toastSeconds); } });

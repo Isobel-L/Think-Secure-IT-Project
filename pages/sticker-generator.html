@@ -100,9 +100,9 @@
 
                 <p data-i18n="sticker.emptyBody">
                     The Keychain Studio turns the four words from your passphrase
-                    into a keychain. Each keychain needs its own freshly built
-                    passphrase, so head back and pick four words, then come
-                    straight here.
+                    into one picture for a keychain or a badge pin. Each design
+                    needs its own freshly built passphrase, so head back and
+                    pick four words, then come straight here.
                 </p>
 
                 <a href="passphrase-maker.html" class="il-btn il-btn-arrow" data-i18n="sticker.goMaker">
@@ -126,9 +126,10 @@
                 <h1 data-i18n="common.stickerStudio">Keychain Studio</h1>
 
                 <p data-i18n="sticker.intro">
-                    Here are the four words you chose, hanging together on
-                    one keychain. Choose what to show, then download it as
-                    a PNG.
+                    Your four words become one picture: your place behind,
+                    your country's flag at the top, and your animal and
+                    fruit in the middle. Make it a keychain or a badge pin,
+                    then download the design.
                 </p>
 
             </section>
@@ -160,34 +161,50 @@
 
                             <div class="kc-words" id="studio-words"></div>
 
-                            <p class="kc-hint" data-i18n="sticker.wordNote">Translated labels help identify your words. Words printed on the keychain and the full passphrase stay in English.</p>
+                            <p class="kc-hint" data-i18n="sticker.wordNote">Translated labels help identify your words. Your passphrase itself stays in English.</p>
 
                         </div>
 
 
+                        <div class="kc-group">
+
+                            <h2 data-i18n="sticker.arrange">Move the pictures</h2>
+
+                            <p class="kc-hint" data-i18n="sticker.arrangeNote">
+                                Drag the flag, the animal and the fruit on the
+                                preview to put them anywhere you like. The flag
+                                always sits on top, then the animal, then the fruit.
+                            </p>
+
+                            <button type="button" class="il-btn il-btn-light il-btn-small kc-reset" id="reset-positions" data-i18n="sticker.reset" disabled>Put them back</button>
+
+                        </div>
 
 
                         <div class="kc-group">
 
-                            <h2 data-i18n="sticker.text">Text</h2>
+                            <h2 id="product-title" data-i18n="sticker.product">Keychain or badge pin?</h2>
 
-                            <label class="kc-check" for="show-labels">
-                                <input type="checkbox" id="show-labels" checked>
-                                <span class="kc-check-box" aria-hidden="true"></span>
-                                <span data-i18n="sticker.labels">Show the words on the keychain</span>
-                            </label>
+                            <div class="kc-products" role="radiogroup" aria-labelledby="product-title">
 
-                            <label class="kc-check" for="show-phrase">
-                                <input type="checkbox" id="show-phrase">
-                                <span class="kc-check-box" aria-hidden="true"></span>
-                                <span data-i18n="sticker.fullPhrase">Print the full passphrase on the keychain</span>
-                            </label>
+                                <label class="kc-product">
+                                    <input type="radio" name="product" value="keychain" checked>
+                                    <span class="kc-product-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="4.6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.2v1.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="15.2" r="6.6" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>
+                                    <span class="kc-product-name" data-i18n="sticker.keychain">Keychain</span>
+                                </label>
 
-                            <p class="kc-hint kc-hint-warning" data-i18n="sticker.notice">
-                                Leave the full passphrase off if you plan to carry
-                                this anywhere other people can see. The pictures on
-                                their own are enough to jog your memory, which is
-                                the whole point of a passphrase.
+                                <label class="kc-product kc-product-pin">
+                                    <input type="radio" name="product" value="badge">
+                                    <span class="kc-product-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 8.5l1.1 2.2 2.4.4-1.7 1.7.4 2.4-2.2-1.1-2.2 1.1.4-2.4-1.7-1.7 2.4-.4z" fill="currentColor"/></svg></span>
+                                    <span class="kc-product-name" data-i18n="sticker.badge">Badge pin</span>
+                                </label>
+
+                            </div>
+
+                            <p class="kc-hint" data-i18n="sticker.productNote">
+                                Both use the same printed design. For a keychain it
+                                goes into the casing; for a badge pin it is pressed
+                                in the button badge machine.
                             </p>
 
                         </div>
@@ -204,7 +221,7 @@
                     <section class="kc-preview">
 
                         <div class="kc-stage">
-                            <canvas role="img" aria-label="Preview of your passphrase keychain" data-i18n-aria-label="sticker.canvasAlt" id="sticker-canvas" width="760" height="1720"></canvas>
+                            <canvas role="img" aria-label="Preview of your design as a keychain" data-i18n-aria-label="sticker.canvasAlt" id="sticker-canvas" width="760" height="1080"></canvas>
                         </div>
 
                     </section>
@@ -238,16 +255,16 @@
         </div>
 
 
-        <!-- What to do with the keychain once time is up -->
+        <!-- What to do with the design once time is up -->
         <dialog class="kc-timeup" id="kc-timeup" aria-labelledby="kc-timeup-title">
 
-            <img class="kc-timeup-preview" id="kc-timeup-preview" alt="Your finished keychain" data-i18n-alt="sticker.timeup.previewAlt">
+            <img class="kc-timeup-preview" id="kc-timeup-preview" alt="Your finished design" data-i18n-alt="sticker.timeup.previewAlt">
 
             <div class="kc-timeup-copy">
 
                 <h2 id="kc-timeup-title" data-i18n="sticker.timeup.title">Time's up!</h2>
 
-                <p data-i18n="sticker.timeup.body">Your keychain design is finished. What would you like to do with it?</p>
+                <p data-i18n="sticker.timeup.body">Your design is finished. What would you like to do with it?</p>
 
                 <div class="kc-timeup-options">
 
@@ -256,19 +273,19 @@
                         <span class="kc-option-text"><b data-i18n="sticker.timeup.download">Download</b><small data-i18n="sticker.timeup.downloadHint">Save it as a PNG</small></span>
                     </a>
 
-                    <button type="button" class="kc-option kc-option-keychain" data-coming-soon>
-                        <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="8" cy="6" r="3.5" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="9" y="9" width="10" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>
+                    <button type="button" class="kc-option kc-option-keychain" data-product="keychain">
+                        <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="4.6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.2v1.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="15.2" r="6.6" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>
                         <span class="kc-option-text"><b data-i18n="sticker.timeup.keychain">Make a keychain</b><small data-i18n="sticker.timeup.keychainHint">Turn it into a real keychain</small></span>
                     </button>
 
-                    <button type="button" class="kc-option kc-option-pin" data-coming-soon>
+                    <button type="button" class="kc-option kc-option-pin" data-product="badge">
                         <span class="kc-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 8.5l1.1 2.2 2.4.4-1.7 1.7.4 2.4-2.2-1.1-2.2 1.1.4-2.4-1.7-1.7 2.4-.4z" fill="currentColor"/></svg></span>
                         <span class="kc-option-text"><b data-i18n="sticker.timeup.pin">Make a pin</b><small data-i18n="sticker.timeup.pinHint">Turn it into a badge pin</small></span>
                     </button>
 
                 </div>
 
-                <p class="kc-timeup-note" id="kc-timeup-note" role="status" data-i18n="sticker.timeup.soon" hidden>This option is still under development. Check back soon!</p>
+                <p class="kc-timeup-note" id="kc-timeup-note" role="status" data-i18n="sticker.timeup.keychainNote" hidden>Keychain it is! Your design will be printed and fitted into the keychain casing.</p>
 
                 <div class="kc-timeup-links">
                     <a href="passphrase-maker.html" class="il-btn il-btn-light il-btn-small" data-i18n="sticker.change">Change My Words</a>

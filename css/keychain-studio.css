@@ -184,49 +184,93 @@
 }
 
 
-/* Text options */
+/* Moving the pictures */
 
-.kc-check {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.35;
-    cursor: pointer;
+.kc-reset {
+    align-self: flex-start;
 }
 
-.kc-check input {
+.kc-reset:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Keychain or badge pin */
+
+.kc-products {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.kc-product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px 10px;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background: var(--paper);
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* The radio covers its card, so the whole card can be clicked */
+.kc-product input {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 26px;
-    height: 26px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     margin: 0;
     opacity: 0;
     cursor: pointer;
 }
 
-.kc-check-box {
-    width: 26px;
-    height: 26px;
-    flex-shrink: 0;
-    border: 3px solid #b3a3e6;
-    border-radius: 8px;
-    background: var(--paper) center / 16px no-repeat;
-    transition: background-color 0.2s, border-color 0.2s;
+.kc-product:hover {
+    border-color: var(--accent-bright);
 }
 
-.kc-check input:checked + .kc-check-box {
+.kc-product:has(input:checked) {
     border-color: var(--accent);
-    background-color: var(--accent);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+    background: #f3effd;
 }
 
-.kc-check input:focus-visible + .kc-check-box {
+.kc-product:has(input:focus-visible) {
     outline: 3px solid var(--accent);
     outline-offset: 3px;
+}
+
+.kc-product-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--tint-lilac);
+    color: var(--accent);
+}
+
+.kc-product-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.kc-product-pin .kc-product-icon {
+    background: var(--tint-peach);
+    color: #c2502f;
+}
+
+html[lang^="zh"] .kc-product,
+html[lang="vi"] .kc-product {
+    font-weight: 800;
 }
 
 .kc-download {
@@ -266,8 +310,26 @@
     top: 18px;
 
     /* Swings gently from the middle of its ring */
-    transform-origin: 50% 6.9%;
+    transform-origin: 50% 10.9%;
     animation: kc-sway 4.6s ease-in-out infinite alternate;
+}
+
+/* The flag, the animal and the fruit can be picked up and dragged. The
+   keychain holds still while one is moved. */
+.kc-stage canvas.kc-grab {
+    cursor: grab;
+}
+
+.kc-stage canvas.kc-dragging {
+    cursor: grabbing;
+    animation-play-state: paused;
+}
+
+/* A badge pin has nothing to swing from, so it stays put, and a little
+   smaller, since it has no ring and chain above it */
+.kc-stage canvas[data-product="badge"] {
+    max-width: min(100%, 560px);
+    animation: none;
 }
 
 @keyframes kc-sway {
@@ -448,12 +510,12 @@
 }
 
 /* Once time is up the options can no longer change */
-.kc-locked .kc-check {
+.kc-locked .kc-product {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.kc-locked .kc-check input {
+.kc-locked .kc-product input {
     cursor: not-allowed;
 }
 
@@ -666,7 +728,7 @@
     font-weight: 700;
 }
 
-/* Downloading is the one option that works today, so it leads */
+/* Downloading the design leads; the other two say what it becomes */
 .kc-option-download {
     border-color: var(--ground);
     background: var(--ground);
@@ -686,11 +748,13 @@
     color: #d9cffa;
 }
 
-.kc-timeup-note {
+/* Outranks the dialog's paragraph rule above */
+.kc-timeup-copy > .kc-timeup-note {
     margin: 14px 0 0;
     padding: 12px 16px;
     border-radius: 14px;
     background: var(--tint-butter);
+    color: var(--ink);
     font-size: 15px;
     font-weight: 700;
 }
