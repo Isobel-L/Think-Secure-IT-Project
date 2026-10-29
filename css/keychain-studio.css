@@ -298,12 +298,9 @@ html[lang="vi"] .kc-product {
         conic-gradient(#efecfa 25%, #fafafe 0 50%, #efecfa 0 75%, #fafafe 0) 0 0 / 52px 52px;
 }
 
-.kc-stage canvas {
-    display: block;
-    width: auto;
-    height: auto;
+/* Holds the preview and the tour drawn over it, so both move together */
+.kc-holder {
     max-width: 100%;
-    max-height: min(80vh, 780px);
 
     /* Stays in view while the controls beside it scroll */
     position: sticky;
@@ -314,6 +311,14 @@ html[lang="vi"] .kc-product {
     animation: kc-sway 4.6s ease-in-out infinite alternate;
 }
 
+.kc-stage canvas {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: min(80vh, 780px);
+}
+
 /* The flag, the animal and the fruit can be picked up and dragged. The
    keychain holds still while one is moved. */
 .kc-stage canvas.kc-grab {
@@ -322,12 +327,16 @@ html[lang="vi"] .kc-product {
 
 .kc-stage canvas.kc-dragging {
     cursor: grabbing;
+}
+
+.kc-holder:has(.kc-dragging) {
     animation-play-state: paused;
 }
 
 /* A badge pin has nothing to swing from, so it stays put, and a little
-   smaller, since it has no ring and chain above it */
-.kc-stage canvas[data-product="badge"] {
+   smaller, since it has no ring and chain above it. The limit goes on the
+   holder, so the tour over the canvas stays the canvas's size. */
+.kc-holder:has(canvas[data-product="badge"]) {
     max-width: min(100%, 560px);
     animation: none;
 }
@@ -335,6 +344,104 @@ html[lang="vi"] .kc-product {
 @keyframes kc-sway {
     from { rotate: -2.2deg; }
     to { rotate: 2.2deg; }
+}
+
+
+/* The tour shown on arrival: loops drawn round the pictures that can be
+   dragged, a word beside each, and a pointer showing how. It fades away
+   as soon as the first picture is picked up. */
+
+.kc-tour {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    transition: opacity 0.35s, visibility 0s 0.35s;
+}
+
+.kc-tour-gone {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.kc-tour path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Each loop draws itself, the flag's first, then the animal's, then the fruit's */
+.kc-tour-loop {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: kc-tour-draw 0.7s ease-out forwards;
+    animation-delay: calc(0.3s + (var(--i) * 0.35s));
+}
+
+.kc-tour-loop-shade {
+    stroke: rgba(11, 42, 102, 0.55);
+    stroke-width: 12px;
+}
+
+.kc-tour-loop-ink {
+    stroke: #ffd84a;
+    stroke-width: 6px;
+}
+
+.kc-tour text {
+    fill: #ffffff;
+    stroke: #0b2a66;
+    stroke-width: 9px;
+    stroke-linejoin: round;
+    paint-order: stroke;
+    font-family: var(--display);
+    font-weight: 600;
+    opacity: 0;
+    animation: kc-tour-show 0.35s ease-out forwards;
+    animation-delay: calc(0.8s + (var(--i) * 0.35s));
+}
+
+.kc-tour-note {
+    font-size: 38px;
+}
+
+.kc-tour-caption {
+    font-size: 30px;
+}
+
+html[lang^="zh"] .kc-tour text,
+html[lang="vi"] .kc-tour text {
+    font-weight: 800;
+}
+
+/* The pointer appears last, then keeps dragging the animal a little way */
+.kc-tour-pointer path {
+    fill: #ffffff;
+    stroke: #0b2a66;
+    stroke-width: 4px;
+}
+
+.kc-tour-pointer {
+    opacity: 0;
+    animation:
+        kc-tour-show 0.3s ease-out 1.9s forwards,
+        kc-tour-drag 2.4s ease-in-out 2.2s infinite;
+}
+
+@keyframes kc-tour-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes kc-tour-show {
+    to { opacity: 1; }
+}
+
+@keyframes kc-tour-drag {
+    0%, 20% { transform: translate(0, 0); }
+    55%, 75% { transform: translate(54px, -22px); }
+    100% { transform: translate(0, 0); }
 }
 
 
@@ -412,8 +519,11 @@ html[lang="vi"] .kc-product {
         min-height: 0;
     }
 
-    .kc-stage canvas {
+    .kc-holder {
         position: static;
+    }
+
+    .kc-stage canvas {
         max-height: 72vh;
     }
 
@@ -808,8 +918,18 @@ html[lang="vi"] :is(.kc-timer, .kc-toast p, .kc-timeup h2, .kc-option-text b) {
 
     .kc-timer-low,
     .kc-toast,
-    .kc-timeup[open] {
+    .kc-timeup[open],
+    .kc-holder {
         animation: none;
+    }
+
+    /* The tour is all there at once, and the pointer stays still */
+    .kc-tour-loop,
+    .kc-tour text,
+    .kc-tour-pointer {
+        animation: none;
+        stroke-dashoffset: 0;
+        opacity: 1;
     }
 
 }

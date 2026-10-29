@@ -221,7 +221,13 @@
                     <section class="kc-preview">
 
                         <div class="kc-stage">
-                            <canvas role="img" aria-label="Preview of your design as a keychain" data-i18n-aria-label="sticker.canvasAlt" id="sticker-canvas" width="760" height="1080"></canvas>
+
+                            <!-- The preview, with a tour of what can be dragged drawn over it until the first drag -->
+                            <div class="kc-holder">
+                                <canvas role="img" aria-label="Preview of your design as a keychain" data-i18n-aria-label="sticker.canvasAlt" id="sticker-canvas" width="760" height="1080"></canvas>
+                                <svg class="kc-tour" id="kc-tour" viewBox="0 0 760 1080" aria-hidden="true" focusable="false"></svg>
+                            </div>
+
                         </div>
 
                     </section>

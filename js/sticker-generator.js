@@ -40,6 +40,9 @@ const timeUpNote = document.getElementById("kc-timeup-note");
 const canvas = document.getElementById("sticker-canvas");
 const context = canvas.getContext("2d");
 
+// The tour drawn over the preview until the first drag
+const tour = document.getElementById("kc-tour");
+
 const design = document.createElement("canvas");
 const designPen = design.getContext("2d");
 
@@ -109,6 +112,19 @@ pieces.forEach(function (piece) {
 const MASK_SIZE = 128;
 
 
+// What the tour says by each picture, and where: beside the flag, and below
+// the animal and the fruit, nudged along so the words never collide. Nudges
+// are in loop widths, leans in degrees.
+const TOUR_NOTES = [
+    null,
+    { key: "sticker.tour.animal", side: "below", nudge: -0.35, lean: -4 },
+    { key: "sticker.tour.fruit", side: "below", nudge: 0.2, lean: 4 },
+    { key: "sticker.tour.flag", side: "right", nudge: -0.15, lean: -6 }
+];
+
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+
+
 // The preview canvas for each product, and where its pieces sit on it
 const PREVIEW_WIDTH = 760;
 const PREVIEW_HEIGHT = { keychain: 1080, badge: 760 };
@@ -134,6 +150,10 @@ const wordMasks = [null, null, null, null];
 // The piece being dragged, and the frame waiting to show it moved
 let drag = null;
 let dragFrame = 0;
+
+
+// Whether the tour is still showing. Once a picture is picked up, it is gone.
+let touring = true;
 
 
 // The words handed over by the Passphrase Maker
@@ -383,6 +403,8 @@ function chooseProduct(value) {
 
     downloadButton.download = buildFileName();
 
+    drawTour();
+
 }
 
 
@@ -416,6 +438,8 @@ canvas.addEventListener("pointerdown", function (event) {
 
     canvas.setPointerCapture(event.pointerId);
     canvas.classList.add("kc-dragging");
+
+    endTour();
 
     event.preventDefault();
 
@@ -693,6 +717,235 @@ function buildMask(image) {
         return null;
 
     }
+
+}
+
+
+
+/* ------------------------------
+   First Visit Tour
+------------------------------ */
+
+/*
+    Draw the tour for the product being previewed: a loop round each picture
+    that can be dragged, a word beside it, a pointer showing a drag on the
+    animal, and a line underneath saying how. It follows the pictures'
+    starting places, which is where they are until the first drag.
+*/
+function drawTour() {
+
+    if (!touring) {
+        return;
+    }
+
+
+    const holder = product === "badge" ? BADGE : CASING;
+    const shown = holder.radius / (FACE * DESIGN_SIZE);
+
+    tour.setAttribute("viewBox", "0 0 " + PREVIEW_WIDTH + " " + PREVIEW_HEIGHT[product]);
+    tour.textContent = "";
+
+
+    // From the top piece down, so the flag's loop is drawn first
+    pieces.slice().reverse().forEach(function (piece, order) {
+
+        const x = holder.x + ((piece.x - 0.5) * DESIGN_SIZE * shown);
+        const y = holder.y + ((piece.y - 0.5) * DESIGN_SIZE * shown);
+        const size = piece.box * DESIGN_SIZE * shown;
+
+        // The flag is wide and short; the others are near enough round
+        const flag = piece.word === COUNTRY_INDEX;
+        const radiusX = size * (flag ? 0.54 : 0.42);
+        const radiusY = size * (flag ? 0.38 : 0.42);
+
+        const loop = sketchLoop(x, y, radiusX, radiusY, order);
+        const note = TOUR_NOTES[piece.word];
+
+        const group = svgElement("g", { style: "--i: " + order });
+
+        group.append(
+            svgElement("path", { d: loop, pathLength: 1, class: "kc-tour-loop kc-tour-loop-shade" }),
+            svgElement("path", { d: loop, pathLength: 1, class: "kc-tour-loop kc-tour-loop-ink" })
+        );
+
+        if (note.side === "right") {
+
+            group.appendChild(tourText(note.key, x + radiusX + 16, y + (note.nudge * radiusY), "start", note.lean, "kc-tour-note"));
+
+        } else {
+
+            group.appendChild(tourText(note.key, x + (note.nudge * radiusX), y + radiusY + 40, "middle", note.lean, "kc-tour-note"));
+
+        }
+
+        tour.appendChild(group);
+
+
+        // The pointer grabs the animal, near its middle
+        if (piece.word === ANIMAL_INDEX) {
+
+            const pointer = svgElement("g", { class: "kc-tour-pointer" });
+
+            pointer.appendChild(svgElement("path", {
+                d: "M0 0V46L12 35L21 54L30 50L21 31H37Z",
+                transform: "translate(" + (x + (radiusX * 0.15)).toFixed(1) + " " + (y + (radiusY * 0.2)).toFixed(1) + ") rotate(-8)"
+            }));
+
+            tour.appendChild(pointer);
+
+        }
+
+    });
+
+
+    // The line underneath speaks to a mouse or a finger, whichever is in use
+    const caption = window.matchMedia("(pointer: coarse)").matches ? "sticker.tour.captionTouch" : "sticker.tour.caption";
+    const below = holder.y + holder.radius + (product === "badge" ? 0 : CASING.rim) + 40;
+
+    const group = svgElement("g", { style: "--i: " + pieces.length });
+
+    group.appendChild(tourText(caption, PREVIEW_WIDTH / 2, below, "middle", 0, "kc-tour-caption"));
+
+    tour.appendChild(group);
+
+}
+
+
+/*
+    Fade the tour away for good
+*/
+function endTour() {
+
+    if (!touring) {
+        return;
+    }
+
+    touring = false;
+
+    tour.classList.add("kc-tour-gone");
+
+}
+
+
+/*
+    A line of the tour's words. It carries its translation key, so changing
+    language rewrites it along with the rest of the page.
+*/
+function tourText(key, x, y, anchor, lean, className) {
+
+    const text = svgElement("text", {
+        x: x.toFixed(1),
+        y: y.toFixed(1),
+        "text-anchor": anchor,
+        "dominant-baseline": "middle",
+        transform: "rotate(" + lean + " " + x.toFixed(1) + " " + y.toFixed(1) + ")",
+        class: className,
+        "data-i18n": key
+    });
+
+    text.textContent = I18n.t(key);
+
+    return text;
+
+}
+
+
+/*
+    A loop as if drawn by hand: it wobbles a little, and runs on past where
+    it started instead of closing neatly
+*/
+function sketchLoop(x, y, radiusX, radiusY, seed) {
+
+    const random = wobble(seed);
+
+    const start = -2.3 + (random() * 0.5);
+    const sweep = (Math.PI * 2) + 0.5;
+    const steps = 16;
+
+    const points = [];
+
+    for (let step = 0; step <= steps; step = step + 1) {
+
+        const angle = start + (sweep * step / steps);
+
+        // Drifting outwards, so the overrun passes beside the start, not over it
+        const stretch = 0.96 + (random() * 0.06) + (0.08 * step / steps);
+
+        points.push([
+            x + (Math.cos(angle) * radiusX * stretch),
+            y + (Math.sin(angle) * radiusY * stretch)
+        ]);
+
+    }
+
+    return smoothPath(points);
+
+}
+
+
+/*
+    A smooth path through a run of points
+*/
+function smoothPath(points) {
+
+    let path = "M" + points[0][0].toFixed(1) + " " + points[0][1].toFixed(1);
+
+    for (let index = 0; index < points.length - 1; index = index + 1) {
+
+        const before = points[Math.max(0, index - 1)];
+        const from = points[index];
+        const to = points[index + 1];
+        const after = points[Math.min(points.length - 1, index + 2)];
+
+        // Each curve leaves and arrives along the line through its neighbours
+        const handles = [
+            from[0] + ((to[0] - before[0]) / 6),
+            from[1] + ((to[1] - before[1]) / 6),
+            to[0] - ((after[0] - from[0]) / 6),
+            to[1] - ((after[1] - from[1]) / 6),
+            to[0],
+            to[1]
+        ];
+
+        path = path + " C" + handles.map(function (value) {
+            return value.toFixed(1);
+        }).join(" ");
+
+    }
+
+    return path;
+
+}
+
+
+/*
+    The same run of random numbers every time for the same seed, so a loop
+    keeps its shape when the tour is drawn again
+*/
+function wobble(seed) {
+
+    let state = (seed * 7919) + 97;
+
+    return function () {
+
+        state = (state * 16807) % 2147483647;
+
+        return state / 2147483647;
+
+    };
+
+}
+
+
+function svgElement(name, attributes) {
+
+    const element = document.createElementNS(SVG_NAMESPACE, name);
+
+    Object.keys(attributes).forEach(function (attribute) {
+        element.setAttribute(attribute, attributes[attribute]);
+    });
+
+    return element;
 
 }
 
@@ -1485,6 +1738,8 @@ function finishCountdown() {
 
     // A piece still held is dropped where it is, and counts
     endDrag();
+
+    endTour();
 
     timerBox.classList.add("kc-timer-done");
 
