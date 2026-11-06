@@ -17,6 +17,11 @@ passwordForm.addEventListener('submit',async event=>{
  const version=++requestVersion;
  const password=passwordInput.value;
  if(!password){view={kind:'empty',message:'emptyInput'};render();passwordInput.focus();return;}
+ if (password.length > passwordInput.maxLength) {
+  view = {kind: 'empty', message: 'tooLong'};
+  render();
+  return;
+ }
  if(typeof zxcvbn!=='function'){view={kind:'empty',message:'loadingError'};render();return;}
  const result=zxcvbn(password);
  // Do not retain zxcvbn's password or matched tokens just to translate the view.
@@ -133,77 +138,27 @@ async function checkPwnedPassword(password) {
     // characters to HIBP
     // ======================================
 
-    const response =
-        await fetch(
-            `https://api.pwnedpasswords.com/range/${prefix}`,
-            {
-                headers: {
-                    "Add-Padding": "true"
-                }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+        const response = await fetch("https://api.pwnedpasswords.com/range/" + prefix, {
+            signal: controller.signal,
+            headers: { "Add-Padding": "true" }
+        });
+        if (!response.ok) throw new Error("HIBP request failed");
+        const body = await response.text();
+        let count = 0;
+        for (const line of body.trim().split(/\r?\n/)) {
+            const row = /^([0-9a-f]{35}):(\d+)$/i.exec(line);
+            if (!row || !Number.isSafeInteger(Number(row[2]))) {
+                throw new Error("Invalid HIBP response");
             }
-        );
-
-
-    // ======================================
-    // Check API response
-    // ======================================
-
-    if (!response.ok) {
-
-        throw new Error(
-            "HIBP request failed"
-        );
+            if (row[1].toUpperCase() === suffix) count = Number(row[2]);
+        }
+        return { status: "complete", found: count > 0, count };
+    } finally {
+        clearTimeout(timeout);
     }
-
-
-    // ======================================
-    // Read API response
-    // ======================================
-
-    const text =
-        await response.text();
-
-
-    // ======================================
-    // Find our hash suffix locally
-    // ======================================
-
-    const match =
-        text
-            .split("\n")
-
-            .map(
-                (line) =>
-                    line
-                        .trim()
-                        .split(":")
-            )
-
-            .find(
-                ([returnedSuffix, count]) =>
-
-                    returnedSuffix === suffix
-                    &&
-                    Number(count) > 0
-            );
-
-
-    // ======================================
-    // Return result
-    // ======================================
-
-    return {
-
-        status: "complete",
-
-        found:
-            Boolean(match),
-
-        count:
-            match
-                ? Number(match[1])
-                : 0
-    };
 }
 
 

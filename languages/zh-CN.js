@@ -40,6 +40,8 @@ window.ThinkSecureLocales["zh-CN"]={
   "password.bot.message.4": "太好了！你完成了密码挑战！",
   "password.bot.alt.4": "兴奋的 ThinkSecure 安全机器人",
   "password.emptyInput": "请先输入一个示例密码。",
+  "password.tooLong": "示例密码最多可输入 1,024 个字符。",
+  "passphrase.storageUnavailable": "浏览器存储不可用。请复制短语并粘贴到密码检测器。钥匙扣工作室需要浏览器存储。",
   "password.loadingError": "密码检测工具尚未加载完成，请稍后重试。",
   "password.bot.resetTitle": "密码挑战已就绪",
   "password.emptyTitle": "准备开始检测",

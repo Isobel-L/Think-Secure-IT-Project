@@ -40,6 +40,8 @@ window.ThinkSecureLocales["fr"]={
   "password.bot.message.4": "Excellent ! Vous avez relevé le défi !",
   "password.bot.alt.4": "Robot ThinkSecure enthousiaste",
   "password.emptyInput": "Saisissez d’abord un mot de passe fictif.",
+  "password.tooLong": "Utilisez un exemple de 1 024 caractères maximum.",
+  "passphrase.storageUnavailable": "Le stockage du navigateur est indisponible. Copiez la phrase dans le vérificateur de mots de passe. L’atelier de porte-clés a besoin du stockage du navigateur.",
   "password.loadingError": "Le test se charge encore. Réessayez dans un instant.",
   "password.bot.resetTitle": "Prêt pour le défi",
   "password.emptyTitle": "Prêt à tester",

@@ -190,14 +190,15 @@ loadPassphrase();
 */
 function loadPassphrase() {
 
-    const stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
-
-
-    // A passphrase is good for one design. Clearing it as soon as it is
-    // read means leaving this page and coming back always needs a freshly
-    // built passphrase rather than quietly reusing the last one.
-    sessionStorage.removeItem(PHRASE_STORAGE_NAME);
-
+    let stored;
+    try {
+        stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
+        // A saved phrase is consumed once per design.
+        sessionStorage.removeItem(PHRASE_STORAGE_NAME);
+    } catch {
+        noPhraseSection.classList.remove("hidden");
+        return;
+    }
 
     if (!stored) {
 

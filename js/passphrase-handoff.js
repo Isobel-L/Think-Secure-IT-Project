@@ -31,7 +31,12 @@ if (wantsCheck) {
 */
 function fillInPassphrase() {
 
-    const stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
+    let stored;
+    try {
+        stored = sessionStorage.getItem(PHRASE_STORAGE_NAME);
+    } catch {
+        return; // Manual input remains available.
+    }
 
     if (!stored) {
         return;

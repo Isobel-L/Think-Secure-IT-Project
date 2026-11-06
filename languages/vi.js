@@ -40,6 +40,8 @@ window.ThinkSecureLocales["vi"]={
   "password.bot.message.4": "Tuyệt vời! Bạn đã vượt qua thử thách mật khẩu!",
   "password.bot.alt.4": "Robot ThinkSecure hào hứng",
   "password.emptyInput": "Hãy nhập một mật khẩu mẫu trước.",
+  "password.tooLong": "Hãy dùng mật khẩu mẫu dài tối đa 1.024 ký tự.",
+  "passphrase.storageUnavailable": "Bộ nhớ trình duyệt không khả dụng. Hãy sao chép cụm mật khẩu vào công cụ kiểm tra. Công cụ tạo móc khóa cần bộ nhớ trình duyệt.",
   "password.loadingError": "Công cụ kiểm tra độ mạnh đang tải. Hãy thử lại sau giây lát.",
   "password.bot.resetTitle": "Sẵn sàng cho thử thách mật khẩu",
   "password.emptyTitle": "Sẵn sàng kiểm tra",

@@ -1,8 +1,10 @@
 # ThinkSecure public release test report
 
+**Retest on 4 November 2026.** All 33 automated cases passed on local Edge with the working-tree fixes based on `1b6ddc1`. The seven previously failing cases passed with the original assertions. The lookup now aborts after eight seconds, rejects malformed responses and retains the local score on failure. Password input is capped at 1,024 characters. The three phrase flows handle denied storage, and the Quiz start button passed the contrast scan. Evidence is included in [the 4 November retest results](evidence/retest-2026-11-04.json). The recorded commit is the base revision before these working-tree fixes were committed. Manual, device and staging checks remain pending. The findings below record the original baseline.
+
 **Decision as of 1 November 2026.** The main activities worked in the tested environment. Public release sign-off is still pending. Of 33 automated cases, 26 passed and 7 failed. The seven failures fall into five groups because the storage issue affects three flows.
 
-## Findings to fix and retest
+## Baseline findings resolved in the 4 November retest
 
 | Finding | Reproduction and observed result | Recommended action |
 |---|---|---|
@@ -26,4 +28,4 @@ The four-word flow carried a phrase into Password Checker, retained Simplified C
 - The final full run is recorded under `test-results/2026-11-01T08-23-49-124Z/` in the original checkout. The folder contains `results.json`, `summary.md`, `accessibility.json` and the downloaded `keychain.png`. An earlier browser startup failure and quiz test-script debugging runs are excluded from the totals.
 - A separate 10-second local load check used 50 workers across four static routes, with a 250 ms pause between requests per worker. It completed 1,750 requests with zero errors. The 95th percentile was 41.4 ms and the 99th was 44.3 ms. Capacity for hundreds of simultaneous public users still requires a staging test with realistic journeys.
 
-**Next step.** Fix the five findings and rerun the full suite. Use the [release checklist](Test-Checklist.md) to assign device, accessibility, translation, security and staging checks before sign-off.
+**Next step.** The five findings passed automated retesting on 4 November. Use the [release checklist](Test-Checklist.md) to assign device, accessibility, translation, security and staging checks before sign-off.

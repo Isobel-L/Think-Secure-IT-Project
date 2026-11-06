@@ -1,0 +1,226 @@
+{
+  "timestamp": "2026-11-04T06:35:38.584Z",
+  "commit": "1b6ddc1666645c72ff0f6b098e332b1016d9b2df",
+  "browser": "msedge",
+  "limitations": [
+    "Local HTTP server, not deployment",
+    "HIBP and fonts mocked; real scoring library",
+    "Only installed Chromium/Edge tested",
+    "No real concurrency certification, screen reader or penetration audit"
+  ],
+  "passed": 33,
+  "failed": 0,
+  "results": [
+    {
+      "id": "STATIC-01",
+      "title": "Local HTML links/resources exist with exact filename case",
+      "status": "PASS",
+      "ms": 49,
+      "evidence": {
+        "pages": 6
+      }
+    },
+    {
+      "id": "I18N-01",
+      "title": "All six dictionaries have matching keys and placeholders",
+      "status": "PASS",
+      "ms": 3
+    },
+    {
+      "id": "PAGE-index.html",
+      "title": "Page health and six-language switching: index.html",
+      "status": "PASS",
+      "ms": 975
+    },
+    {
+      "id": "PAGE-pages/menu.html",
+      "title": "Page health and six-language switching: pages/menu.html",
+      "status": "PASS",
+      "ms": 658
+    },
+    {
+      "id": "PAGE-pages/password-checker.html",
+      "title": "Page health and six-language switching: pages/password-checker.html",
+      "status": "PASS",
+      "ms": 862
+    },
+    {
+      "id": "PAGE-pages/passphrase-maker.html",
+      "title": "Page health and six-language switching: pages/passphrase-maker.html",
+      "status": "PASS",
+      "ms": 811
+    },
+    {
+      "id": "PAGE-pages/sticker-generator.html",
+      "title": "Page health and six-language switching: pages/sticker-generator.html",
+      "status": "PASS",
+      "ms": 785
+    },
+    {
+      "id": "PAGE-pages/cyber-quiz.html",
+      "title": "Page health and six-language switching: pages/cyber-quiz.html",
+      "status": "PASS",
+      "ms": 834
+    },
+    {
+      "id": "PW-01",
+      "title": "Five fixed strength levels use real zxcvbn and match the displayed meter",
+      "status": "PASS",
+      "ms": 848,
+      "evidence": {
+        "0": "password",
+        "1": "password123456",
+        "2": "P@ssword2024!",
+        "3": "catsanddogs",
+        "4": "Tr0ub4dor&3"
+      }
+    },
+    {
+      "id": "PW-02",
+      "title": "Empty input, Unicode, show/hide, clear and XSS text remain safe",
+      "status": "PASS",
+      "ms": 593
+    },
+    {
+      "id": "PRIV-01",
+      "title": "Network sends only five SHA1 characters, padding enabled, no password stored",
+      "status": "PASS",
+      "ms": 536
+    },
+    {
+      "id": "PW-03",
+      "title": "Known breach suffix match displays positive count",
+      "status": "PASS",
+      "ms": 440
+    },
+    {
+      "id": "FAIL-429",
+      "title": "Breach HTTP 429 shows unavailable, retains score",
+      "status": "PASS",
+      "ms": 415
+    },
+    {
+      "id": "FAIL-503",
+      "title": "Breach HTTP 503 shows unavailable, retains score",
+      "status": "PASS",
+      "ms": 465
+    },
+    {
+      "id": "FAIL-CDN",
+      "title": "Blocked scoring library gives useful error without crashing",
+      "status": "PASS",
+      "ms": 359
+    },
+    {
+      "id": "RACE-01",
+      "title": "Late breach response cannot restore cleared results",
+      "status": "PASS",
+      "ms": 1284
+    },
+    {
+      "id": "FAIL-TIMEOUT",
+      "title": "Breach request has a finite timeout within 12 seconds",
+      "status": "PASS",
+      "ms": 8389
+    },
+    {
+      "id": "BOUND-01",
+      "title": "Password input has a finite input bound to prevent unbounded synchronous scoring",
+      "status": "PASS",
+      "ms": 483
+    },
+    {
+      "id": "FLOW-01",
+      "title": "Four words -> translated checker -> Keychain PNG download",
+      "status": "PASS",
+      "ms": 2494,
+      "evidence": {
+        "downloadBytes": 2176735
+      }
+    },
+    {
+      "id": "STORAGE-pages/passphrase-maker.html",
+      "title": "Storage denied has a safe fallback: pages/passphrase-maker.html",
+      "status": "PASS",
+      "ms": 658
+    },
+    {
+      "id": "STORAGE-pages/password-checker.html?check=passphrase",
+      "title": "Storage denied has a safe fallback: pages/password-checker.html?check=passphrase",
+      "status": "PASS",
+      "ms": 480
+    },
+    {
+      "id": "STORAGE-pages/sticker-generator.html",
+      "title": "Storage denied has a safe fallback: pages/sticker-generator.html",
+      "status": "PASS",
+      "ms": 323
+    },
+    {
+      "id": "STORAGE-INVALID",
+      "title": "Malformed saved passphrase does not crash Keychain Studio",
+      "status": "PASS",
+      "ms": 592
+    },
+    {
+      "id": "BOT-pages/password-checker.html",
+      "title": "Guidance keyboard opening, Pop In/Out, focus return and reduced motion: pages/password-checker.html",
+      "status": "PASS",
+      "ms": 1719
+    },
+    {
+      "id": "BOT-pages/passphrase-maker.html",
+      "title": "Guidance keyboard opening, Pop In/Out, focus return and reduced motion: pages/passphrase-maker.html",
+      "status": "PASS",
+      "ms": 1629
+    },
+    {
+      "id": "BOT-pages/sticker-generator.html",
+      "title": "Guidance keyboard opening, Pop In/Out, focus return and reduced motion: pages/sticker-generator.html",
+      "status": "PASS",
+      "ms": 1668
+    },
+    {
+      "id": "BOT-pages/cyber-quiz.html",
+      "title": "Guidance keyboard opening, Pop In/Out, focus return and reduced motion: pages/cyber-quiz.html",
+      "status": "PASS",
+      "ms": 1134
+    },
+    {
+      "id": "QUIZ-RIGHT",
+      "title": "Five scenarios produce exact 5/5 and restart",
+      "status": "PASS",
+      "ms": 5723
+    },
+    {
+      "id": "QUIZ-WRONG",
+      "title": "Five scenarios produce exact 0/5 and restart",
+      "status": "PASS",
+      "ms": 6552
+    },
+    {
+      "id": "FAIL-MALFORMED",
+      "title": "Malformed HTTP 200 breach response must not claim no breach",
+      "status": "PASS",
+      "ms": 636
+    },
+    {
+      "id": "A11Y-AXE",
+      "title": "Automated WCAG 2 A/AA and 2.1 A/AA checks on all six initial pages",
+      "status": "PASS",
+      "ms": 2186
+    },
+    {
+      "id": "LAYOUT-01",
+      "title": "Six pages at phone/tablet/desktop widths have no horizontal overflow",
+      "status": "PASS",
+      "ms": 5769
+    },
+    {
+      "id": "A11Y-01",
+      "title": "Visible inputs have labels and meaningful images have alt attributes",
+      "status": "PASS",
+      "ms": 966
+    }
+  ]
+}
