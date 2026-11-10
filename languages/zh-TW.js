@@ -40,6 +40,8 @@ window.ThinkSecureLocales["zh-TW"]={
   "password.bot.message.4": "太好了！你完成了密碼挑戰！",
   "password.bot.alt.4": "興奮的 ThinkSecure 安全機器人",
   "password.emptyInput": "請先輸入一個示例密碼。",
+  "password.tooLong": "範例密碼最多可輸入 1,024 個字元。",
+  "passphrase.storageUnavailable": "瀏覽器儲存空間無法使用。請複製短語並貼到密碼檢測工具。鑰匙圈工作室需要瀏覽器儲存空間。",
   "password.loadingError": "密碼檢測工具尚未載入完成，請稍後重試。",
   "password.bot.resetTitle": "密碼挑戰已就緒",
   "password.emptyTitle": "準備開始檢測",

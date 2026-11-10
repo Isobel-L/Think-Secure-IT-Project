@@ -486,12 +486,18 @@ function storePassphrase() {
 
     // Each word keeps its own name, which picks its picture, and carries the
     // spelling to print on the keychain
-    sessionStorage.setItem(PHRASE_STORAGE_NAME, JSON.stringify({
-        phrase: buildPassphrase(),
-        words: chosenWords.map(function (item) {
-            return { word: item.word, emoji: item.emoji, display: spell(item.word) };
-        })
-    }));
+    const warning = document.getElementById("storage-warning");
+    try {
+        sessionStorage.setItem(PHRASE_STORAGE_NAME, JSON.stringify({
+            phrase: buildPassphrase(),
+            words: chosenWords.map(function (item) {
+                return { word: item.word, emoji: item.emoji, display: spell(item.word) };
+            })
+        }));
+        warning.hidden = true;
+    } catch {
+        warning.hidden = false;
+    }
 
 }
 
@@ -689,7 +695,11 @@ restartButton.addEventListener("click", function () {
     clearSwaps();
     ++copyVersion; copyKey = "";
 
-    sessionStorage.removeItem(PHRASE_STORAGE_NAME);
+    try {
+        sessionStorage.removeItem(PHRASE_STORAGE_NAME);
+    } catch {
+        // The in-page builder can still reset with storage blocked.
+    }
 
     copyStatus.textContent = "";
 

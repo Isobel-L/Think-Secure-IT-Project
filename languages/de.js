@@ -40,6 +40,8 @@ window.ThinkSecureLocales["de"]={
   "password.bot.message.4": "Ausgezeichnet! Du hast die Challenge geschafft!",
   "password.bot.alt.4": "Begeisterter ThinkSecure-Roboter",
   "password.emptyInput": "Gib zuerst ein Beispielpasswort ein.",
+  "password.tooLong": "Verwende ein Beispiel mit höchstens 1.024 Zeichen.",
+  "passphrase.storageUnavailable": "Der Browserspeicher ist nicht verfügbar. Kopiere die Passphrase in den Passwortprüfer. Das Schlüsselanhänger-Studio benötigt den Browserspeicher.",
   "password.loadingError": "Die Prüfung wird noch geladen. Versuche es gleich erneut.",
   "password.bot.resetTitle": "Bereit für die Challenge",
   "password.emptyTitle": "Bereit zur Prüfung",

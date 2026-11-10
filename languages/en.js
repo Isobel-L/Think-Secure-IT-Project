@@ -40,6 +40,8 @@ window.ThinkSecureLocales["en"]={
   "password.bot.message.4": "Excellent! You beat the password challenge!",
   "password.bot.alt.4": "Excited ThinkSecure Security Bot",
   "password.emptyInput": "Enter an example password first.",
+  "password.tooLong": "Use a sample of at most 1,024 characters.",
+  "passphrase.storageUnavailable": "Browser storage is unavailable. Copy your phrase into Password Checker manually. Keychain Studio needs browser storage.",
   "password.loadingError": "The strength checker is still loading. Try again in a moment.",
   "password.bot.resetTitle": "Password Challenge Ready",
   "password.emptyTitle": "Ready to check",
