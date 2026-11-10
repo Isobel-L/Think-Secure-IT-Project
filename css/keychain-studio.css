@@ -277,6 +277,12 @@ html[lang="vi"] .kc-product {
     margin-top: 4px;
 }
 
+/* Opened as a file, the browser will not export the design */
+.kc-download[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 
 /* Preview */
 

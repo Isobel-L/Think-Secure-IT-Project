@@ -22,6 +22,7 @@ const studioWords = document.getElementById("studio-words");
 const productInputs = document.querySelectorAll("input[name='product']");
 const resetButton = document.getElementById("reset-positions");
 const downloadButton = document.getElementById("download-button");
+const downloadNote = document.getElementById("download-note");
 
 
 // Countdown elements
@@ -984,8 +985,12 @@ function offerDownload() {
     } catch (error) {
 
         // Browsers refuse to export a canvas holding a picture loaded
-        // straight from disk (file://). Served over http it works.
+        // straight from disk (file://). Served over http it works, so the
+        // button says it is unavailable and the note explains why.
         downloadButton.removeAttribute("href");
+        downloadButton.setAttribute("aria-disabled", "true");
+
+        downloadNote.hidden = false;
 
     }
 
@@ -1769,6 +1774,11 @@ function finishCountdown() {
 
         timeUpDownload.removeAttribute("href");
         timeUpDownload.setAttribute("aria-disabled", "true");
+
+        const hint = timeUpDownload.querySelector("small");
+
+        hint.setAttribute("data-i18n", "sticker.timeup.downloadBlocked");
+        hint.textContent = I18n.t("sticker.timeup.downloadBlocked");
 
     }
 
