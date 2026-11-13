@@ -2043,7 +2043,7 @@ function startQuiz() {
     tsInvestigated.clear();
     if (!tsTutorialShown) {
         tsPendingStart = true;
-        tsOpenTutorial();
+        tsOpenPractice();
         return;
     }
     showSection(scenarioSection);
@@ -3785,7 +3785,8 @@ function showSection(
         startSection,
         scenarioSection,
         feedbackSection,
-        completeSection
+        completeSection,
+        document.getElementById('ts-practice')
  
     ].forEach(
         function (item) {
@@ -4270,8 +4271,153 @@ document.getElementById('ts-tutorial-next')?.addEventListener('click',()=>{
     else { tsTutorialIndex++; tsRenderTutorial(); }
 });
 document.getElementById('ts-tutorial-skip')?.addEventListener('click',tsFinishTutorial);
-document.getElementById('ts-reopen-tutorial')?.addEventListener('click',()=>tsOpenTutorial());
+document.getElementById('ts-reopen-tutorial')?.addEventListener('click',()=>tsOpenPractice());
  
+/* ============================================================
+   GUIDED PRACTICE QUESTION — unscored and self-contained.
+   The five real questions, tsClues and report are untouched.
+============================================================ */
+const tsPracticeSection = document.getElementById('ts-practice');
+const tsPracticeDevice = document.getElementById('ts-practice-device');
+const tsPracticeSteps = [
+  { title: 'Open the email', text: 'Imagine you have received a parcel delivery notification. Click the unread message in the inbox to see what it says.', target: 'open' },
+  { title: 'Check who sent it', text: 'Good. Now click the sender address, not just the display name. Does it clearly match the delivery service?', target: 'sender' },
+  { title: 'Spot the pressure', text: 'Look at the email message. Click the sentence that gives you a very short deadline.', target: 'urgency' },
+  { title: 'Inspect the link', text: 'Click “Arrange delivery” to see the simulated website. You will not leave ThinkSecure or send any details.', target: 'link' },
+  { title: 'Make your decision', text: 'You have seen the warning signs. Choose the action you would take in real life.', target: 'decision' }
+];
+let tsPracticeStepIndex = 0;
+let tsPracticeExplainer = '';
+let tsPracticeReturnToQuiz = false;
+let tsPracticePage = 'inbox';
+let tsPracticeComplete = false;
+
+function tsPracticeEmailPage() {
+  const inbox = `<div class="ts-practice-mailbar"><strong>✉ Postbox</strong><span>Search mail</span><span>●</span></div>
+    <div class="ts-practice-mail-tools">Inbox <span>1 unread</span></div>
+    <button type="button" class="ts-practice-inbox-row" data-practice-action="open">
+      <strong>Parcel Delivery</strong><span>Action needed: delivery could not be completed</span><small>9:41</small>
+    </button><div class="ts-practice-inbox-row muted"><strong>Library</strong><span>Your monthly reading update</span><small>Yesterday</small></div>`;
+  const email = `<div class="ts-practice-mailbar"><strong>✉ Postbox</strong><span>Search mail</span><span>●</span></div>
+    <div class="ts-practice-mail-tools"><button type="button" data-practice-action="back-inbox">← Inbox</button><span>1 of 2</span></div>
+    <article class="ts-practice-letter"><h3>Delivery attempt unsuccessful</h3>
+       <button type="button" class="ts-practice-sender" data-practice-action="sender">
+         <span class="ts-practice-avatar">P</span><span><b>Parcel Delivery</b><small>delivery@parcel-track-help.example</small></span>
+       </button><p>Hello,</p><p>We could not deliver your parcel today.</p>
+       <button type="button" class="ts-practice-urgency" data-practice-action="urgency">You must confirm your details within 30 minutes or the parcel will be returned.</button>
+       <p>To arrange redelivery, follow the link below.</p>
+       <button type="button" class="ts-practice-link" data-practice-action="link">Arrange delivery ↗</button>
+       <p class="ts-practice-signature">Parcel Support Team</p></article>`;
+  const site = `<div class="ts-practice-browser"><div class="ts-practice-sitebar"><button type="button" data-practice-action="back-email">← Back to email</button><span>parcel-confirm.example/pay</span></div>
+    <div class="ts-practice-site"><div class="ts-practice-site-brand">▣ Parcel confirmation</div>
+      <h3>Complete your redelivery</h3><p>A small $2.95 fee is needed to release your parcel.</p>
+      <label>Card number</label><div class="ts-practice-fake-input">•••• •••• •••• ••••</div>
+      <label>Security code</label><div class="ts-practice-fake-input">•••</div>
+      <button type="button" class="ts-practice-disabled" disabled>Pay $2.95</button>
+      <small>This is a fictional, non-functional training page. No information is collected.</small>
+    </div></div>`;
+  return `<div class="ts-practice-browserframe"><div class="ts-practice-chrome"><i></i><i></i><i></i><span>${tsPracticePage==='site'?'Parcel confirmation':'Inbox — Postbox'}</span></div>
+      <div class="ts-practice-url">◈ &nbsp;${tsPracticePage==='site'?'parcel-confirm.example/pay':'mail.example/inbox'}</div>
+      <div class="ts-practice-screen">${tsPracticePage==='inbox'?inbox:tsPracticePage==='email'?email:site}</div></div>`;
+}
+
+function tsPracticeAnswerMarkup() {
+  return `<fieldset class="ts-practice-answers"><legend>What would you do?</legend>
+    <button type="button" data-practice-answer="pay">Pay the $2.95 fee on this website</button>
+    <button type="button" data-practice-answer="safe">Check delivery through the courier's official website or app</button>
+    <button type="button" data-practice-answer="reply">Reply to the email and provide my card details</button>
+  </fieldset>`;
+}
+
+function tsRenderPractice() {
+  if (!tsPracticeSection || !tsPracticeDevice) return;
+  const step = tsPracticeSteps[Math.min(tsPracticeStepIndex, 4)];
+  document.getElementById('ts-practice-step').textContent = tsPracticeComplete ? 'PRACTICE COMPLETE' : `GUIDED STEP ${tsPracticeStepIndex + 1} OF 5`;
+  document.getElementById('ts-practice-guide-title').textContent = tsPracticeComplete ? 'You identified the warning signs!' : step.title;
+  document.getElementById('ts-practice-guide-text').textContent = tsPracticeComplete ? 'A familiar logo does not prove a message is genuine. Check the sender, notice pressure tactics and avoid entering payment details through unexpected links.' : step.text;
+  document.getElementById('ts-practice-fill').style.width = (tsPracticeComplete ? 100 : tsPracticeStepIndex * 20) + '%';
+  const discovery = document.getElementById('ts-practice-discovery');
+  discovery.textContent = tsPracticeExplainer;
+  discovery.classList.toggle('hidden', !tsPracticeExplainer);
+  const next = document.getElementById('ts-practice-next');
+  next.classList.add('hidden');
+  const done = document.getElementById('ts-practice-finish');
+  done.classList.toggle('hidden', !tsPracticeComplete);
+  tsPracticeDevice.innerHTML = tsPracticeEmailPage() + (tsPracticeStepIndex === 4 && !tsPracticeComplete ? tsPracticeAnswerMarkup() : '');
+  tsPracticeDevice.querySelectorAll('[data-practice-action]').forEach(el => {
+    const action = el.dataset.practiceAction;
+    if (action === step.target && !tsPracticeComplete) el.classList.add('ts-practice-focus');
+  });
+}
+
+function tsOpenPractice() {
+  if (!tsPracticeSection) { tsFinishTutorial(); return; }
+  tsCloseCluePopup();
+  tsPracticeReturnToQuiz = !tsPendingStart;
+  tsPracticeStepIndex = 0;
+  tsPracticeExplainer = '';
+  tsPracticePage = 'inbox';
+  tsPracticeComplete = false;
+  showSection(tsPracticeSection);
+  tsRenderPractice();
+}
+
+function tsExitPractice() {
+  tsPracticeComplete = false;
+  tsTutorialShown = true;
+  if (tsPendingStart) {
+    tsPendingStart = false;
+    showSection(scenarioSection);
+    renderQuestion();
+  } else if (tsPracticeReturnToQuiz) {
+    showSection(scenarioSection);
+  } else {
+    showSection(startSection);
+  }
+}
+
+function tsPracticeAdvance(action) {
+  if (tsPracticeComplete) return;
+  // Back is always available after the inbox has been opened.
+  if (action === 'back-inbox') { tsPracticePage = 'inbox'; tsRenderPractice(); return; }
+  if (action === 'back-email') { tsPracticePage = 'email'; tsRenderPractice(); return; }
+  const expected = tsPracticeSteps[tsPracticeStepIndex]?.target;
+  if (action !== expected) {
+    tsPracticeExplainer = 'That area is available to explore. Follow the highlighted part to complete this guided step.';
+    tsRenderPractice(); return;
+  }
+  const discoveries = {
+    open: 'Great! You opened the message, just as you would in a real inbox.',
+    sender: '⚑ Red flag: the address is not an independently verified courier domain. Display names can be imitated.',
+    urgency: '⚑ Red flag: the 30-minute deadline tries to rush you into acting without checking.',
+    link: '⚑ Red flag: an unexpected page is requesting card information to release a delivery. Check independently instead.'
+  };
+  if (action === 'open') tsPracticePage = 'email';
+  if (action === 'link') tsPracticePage = 'site';
+  tsPracticeExplainer = discoveries[action] || '';
+  tsPracticeStepIndex++;
+  tsRenderPractice();
+}
+
+if (tsPracticeSection) {
+  tsPracticeSection.addEventListener('click', event => {
+    const action = event.target.closest('[data-practice-action]');
+    if (action) { tsPracticeAdvance(action.dataset.practiceAction); return; }
+    const answer = event.target.closest('[data-practice-answer]');
+    if (answer && tsPracticeStepIndex === 4 && !tsPracticeComplete) {
+      if (answer.dataset.practiceAnswer === 'safe') {
+        tsPracticeComplete = true;
+        tsPracticeExplainer = '✓ Safer response: use a contact method you found independently, not the link in the message. This example will not affect your score.';
+      } else {
+        tsPracticeExplainer = 'Try again. The link came from an unexpected message, and entering payment information here could put your card at risk.';
+      }
+      tsRenderPractice();
+    }
+  });
+  document.getElementById('ts-practice-skip')?.addEventListener('click', tsExitPractice);
+  document.getElementById('ts-practice-finish')?.addEventListener('click', tsExitPractice);
+}
+
 /* ============================================================
    SAFE HTML OUTPUT
 ============================================================ */
@@ -4310,4 +4456,5 @@ function escapeHTML(
         );
  
 }
+
 
