@@ -667,6 +667,28 @@
 
 
         </section>
+        <!-- Guided, unscored practice question (not part of the five scenarios) -->
+        <section id="ts-practice" class="quiz-shell ts-practice hidden" aria-labelledby="ts-practice-title">
+          <div class="ts-practice-topline">
+            <span class="ts-practice-pill">PRACTICE · NOT SCORED</span>
+            <button type="button" id="ts-practice-skip" class="ts-practice-skip">Skip practice →</button>
+          </div>
+          <h2 id="ts-practice-title">Learn how to spot a suspicious message</h2>
+          <p class="ts-practice-intro">Try a guided example before the five-question challenge. Nothing you do here affects your score.</p>
+          <div class="ts-practice-track" aria-label="Practice progress"><div id="ts-practice-fill"></div></div>
+          <div class="ts-practice-layout">
+            <aside class="ts-practice-guide" aria-live="polite">
+              <span id="ts-practice-step" class="ts-practice-step"></span>
+              <h3 id="ts-practice-guide-title"></h3>
+              <p id="ts-practice-guide-text"></p>
+              <div id="ts-practice-discovery" class="ts-practice-discovery hidden"></div>
+              <button type="button" class="ts-practice-next hidden" id="ts-practice-next">Continue →</button>
+              <button type="button" class="ts-practice-finish hidden" id="ts-practice-finish">Start the 5-question challenge →</button>
+            </aside>
+            <div class="ts-practice-device" id="ts-practice-device" aria-label="Interactive example email"></div>
+          </div>
+        </section>
+
 
 
 
@@ -1472,5 +1494,6 @@
 
 
 </html>
+
 
 
